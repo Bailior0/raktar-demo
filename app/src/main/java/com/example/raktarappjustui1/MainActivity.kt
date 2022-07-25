@@ -23,7 +23,10 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     //Greeting("Android")
-                    AcquisitionView()
+                    //Acquisition()
+                    //Release()
+                    //Moving()
+                    Reservation()
                 }
             }
         }

@@ -40,12 +40,13 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Composable
-fun AcquisitionView() {
+fun Acquisition() {
     val context = LocalContext.current
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colors.background)
     ) {
         TopAppBar(
             title = { Text(text = "Bevételezés") }
@@ -55,51 +56,48 @@ fun AcquisitionView() {
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(12.dp, 24.dp, 12.dp, 0.dp)
+                .padding(12.dp, 25.dp, 12.dp, 0.dp)
         ) {
             ConstraintLayout(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colors.background)
             ) {
-                val (title, name, group, quantitySwitch, quantity, date, ownerSwitch, button) = createRefs()
+                val (
+                    name,
+                    group,
+                    quantitySwitch,
+                    quantity,
+                    date,
+                    ownerSwitch,
+                    button
+                ) = createRefs()
 
                 var nameInput by remember { mutableStateOf("") }
                 var groupInput by remember { mutableStateOf("") }
                 var quantityInput by remember { mutableStateOf("") }
                 var dateInput by remember { mutableStateOf("") }
 
-                val myCalendar = Calendar.getInstance()
-                var datePickerState by remember { mutableStateOf(false) }
-
                 var ownerSwitchState by remember { mutableStateOf(false) }
                 var quantitySwitchState by remember { mutableStateOf(false) }
 
-                /*Text(
-                    text = "Bevételezés",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 30.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(0.dp, 30.dp)
-                        .constrainAs(title) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        }
-                )*/
+                //val myCalendar = Calendar.getInstance()
+                var datePickerState by remember { mutableStateOf(false) }
 
                 OutlinedTextField(
                     value = nameInput,
                     onValueChange = { nameInput = it },
                     singleLine = true,
-                    placeholder = { Text("Terméknév", color = Color.Gray) },
+                    placeholder = {
+                        Text(
+                            text = "Terméknév",
+                            color = Color.Gray
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 2.dp)
                         .constrainAs(name) {
-                            top.linkTo(title.bottom)
+                            top.linkTo(parent.top)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                         }
@@ -109,7 +107,12 @@ fun AcquisitionView() {
                     value = groupInput,
                     onValueChange = { groupInput = it },
                     singleLine = true,
-                    placeholder = { Text("Termékcsoport", color = Color.Gray) },
+                    placeholder = {
+                        Text(
+                            text = "Termékcsoport",
+                            color = Color.Gray
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 2.dp)
@@ -135,7 +138,12 @@ fun AcquisitionView() {
                     value = quantityInput,
                     onValueChange = { quantityInput = it },
                     singleLine = true,
-                    placeholder = { Text("Mennyiség", color = Color.Gray) },
+                    placeholder = {
+                        Text(
+                            text = "Mennyiség",
+                            color = Color.Gray
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 2.dp)
@@ -146,7 +154,7 @@ fun AcquisitionView() {
                         }
                 )
 
-                Row(
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(5.dp, 25.dp, 5.dp, 0.dp)
@@ -156,51 +164,14 @@ fun AcquisitionView() {
                             end.linkTo(parent.end)
                         }
                 ) {
-                    ConstraintLayout(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        val (text, dateButton) = createRefs()
-
-                        Text(
-                            text = "Szavatosság: ",
-                            color = Color.Gray,
-                            modifier = Modifier
-                                .constrainAs(text) {
-                                    top.linkTo(parent.top)
-                                    bottom.linkTo(parent.bottom)
-                                    start.linkTo(parent.start)
-                                }
-                        )
-
-                        Button(
-                            content = {
-                                if (dateInput == "")
-                                    Text(
-                                        text = "${myCalendar.get(Calendar.YEAR)}-" +
-                                                "${myCalendar.get(Calendar.MONTH) + 1}-" +
-                                                "${myCalendar.get(Calendar.DAY_OF_MONTH)}"
-                                    )
-                                else
-                                    Text(
-                                        text = dateInput
-                                    )
-                            },
-                            onClick = { datePickerState = true },
-                            modifier = Modifier
-                                .constrainAs(dateButton) {
-                                    top.linkTo(parent.top)
-                                    bottom.linkTo(parent.bottom)
-                                    end.linkTo(parent.end)
-                                }
-                        )
-
-                        if (datePickerState) {
-                            DatePickerComposable(context, dateInput, myCalendar) { dateInput = it }
-                            datePickerState = false
-                        }
-                    }
-
+                    DatePickerRow(
+                        "Szavatosság: ",
+                        context,
+                        datePickerState,
+                        { datePickerState = it },
+                        dateInput,
+                        { dateInput = it }
+                    )
                 }
 
                 Box(
@@ -243,123 +214,10 @@ fun AcquisitionView() {
 
 }
 
-@Composable
-fun DatePickerComposable(
-    context: Context,
-    dateInput: String,
-    myCalendar: Calendar,
-    onValueChange: (String) -> Unit
-) {
-    val datePickerDialog = DatePickerDialog(
-        context,
-        R.style.DatePickerTheme,
-        { _: DatePicker, Year: Int, Month: Int, Day: Int ->
-            onValueChange("$Year-${Month + 1}-$Day")
-        },
-        myCalendar.get(Calendar.YEAR),
-        myCalendar.get(Calendar.MONTH),
-        myCalendar.get(Calendar.DAY_OF_MONTH)
-    )
-
-    datePickerDialog.datePicker.minDate = System.currentTimeMillis()
-    datePickerDialog.show()
-}
-
-@Composable
-fun SegmentedControlQuantitySwitch(quantitySwitchState: Boolean, onValueChange: (Boolean) -> Unit) {
-    //var index = remember { mutableStateOf(0) }
-
-    Row() {
-        Text(
-            text = "CSOMAG",
-            fontSize = 14.sp,
-            color = if (!quantitySwitchState)
-                Color.Black
-            else Color.Gray,
-            modifier = Modifier
-                .clickable { onValueChange(false) }
-        )
-
-        Text(
-            text = " | ",
-            fontSize = 14.sp,
-            color = Color.LightGray,
-            modifier = Modifier
-                .scale(1.1f)
-        )
-
-        Text(
-            text = "EGYSÉG",
-            fontSize = 14.sp,
-            color = if (quantitySwitchState)
-                Color.Black
-            else Color.Gray,
-            modifier = Modifier
-                .clickable { onValueChange(true) }
-        )
-    }
-}
-
-@Composable
-fun SegmentedControlOwnerSwitch(ownerSwitchState: Boolean, onValueChange: (Boolean) -> Unit) {
-    //var index = remember { mutableStateOf(0) }
-
-    Box(
-        //modifier = Modifier
-        //.border(1.dp, Color.Gray, RoundedCornerShape(5.dp))
-        //.background(Color.Gray, RoundedCornerShape(5.dp))
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Button(
-                content = {
-                    Text(
-                        text = "Saját",
-                    )
-                },
-                onClick = {
-                    //index.value = 0
-                    onValueChange(false)
-                },
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (!ownerSwitchState)
-                        MaterialTheme.colors.primary
-                    else Color.LightGray
-                ),
-                modifier = Modifier
-                    .weight(5f)
-                    .padding(2.dp, 0.dp)
-            )
-
-            Button(
-                content = {
-                    Text(
-                        text = "Idegen",
-                    )
-                },
-                onClick = {
-                    onValueChange(true)
-                },
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (ownerSwitchState)
-                        MaterialTheme.colors.primary
-                    else Color.LightGray
-                ),
-                modifier = Modifier
-                    .weight(5f)
-                    .padding(2.dp, 0.dp)
-            )
-
-        }
-    }
-}
-
 @Preview
 @Composable
 fun AcquisitionPreview() {
     RaktarAppJustUi1Theme {
-        AcquisitionView()
+        Acquisition()
     }
 }
