@@ -22,11 +22,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    //Greeting("Android")
-                    //Acquisition()
-                    //Release()
-                    //Moving()
-                    Reservation()
+                    //Account(worker =)
+                    //StorageDetail(storage = )
                 }
             }
         }
