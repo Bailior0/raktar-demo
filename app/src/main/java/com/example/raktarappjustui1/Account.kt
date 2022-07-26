@@ -130,21 +130,6 @@ fun Account(
                         }
                 )
 
-                /*Text(
-                    buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = Color.Black, fontSize = 25.sp, fontWeight = FontWeight.Bold)) {
-                            append("Kezelt raktárak")
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(5.dp, 15.dp, 0.dp, 0.dp)
-                        .constrainAs(maintainedStorages) {
-                            top.linkTo(phone.bottom)
-                            start.linkTo(parent.start)
-                        }
-                )*/
-
-
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
