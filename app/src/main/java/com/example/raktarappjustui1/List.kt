@@ -43,12 +43,14 @@ fun List(
                 val (
                     item,
                     searchbar,
+                    menu,
                     buttons,
                     list
                 ) = createRefs()
                 var ownerSwitchState by remember { mutableStateOf(false) }
 
                 var text by remember { mutableStateOf("") }
+                var showMenu by remember { mutableStateOf(false) }
 
                 OutlinedTextField(
                     value = text,
@@ -65,7 +67,7 @@ fun List(
                     },
                     trailingIcon = {
                         IconButton(
-                            onClick = { }
+                            onClick = { showMenu = !showMenu }
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_filter_alt_24),
@@ -83,6 +85,32 @@ fun List(
                         }
                         .fillMaxWidth()
                 )
+                Box(
+                    modifier = Modifier
+                        .constrainAs(menu) {
+                            top.linkTo(searchbar.bottom)
+                            end.linkTo(parent.end)
+                        }
+                ) {
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false }
+                    ) {
+                        DropdownMenuItem(onClick = { }) {
+                            Text(text = "Név")
+                        }
+                        DropdownMenuItem(onClick = { }) {
+                            Text(text = "Darabszám")
+                        }
+                        DropdownMenuItem(onClick = { }) {
+                            Text(text = "Alacsony készlet")
+                        }
+                        DropdownMenuItem(onClick = { }) {
+                            Text(text = "Készleten")
+                        }
+                    }
+                }
+
 
                 Box(
                     modifier = Modifier
@@ -139,7 +167,8 @@ fun ListItem(
             .background(Color.LightGray, Shapes.small)
     ) {
         Column(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
                 .padding(all = 5.dp),
         ) {
             Text(
