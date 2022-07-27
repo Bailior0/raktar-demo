@@ -96,16 +96,31 @@ fun List(
                         expanded = showMenu,
                         onDismissRequest = { showMenu = false }
                     ) {
-                        DropdownMenuItem(onClick = { }) {
+                        DropdownMenuItem(
+                            onClick = { },
+                            modifier = Modifier.height(30.dp)
+                        ) {
                             Text(text = "Név")
                         }
-                        DropdownMenuItem(onClick = { }) {
+                        Divider(color = Color.LightGray, thickness = 1.dp)
+                        DropdownMenuItem(
+                            onClick = { },
+                            modifier = Modifier.height(30.dp)
+                        ) {
                             Text(text = "Darabszám")
                         }
-                        DropdownMenuItem(onClick = { }) {
+                        Divider(color = Color.LightGray, thickness = 1.dp)
+                        DropdownMenuItem(
+                            onClick = { },
+                            modifier = Modifier.height(30.dp)
+                        ) {
                             Text(text = "Alacsony készlet")
                         }
-                        DropdownMenuItem(onClick = { }) {
+                        Divider(color = Color.LightGray, thickness = 1.dp)
+                        DropdownMenuItem(
+                            onClick = { },
+                            modifier = Modifier.height(30.dp)
+                        ) {
                             Text(text = "Készleten")
                         }
                     }

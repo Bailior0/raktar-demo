@@ -39,7 +39,7 @@ fun Account(
             .background(MaterialTheme.colors.background)
     ) {
         TopAppBar(
-            title = { Text(text = "Foglalás") }
+            title = { Text(text = "Felhasználó") }
         )
 
         Column(
