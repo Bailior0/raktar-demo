@@ -9,12 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.BaselineShift
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,7 +23,6 @@ import androidx.constraintlayout.compose.Dimension
 import com.example.raktarappjustui1.data.Storage
 import com.example.raktarappjustui1.data.Worker
 import com.example.raktarappjustui1.ui.theme.RaktarAppJustUi1Theme
-
 
 @Composable
 fun StorageDetail(
@@ -170,11 +168,12 @@ fun StorageDetail(
                         }
                     },
                     modifier = Modifier
-                        .padding(5.dp, 0.dp, 0.dp, 0.dp)
+                        .padding(5.dp, 0.dp, 5.dp, 0.dp)
                         .constrainAs(description) {
                             top.linkTo(storageDescription.bottom)
                             start.linkTo(parent.start)
-                        }
+                        },
+                    textAlign = TextAlign.Justify
                 )
 
                 Text(

@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.example.raktarappjustui1.data.Group
+import com.example.raktarappjustui1.data.Item
 import com.example.raktarappjustui1.ui.theme.RaktarAppJustUi1Theme
 import com.example.raktarappjustui1.ui.theme.Shapes
 
@@ -196,13 +198,22 @@ fun Items(
 fun GroupDetailPreview() {
     RaktarAppJustUi1Theme {
         val elem1 = Item(
-            name = "elem1"
+            name = "elem1",
+            category = "kábel",
+            quantityUnit = "m",
+            quantity = 0.0
         )
         val elem2 = Item(
-            name = "elem2"
+            name = "elem2",
+            category = "kábel",
+            quantityUnit = "m",
+            quantity = 0.0
         )
         val elem3 = Item(
-            name = "elem3"
+            name = "elem3",
+            category = "kábel",
+            quantityUnit = "m",
+            quantity = 0.0
         )
         val group1 = Group(
             number = 1111,
@@ -220,12 +231,3 @@ fun GroupDetailPreview() {
         GroupDetail(mutableListOf(group1, group2, group3, group1, group2, group3, group1, group2, group3))
     }
 }
-
-data class Group(
-    var number: Int,
-    var items: List<Item>
-)
-
-data class Item(
-    var name: String
-)
