@@ -1,6 +1,7 @@
 package com.example.raktarappjustui1
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -30,70 +31,61 @@ fun GroupDetail(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.background)
+            .padding(12.dp, 10.dp, 12.dp, 0.dp)
     ) {
-        TopAppBar(
-            title = { Text(text = "Csoport") }
-        )
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(12.dp, 10.dp, 12.dp, 0.dp)
+        ConstraintLayout(
+            modifier = Modifier.fillMaxSize()
         ) {
-            ConstraintLayout(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                val (
-                    item,
-                    itemGroup,
-                    items,
-                    group
-                ) = createRefs()
+            val (
+                item,
+                itemGroup,
+                items,
+                group
+            ) = createRefs()
 
-                Text(
-                    buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = Color.Gray)) {
-                            append("Termékcsoport")
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(5.dp, 0.dp, 0.dp, 0.dp)
-                        .constrainAs(itemGroup) {
-                            top.linkTo(item.bottom)
-                            start.linkTo(parent.start)
-                        }
-                )
-                Text(
-                    buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold)) {
-                            append("kábel")
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(5.dp, 0.dp, 0.dp, 0.dp)
-                        .constrainAs(items) {
-                            top.linkTo(itemGroup.bottom)
-                            start.linkTo(parent.start)
-                        }
-                )
-
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(0.dp, 0.dp, 0.dp, 15.dp)
-                        .constrainAs(group) {
-                            top.linkTo(items.bottom)
-                            start.linkTo(parent.start)
-                            bottom.linkTo(parent.bottom)
-                            end.linkTo(parent.end)
-                            height = Dimension.fillToConstraints
-                            width = Dimension.fillToConstraints
-                        }
-                ) {
-                    itemsIndexed(groups) { _, groups ->
-                        Groups(
-                            group = groups
-                        )
+            Text(
+                buildAnnotatedString {
+                    withStyle(style = SpanStyle(color = Color.Gray)) {
+                        append("Termékcsoport")
                     }
+                },
+                modifier = Modifier
+                    .padding(5.dp, 0.dp, 0.dp, 0.dp)
+                    .constrainAs(itemGroup) {
+                        top.linkTo(item.bottom)
+                        start.linkTo(parent.start)
+                    }
+            )
+            Text(
+                buildAnnotatedString {
+                    withStyle(style = SpanStyle(color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold)) {
+                        append("kábel")
+                    }
+                },
+                modifier = Modifier
+                    .padding(5.dp, 0.dp, 0.dp, 0.dp)
+                    .constrainAs(items) {
+                        top.linkTo(itemGroup.bottom)
+                        start.linkTo(parent.start)
+                    }
+            )
+
+            LazyColumn(
+                modifier = Modifier
+                    .padding(0.dp, 0.dp, 0.dp, 15.dp)
+                    .constrainAs(group) {
+                        top.linkTo(items.bottom)
+                        start.linkTo(parent.start)
+                        bottom.linkTo(parent.bottom)
+                        end.linkTo(parent.end)
+                        height = Dimension.fillToConstraints
+                        width = Dimension.fillToConstraints
+                    }
+            ) {
+                itemsIndexed(groups) { _, groups ->
+                    Groups(
+                        group = groups
+                    )
                 }
             }
         }
@@ -164,7 +156,11 @@ fun Groups(
         ) {
             itemsIndexed(group.items) { _, item ->
                 Items(
-                    item = item
+                    item = item,
+                    onClicked = {
+                        //TODO
+                        /*::onItemSelected*/
+                    }
                 )
             }
         }
@@ -173,11 +169,13 @@ fun Groups(
 
 @Composable
 fun Items(
-    item: Item
+    item: Item,
+    onClicked: (Item) -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
+            .clickable(onClick = { onClicked(item) })
             .height(IntrinsicSize.Min)
             .padding(all = 1.dp)
             .background(Color.LightGray, Shapes.small)

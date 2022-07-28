@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.example.raktarappjustui1.data.Group
 import com.example.raktarappjustui1.data.Item
 import com.example.raktarappjustui1.ui.theme.RaktarAppJustUi1Theme
 import com.example.raktarappjustui1.ui.theme.Shapes
@@ -23,6 +24,8 @@ import com.example.raktarappjustui1.ui.theme.Shapes
 fun List(
     items: List<Item>
 ) {
+    var showDetails by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -47,7 +50,7 @@ fun List(
                     buttons,
                     list
                 ) = createRefs()
-                var ownerSwitchState by remember { mutableStateOf(false) }
+                var typeSwitchState by remember { mutableStateOf(false) }
 
                 var text by remember { mutableStateOf("") }
                 var showMenu by remember { mutableStateOf(false) }
@@ -57,7 +60,10 @@ fun List(
                     onValueChange = { text = it },
                     leadingIcon = {
                         IconButton(
-                            onClick = { }
+                            onClick = {
+                                //Search
+                                //TODO
+                            }
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_baseline_search_24),
@@ -97,28 +103,36 @@ fun List(
                         onDismissRequest = { showMenu = false }
                     ) {
                         DropdownMenuItem(
-                            onClick = { },
+                            onClick = {
+                                //TODO
+                            },
                             modifier = Modifier.height(30.dp)
                         ) {
                             Text(text = "Név")
                         }
                         Divider(color = Color.LightGray, thickness = 1.dp)
                         DropdownMenuItem(
-                            onClick = { },
+                            onClick = {
+                                //TODO
+                            },
                             modifier = Modifier.height(30.dp)
                         ) {
                             Text(text = "Darabszám")
                         }
                         Divider(color = Color.LightGray, thickness = 1.dp)
                         DropdownMenuItem(
-                            onClick = { },
+                            onClick = {
+                                //TODO
+                            },
                             modifier = Modifier.height(30.dp)
                         ) {
                             Text(text = "Alacsony készlet")
                         }
                         Divider(color = Color.LightGray, thickness = 1.dp)
                         DropdownMenuItem(
-                            onClick = { },
+                            onClick = {
+                                //TODO
+                            },
                             modifier = Modifier.height(30.dp)
                         ) {
                             Text(text = "Készleten")
@@ -139,32 +153,87 @@ fun List(
                     SegmentedControlTwoWaySwitch(
                         "Termék",
                         "Csoport",
-                        ownerSwitchState
-                    ) { ownerSwitchState = it }
+                        typeSwitchState
+                    ) { typeSwitchState = it }
                 }
 
-
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(0.dp, 0.dp, 0.dp, 15.dp)
-                        .constrainAs(list) {
-                            top.linkTo(buttons.bottom)
-                            start.linkTo(parent.start)
-                            bottom.linkTo(parent.bottom)
-                            end.linkTo(parent.end)
-                            height = Dimension.fillToConstraints
-                            width = Dimension.fillToConstraints
+                if (!typeSwitchState) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(0.dp, 0.dp, 0.dp, 15.dp)
+                            .constrainAs(list) {
+                                top.linkTo(buttons.bottom)
+                                start.linkTo(parent.start)
+                                bottom.linkTo(parent.bottom)
+                                end.linkTo(parent.end)
+                                height = Dimension.fillToConstraints
+                                width = Dimension.fillToConstraints
+                            }
+                    ) {
+                        itemsIndexed(items) { _, item ->
+                            ListItem(
+                                item = item,
+                                onClicked = {
+                                    //TODO
+                                    /*::onItemSelected*/
+                                    showDetails = !showDetails
+                                }
+                            )
                         }
-                ) {
-                    itemsIndexed(items) { _, item ->
-                        ListItem(
-                            item = item,
-                            onClicked = { /*::onStorageSelected*/ }
-                        )
+                    }
+                }
+                else if(typeSwitchState){
+                    val elem1 = Item(
+                        name = "elem1",
+                        category = "kábel",
+                        quantityUnit = "m",
+                        quantity = 0.0
+                    )
+                    val elem2 = Item(
+                        name = "elem2",
+                        category = "kábel",
+                        quantityUnit = "m",
+                        quantity = 0.0
+                    )
+                    val elem3 = Item(
+                        name = "elem3",
+                        category = "kábel",
+                        quantityUnit = "m",
+                        quantity = 0.0
+                    )
+                    val group1 = Group(
+                        number = 1111,
+                        items = mutableListOf(elem1, elem2, elem3, elem1, elem2)
+                    )
+                    val group2 = Group(
+                        number = 1112,
+                        items = mutableListOf(elem1, elem2, elem3)
+                    )
+                    val group3 = Group(
+                        number = 1113,
+                        items = mutableListOf(elem1, elem2, elem3)
+                    )
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .constrainAs(list) {
+                                top.linkTo(buttons.bottom)
+                                start.linkTo(parent.start)
+                                bottom.linkTo(parent.bottom)
+                                end.linkTo(parent.end)
+                                height = Dimension.fillToConstraints
+                                width = Dimension.fillToConstraints
+                            }
+                    ) {
+                        GroupDetail(mutableListOf(group1, group2, group3))
                     }
                 }
             }
         }
+    }
+    if(showDetails) {
+        ProductDetail()
     }
 }
 
@@ -192,55 +261,6 @@ fun ListItem(
         }
     }
 }
-
-@Composable
-fun SegmentedControlTwoWaySwitch(text1: String, text2: String, switchState: Boolean, onValueChange: (Boolean) -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
-        Button(
-            content = {
-                Text(
-                    text = text1,
-                )
-            },
-            onClick = {
-                onValueChange(false)
-            },
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = if (!switchState)
-                    MaterialTheme.colors.primary
-                else Color.LightGray
-            ),
-            modifier = Modifier
-                .weight(1f)
-                .padding(2.dp, 0.dp)
-        )
-
-        Button(
-            content = {
-                Text(
-                    text = text2,
-                )
-            },
-            onClick = {
-                onValueChange(true)
-            },
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = if (switchState)
-                    MaterialTheme.colors.primary
-                else Color.LightGray
-            ),
-            modifier = Modifier
-                .weight(1f)
-                .padding(2.dp, 0.dp)
-        )
-
-    }
-
-}
-
 
 @Preview
 @Composable

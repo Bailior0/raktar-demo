@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
+import com.example.raktarappjustui1.nav.MainScreenView
 import com.example.raktarappjustui1.ui.theme.RaktarAppJustUi1Theme
 
 class MainActivity : ComponentActivity() {
@@ -18,10 +19,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    //Account(worker =)
-                    //StorageDetail(storage = )
-                    //GroupDetail(groups = )
-                    //List(items = )
+                    MainScreenView()
                 }
             }
         }

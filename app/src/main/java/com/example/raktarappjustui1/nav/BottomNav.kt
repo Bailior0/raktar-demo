@@ -1,8 +1,5 @@
 package com.example.raktarappjustui1.nav
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
@@ -20,21 +17,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.raktarappjustui1.Account
+import com.example.raktarappjustui1.NewItem
+import com.example.raktarappjustui1.Statistics
 import com.example.raktarappjustui1.data.Item
 import com.example.raktarappjustui1.data.Storage
 import com.example.raktarappjustui1.data.Worker
 import com.example.raktarappjustui1.ui.theme.Teal200
-
-class BottomNavActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            MainScreenView()
-        }
-    }
-}
-
+import com.google.accompanist.pager.ExperimentalPagerApi
 
 @Composable
 fun MainScreenView(){
@@ -86,6 +75,7 @@ fun BottomNavigation(navController: NavController) {
     }
 }
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun NavigationGraph(navController: NavHostController) {
     NavHost(navController, startDestination = BottomNavItem.List.screen_route) {
@@ -109,14 +99,13 @@ fun NavigationGraph(navController: NavHostController) {
                 quantity = 0.0
             )
 
-            com.example.raktarappjustui1.List( mutableListOf(elem1, elem2, elem3 )
-            )
+            com.example.raktarappjustui1.List( mutableListOf(elem1, elem2, elem3 ) )
         }
         composable(BottomNavItem.Import.screen_route) {
-            ImportScreen()
+            NewItem()
         }
         composable(BottomNavItem.Stats.screen_route) {
-            StatsScreen()
+            Statistics()
         }
         composable(BottomNavItem.Account.screen_route) {
             val worker = Worker(

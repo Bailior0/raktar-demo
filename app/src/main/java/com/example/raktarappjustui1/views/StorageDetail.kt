@@ -31,7 +31,6 @@ fun StorageDetail(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.background)
     ) {
         TopAppBar(
             title = { Text(text = "Raktár") }
@@ -40,7 +39,8 @@ fun StorageDetail(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp, 10.dp, 12.dp, 0.dp)
+                .background(MaterialTheme.colors.background)
+                .padding(12.dp, 10.dp, 12.dp, 55.dp)
         ) {
             ConstraintLayout(
                 modifier = Modifier.fillMaxSize()

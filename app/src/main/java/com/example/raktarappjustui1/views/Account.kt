@@ -26,12 +26,14 @@ import com.example.raktarappjustui1.data.Storage
 import com.example.raktarappjustui1.data.Worker
 import com.example.raktarappjustui1.ui.theme.RaktarAppJustUi1Theme
 import com.example.raktarappjustui1.ui.theme.Shapes
+import com.example.raktarappjustui1.ui.theme.Teal200
 
 @Composable
 fun Account(
     worker: Worker
 ) {
     val context = LocalContext.current
+    var showDetails by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -45,7 +47,7 @@ fun Account(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp, 10.dp, 12.dp, 30.dp)
+                .padding(12.dp, 10.dp, 12.dp, 40.dp)
         ) {
             ConstraintLayout(
                 modifier = Modifier.fillMaxSize()
@@ -61,6 +63,8 @@ fun Account(
                     storages,
                     button
                 ) = createRefs()
+
+
 
                 IconButton(
                     onClick = { },
@@ -166,7 +170,12 @@ fun Account(
                     itemsIndexed(worker.storages) { _, storage ->
                         StorageItem(
                             storage = storage,
-                            onClicked = { /*::onStorageSelected*/ }
+                            onClicked = {
+                                //TODO
+                                /*::onStorageSelected*/
+                                //StorageDetail(storage)
+                                showDetails = !showDetails
+                            }
                         )
                     }
                 }
@@ -196,6 +205,37 @@ fun Account(
             }
         }
     }
+    if(showDetails) {
+        val storage = Storage(
+            name = "Raktár1",
+            address = "1117 Budapest\nGábor Dénes u. 4\nInfopark C épület",
+            size = 1234.0,
+            description = "Szeretnénk felhívni a figyelmet, hogy a határidőkre a lehető legnagyobb körültekintéssel figyeljenek oda, mert határidőn túli pályázatot nem tudunk elfogadni!",
+            workers = mutableListOf()
+        )
+        val worker1 = Worker(
+            name = "Raktáros Réka",
+            email = "raktaros.reka@raktar.hu",
+            phoneNumber = "+36 10 111-1111",
+            storages = mutableListOf(storage)
+        )
+        val worker2 = Worker(
+            name = "Raktáros Léna",
+            email = "raktaros.reka@raktar.hu",
+            phoneNumber = "+36 10 111-1111",
+            storages = mutableListOf(storage)
+        )
+        val worker3 = Worker(
+            name = "Raktáros Béla",
+            email = "raktaros.reka@raktar.hu",
+            phoneNumber = "+36 10 111-1111",
+            storages = mutableListOf(storage)
+        )
+
+        storage.workers = mutableListOf(worker1, worker2, worker3, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2)
+
+        StorageDetail(storage)
+    }
 }
 
 @Composable
@@ -209,12 +249,13 @@ fun StorageItem(
             .clickable(onClick = { onClicked(storage) })
             .height(IntrinsicSize.Min)
             .padding(all = 1.dp)
-            .background(Color.LightGray, Shapes.small)
+            .background(Teal200, Shapes.small)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
                 .padding(all = 5.dp),
         ) {
             Text(
