@@ -21,6 +21,7 @@ class MainActivity : ComponentActivity() {
                     //Account(worker =)
                     //StorageDetail(storage = )
                     //GroupDetail(groups = )
+                    //List(items = )
                 }
             }
         }
