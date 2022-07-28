@@ -45,7 +45,7 @@ fun Account(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp, 10.dp, 12.dp, 0.dp)
+                .padding(12.dp, 10.dp, 12.dp, 30.dp)
         ) {
             ConstraintLayout(
                 modifier = Modifier.fillMaxSize()

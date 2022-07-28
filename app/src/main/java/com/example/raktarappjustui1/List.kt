@@ -35,7 +35,7 @@ fun List(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp, 10.dp, 12.dp, 0.dp)
+                .padding(12.dp, 10.dp, 12.dp, 55.dp)
         ) {
             ConstraintLayout(
                 modifier = Modifier.fillMaxSize()
@@ -265,6 +265,6 @@ fun ListPreview() {
             quantity = 0.0
         )
 
-        List(mutableListOf(elem1, elem2, elem3))
+        List(mutableListOf(elem1, elem2, elem3, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2))
     }
 }

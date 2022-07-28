@@ -19,6 +19,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.raktarappjustui1.Account
+import com.example.raktarappjustui1.data.Item
+import com.example.raktarappjustui1.data.Storage
+import com.example.raktarappjustui1.data.Worker
 import com.example.raktarappjustui1.ui.theme.Teal200
 
 class BottomNavActivity : AppCompatActivity() {
@@ -86,7 +90,27 @@ fun BottomNavigation(navController: NavController) {
 fun NavigationGraph(navController: NavHostController) {
     NavHost(navController, startDestination = BottomNavItem.List.screen_route) {
         composable(BottomNavItem.List.screen_route) {
-            ListScreen()
+            val elem1 = Item(
+                name = "elem1",
+                category = "kábel",
+                quantityUnit = "m",
+                quantity = 0.0
+            )
+            val elem2 = Item(
+                name = "elem2",
+                category = "kábel",
+                quantityUnit = "m",
+                quantity = 0.0
+            )
+            val elem3 = Item(
+                name = "elem3",
+                category = "kábel",
+                quantityUnit = "m",
+                quantity = 0.0
+            )
+
+            com.example.raktarappjustui1.List( mutableListOf(elem1, elem2, elem3 )
+            )
         }
         composable(BottomNavItem.Import.screen_route) {
             ImportScreen()
@@ -95,7 +119,36 @@ fun NavigationGraph(navController: NavHostController) {
             StatsScreen()
         }
         composable(BottomNavItem.Account.screen_route) {
-            AccountScreen()
+            val worker = Worker(
+                name = "Raktáros Réka",
+                email = "raktaros.reka@raktar.hu",
+                phoneNumber = "+36 10 111-1111",
+                storages = mutableListOf()
+            )
+            val storage1 = Storage(
+                name = "Raktár1",
+                address = "1117 Budapest",
+                size = 1234.0,
+                description = "Raktár leírása",
+                workers = mutableListOf(worker)
+            )
+            val storage2 = Storage(
+                name = "Raktár2",
+                address = "1117 Budapest",
+                size = 1234.0,
+                description = "Raktár leírása",
+                workers = mutableListOf(worker)
+            )
+            val storage3 = Storage(
+                name = "Raktár3",
+                address = "1117 Budapest",
+                size = 1234.0,
+                description = "Raktár leírása",
+                workers = mutableListOf(worker)
+            )
+            worker.storages = mutableListOf(storage1, storage2, storage3)
+
+            Account(worker)
         }
     }
 }
