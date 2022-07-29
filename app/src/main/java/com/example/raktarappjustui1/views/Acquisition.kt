@@ -3,13 +3,17 @@ package com.example.raktarappjustui1
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 
@@ -23,84 +27,132 @@ fun Acquisition() {
             .background(MaterialTheme.colors.background)
     ) {
         TopAppBar(
-            title = { Text(text = "Bevételezés") }
+            title = { Text(text = "Beszerzés") }
         )
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(12.dp, 25.dp, 12.dp, 0.dp)
+                .padding(12.dp, 25.dp, 12.dp, 100.dp)
         ) {
             ConstraintLayout(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
                 val (
-                    name,
-                    group,
+                    product,
+                    warehouse,
                     quantitySwitch,
                     quantity,
+                    price,
                     date,
                     ownerSwitch,
                     button
                 ) = createRefs()
 
-                var nameInput by remember { mutableStateOf("") }
-                var groupInput by remember { mutableStateOf("") }
+                var productInput by remember { mutableStateOf("Termék") }
+                var warehouseInput by remember { mutableStateOf("Raktár") }
                 var quantityInput by remember { mutableStateOf("") }
                 var dateInput by remember { mutableStateOf("") }
+                var priceInput by remember { mutableStateOf("") }
 
                 var ownerSwitchState by remember { mutableStateOf(false) }
                 var quantitySwitchState by remember { mutableStateOf(false) }
 
                 var datePickerState by remember { mutableStateOf(false) }
 
-                OutlinedTextField(
-                    value = nameInput,
-                    onValueChange = { nameInput = it },
-                    singleLine = true,
-                    placeholder = {
-                        Text(
-                            text = "Terméknév",
-                            color = Color.Gray
-                        )
-                    },
+                ConstraintLayout(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 2.dp)
-                        .constrainAs(name) {
+                        .constrainAs(product) {
                             top.linkTo(parent.top)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                         }
-                )
+                ) {
+                    val (text, picker) = createRefs()
 
-                OutlinedTextField(
-                    value = groupInput,
-                    onValueChange = { groupInput = it },
-                    singleLine = true,
-                    placeholder = {
-                        Text(
-                            text = "Termékcsoport",
-                            color = Color.Gray
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(0.dp, 2.dp)
-                        .constrainAs(group) {
-                            top.linkTo(name.bottom)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        }
-                )
+                    Text(
+                        text = productInput,
+                        color = Color.Gray,
+                        modifier = Modifier
+                            .width((LocalConfiguration.current.screenWidthDp - 150).dp)
+                            .constrainAs(text) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                start.linkTo(parent.start)
+                            }
+                    )
+
+                    Button(
+                        content = {
+                            Text(text = "Választ")
+
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_baseline_chevron_right_24),
+                                contentDescription = null
+                            )
+                        },
+                        onClick = { /*TODO*/ },
+                        modifier = Modifier
+                            .constrainAs(picker) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                end.linkTo(parent.end)
+                            }
+                    )
+                }
+
+                ConstraintLayout(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(0.dp, 2.dp)
+                            .constrainAs(warehouse) {
+                                top.linkTo(product.bottom)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                            }
+                        ) {
+                    val (text, picker) = createRefs()
+
+                    Text(
+                        text = warehouseInput,
+                        color = Color.Gray,
+                        modifier = Modifier
+                            .width((LocalConfiguration.current.screenWidthDp - 150).dp)
+                            .constrainAs(text) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                start.linkTo(parent.start)
+                            }
+                    )
+
+                    Button(
+                        content = {
+                            Text(text = "Választ")
+
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_baseline_chevron_right_24),
+                                contentDescription = null
+                            )
+                        },
+                        onClick = { /*TODO*/ },
+                        modifier = Modifier
+                            .constrainAs(picker) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                end.linkTo(parent.end)
+                            }
+                    )
+                }
 
                 Box(
                     modifier = Modifier
                         .padding(5.dp, 25.dp, 0.dp, 0.dp)
                         .constrainAs(quantitySwitch) {
-                            top.linkTo(group.bottom)
+                            top.linkTo(warehouse.bottom)
                             start.linkTo(parent.start)
                         }
                 ) {
@@ -117,6 +169,7 @@ fun Acquisition() {
                             color = Color.Gray
                         )
                     },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 2.dp)
@@ -127,13 +180,32 @@ fun Acquisition() {
                         }
                 )
 
+                OutlinedTextField(
+                    value = priceInput,
+                    onValueChange = { priceInput = it },
+                    singleLine = true,
+                    placeholder = {
+                        Text(
+                            text = "Beszerzési ár",
+                            color = Color.Gray
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 2.dp)
+                        .constrainAs(price) {
+                            top.linkTo(quantity.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        }
+                )
 
                 ConstraintLayout(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(5.dp, 25.dp, 5.dp, 0.dp)
                         .constrainAs(date) {
-                            top.linkTo(quantity.bottom)
+                            top.linkTo(price.bottom)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                         }
@@ -188,7 +260,7 @@ fun Acquisition() {
                 Button(
                     content = {
                         Text(
-                            text = "Bevételez",
+                            text = "Beszerez",
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
                                 .padding(25.dp, 0.dp)
@@ -196,7 +268,7 @@ fun Acquisition() {
                     },
                     onClick = {
                         //TODO
-                        Toast.makeText(context, "Bevételezés", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Beszerez", Toast.LENGTH_LONG).show()
                     },
                     modifier = Modifier
                         .scale(2f)

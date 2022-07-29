@@ -36,7 +36,7 @@ fun ComboBox(
                     painter = painterResource(
                         id = R.drawable.ic_baseline_keyboard_arrow_down_24
                     ),
-                    contentDescription = null,
+                    contentDescription = null
                 )
             }
         },
