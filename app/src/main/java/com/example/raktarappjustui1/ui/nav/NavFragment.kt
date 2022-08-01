@@ -59,7 +59,7 @@ class NavFragment: RainbowCakeFragment<NavViewState, NavViewModel>() {
                 ) {
                     when (viewState) {
                         is Loading -> FullScreenLoading()
-                        is NavContent -> MainScreenView(childFragmentManager, listFragment, importFragment, statsFragment, accountFragment)
+                        is NavContent -> MainScreenView(parentFragmentManager, listFragment, importFragment, statsFragment, accountFragment)
                     }.exhaustive
                 }
             }

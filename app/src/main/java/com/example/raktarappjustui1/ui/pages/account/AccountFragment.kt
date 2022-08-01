@@ -8,8 +8,10 @@ import androidx.compose.ui.platform.ComposeView
 import co.zsmb.rainbowcake.base.RainbowCakeFragment
 import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
+import co.zsmb.rainbowcake.navigation.navigator
 import com.example.raktarappjustui1.data.Storage
 import com.example.raktarappjustui1.data.Worker
+import com.example.raktarappjustui1.ui.pages.account.storage.StorageFragment
 import com.example.raktarappjustui1.ui.views.Account
 import com.example.raktarappjustui1.ui.views.helpers.FullScreenLoading
 import dagger.hilt.android.AndroidEntryPoint
@@ -66,9 +68,16 @@ class AccountFragment : RainbowCakeFragment<AccountViewState, AccountViewModel>(
                     )
                     worker.storages = mutableListOf(storage1, storage2, storage3)
 
-                    Account(worker)
+                    Account(
+                        worker = worker,
+                        onClicked = ::onStorageSelected
+                    )
                 }
             }.exhaustive
         }
+    }
+
+    private fun onStorageSelected(storage: Storage) {
+        navigator?.add(StorageFragment.newInstance(storage))
     }
 }

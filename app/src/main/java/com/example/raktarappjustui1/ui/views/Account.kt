@@ -17,7 +17,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -25,13 +24,13 @@ import androidx.constraintlayout.compose.Dimension
 import com.example.raktarappjustui1.R
 import com.example.raktarappjustui1.data.Storage
 import com.example.raktarappjustui1.data.Worker
-import com.example.raktarappjustui1.ui.views.theme.RaktarAppJustUi1Theme
 import com.example.raktarappjustui1.ui.views.theme.Shapes
 import com.example.raktarappjustui1.ui.views.theme.Teal200
 
 @Composable
 fun Account(
-    worker: Worker
+    worker: Worker,
+    onClicked: (Storage) -> Unit
 ) {
     val context = LocalContext.current
     var showDetails by remember { mutableStateOf(false) }
@@ -172,10 +171,7 @@ fun Account(
                         StorageItem(
                             storage = storage,
                             onClicked = {
-                                //TODO
-                                /*::onStorageSelected*/
-                                //StorageDetail(storage)
-                                showDetails = !showDetails
+                                onClicked(storage)
                             }
                         )
                     }
@@ -205,37 +201,6 @@ fun Account(
                 )
             }
         }
-    }
-    if(showDetails) {
-        val storage = Storage(
-            name = "Raktár1",
-            address = "1117 Budapest\nGábor Dénes u. 4\nInfopark C épület",
-            size = 1234.0,
-            description = "Szeretnénk felhívni a figyelmet, hogy a határidőkre a lehető legnagyobb körültekintéssel figyeljenek oda, mert határidőn túli pályázatot nem tudunk elfogadni!",
-            workers = mutableListOf()
-        )
-        val worker1 = Worker(
-            name = "Raktáros Réka",
-            email = "raktaros.reka@raktar.hu",
-            phoneNumber = "+36 10 111-1111",
-            storages = mutableListOf(storage)
-        )
-        val worker2 = Worker(
-            name = "Raktáros Léna",
-            email = "raktaros.reka@raktar.hu",
-            phoneNumber = "+36 10 111-1111",
-            storages = mutableListOf(storage)
-        )
-        val worker3 = Worker(
-            name = "Raktáros Béla",
-            email = "raktaros.reka@raktar.hu",
-            phoneNumber = "+36 10 111-1111",
-            storages = mutableListOf(storage)
-        )
-
-        storage.workers = mutableListOf(worker1, worker2, worker3, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2)
-
-        StorageDetail(storage)
     }
 }
 
