@@ -1,27 +1,18 @@
 package com.example.raktarappjustui1
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.ui.Modifier
-import com.example.raktarappjustui1.nav.MainScreenView
-import com.example.raktarappjustui1.ui.theme.RaktarAppJustUi1Theme
+import co.zsmb.rainbowcake.navigation.SimpleNavActivity
+import com.example.raktarappjustui1.ui.nav.NavFragment
+import dagger.hilt.android.AndroidEntryPoint
 
-class MainActivity : ComponentActivity() {
+@AndroidEntryPoint
+class MainActivity : SimpleNavActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            RaktarAppJustUi1Theme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    MainScreenView()
-                }
-            }
+
+        if (savedInstanceState == null) {
+            navigator.add(NavFragment())
         }
     }
 }
