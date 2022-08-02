@@ -12,7 +12,7 @@ android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.example.raktarappjustui1"
+        applicationId "com.example.raktardemo"
         minSdk 23
         targetSdk 32
         versionCode 1
