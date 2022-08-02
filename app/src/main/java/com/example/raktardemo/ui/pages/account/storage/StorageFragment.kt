@@ -10,7 +10,7 @@ import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.extensions.applyArgs
 import co.zsmb.rainbowcake.navigation.navigator
-import com.example.raktardemo.data.Storage
+import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.ui.nav.NavFragment
 import com.example.raktardemo.ui.views.StorageDetail
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading

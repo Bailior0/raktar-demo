@@ -26,7 +26,7 @@ class NavFragment: RainbowCakeFragment<NavViewState, NavViewModel>() {
     override fun provideViewModel() = getViewModelFromFactory()
 
     private lateinit var listFragment: ListFragment
-    private lateinit var  importFragment: ImportFragment
+    private lateinit var importFragment: ImportFragment
     private lateinit var statsFragment: StatsFragment
     private lateinit var accountFragment: AccountFragment
 

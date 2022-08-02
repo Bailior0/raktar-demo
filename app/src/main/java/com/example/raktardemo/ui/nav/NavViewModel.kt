@@ -4,7 +4,7 @@ import co.zsmb.rainbowcake.base.RainbowCakeViewModel
 
 class NavViewModel : RainbowCakeViewModel<NavViewState>(Loading) {
 
-    fun setNav() = execute {
+    fun setNav() {
         viewState = NavContent(false)
     }
 }

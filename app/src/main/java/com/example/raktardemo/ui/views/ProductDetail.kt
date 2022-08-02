@@ -19,12 +19,12 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.R
-import com.example.raktardemo.data.Item
+import com.example.raktardemo.data.model.Item
 import com.example.raktardemo.ui.views.helpers.ListMaker
 
 @Composable
 fun ProductDetail(
-    item: Item,
+    product: Item,
     onIconClick: () -> Unit = {},
     onReservationClick: () -> Unit = {},
     onAcquisitionClick: () -> Unit = {},
@@ -37,7 +37,7 @@ fun ProductDetail(
             .background(MaterialTheme.colors.background)
     ) {
         TopAppBar(
-            title = { Text(text = item.name) },
+            title = { Text(text = product.name) },
             navigationIcon = {
                 IconButton(
                     content = { Icon(painter = painterResource(id = R.drawable.baseline_arrow_back_24), contentDescription = null) },

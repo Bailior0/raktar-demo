@@ -1,6 +1,6 @@
 package com.example.raktardemo.ui.pages.list.reservation
 
-import com.example.raktardemo.data.Item
+import com.example.raktardemo.data.model.Item
 
 sealed class ReservationViewState
 

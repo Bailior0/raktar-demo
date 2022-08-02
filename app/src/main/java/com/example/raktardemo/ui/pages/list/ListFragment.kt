@@ -9,8 +9,10 @@ import co.zsmb.rainbowcake.base.RainbowCakeFragment
 import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.navigator
-import com.example.raktardemo.data.Group
-import com.example.raktardemo.data.Item
+import com.example.raktardemo.data.enums.PackageType
+import com.example.raktardemo.data.enums.QuantityUnit
+import com.example.raktardemo.data.model.Category
+import com.example.raktardemo.data.model.Item
 import com.example.raktardemo.ui.pages.list.detail.ItemDetailFragment
 import com.example.raktardemo.ui.pages.list.release.ReleaseFragment
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
@@ -40,22 +42,43 @@ class ListFragment : RainbowCakeFragment<ListViewState, ListViewModel>() {
                 is Loading -> FullScreenLoading()
                 is ListContent -> {
                     val elem1 = Item(
+                        id = "0",
                         name = "elem1",
-                        category = "kábel",
-                        quantityUnit = "m",
-                        quantity = 0.0
+                        category = Category("0", "kábel"),
+                        manufacturer = "Dolog.Kft",
+                        serialNumber = "0",
+                        type = PackageType.Package,
+                        quantityUnit = QuantityUnit.Meter,
+                        defaultPackageQuantity = 1.0,
+                        openable = false,
+                        defaultPurchasePrice = null,
+                        minimumStoredQuantity = null
                     )
                     val elem2 = Item(
+                        id = "0",
                         name = "elem2",
-                        category = "kábel",
-                        quantityUnit = "m",
-                        quantity = 0.0
+                        category = Category("0", "kábel"),
+                        manufacturer = "Dolog.Kft",
+                        serialNumber = "0",
+                        type = PackageType.Package,
+                        quantityUnit = QuantityUnit.Meter,
+                        defaultPackageQuantity = 1.0,
+                        openable = false,
+                        defaultPurchasePrice = null,
+                        minimumStoredQuantity = null
                     )
                     val elem3 = Item(
+                        id = "0",
                         name = "elem3",
-                        category = "kábel",
-                        quantityUnit = "m",
-                        quantity = 0.0
+                        category = Category("0", "kábel"),
+                        manufacturer = "Dolog.Kft",
+                        serialNumber = "0",
+                        type = PackageType.Package,
+                        quantityUnit = QuantityUnit.Meter,
+                        defaultPackageQuantity = 1.0,
+                        openable = false,
+                        defaultPurchasePrice = null,
+                        minimumStoredQuantity = null
                     )
                     val list = mutableListOf(elem1, elem2, elem3)
 
@@ -73,7 +96,7 @@ class ListFragment : RainbowCakeFragment<ListViewState, ListViewModel>() {
         navigator?.add(ItemDetailFragment.newInstance(item))
     }
 
-    private fun onReleaseSelected(group: Group) {
-        navigator?.add(ReleaseFragment.newInstance(group))
+    private fun onReleaseSelected(items: ArrayList<Item>) {
+        navigator?.add(ReleaseFragment.newInstance(items))
     }
 }

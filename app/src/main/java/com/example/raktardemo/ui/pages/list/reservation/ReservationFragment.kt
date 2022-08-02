@@ -10,7 +10,8 @@ import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.extensions.applyArgs
 import co.zsmb.rainbowcake.navigation.navigator
-import com.example.raktardemo.data.Item
+import com.example.raktardemo.data.model.Item
+import com.example.raktardemo.data.model.Reservation
 import com.example.raktardemo.ui.views.Reservation
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,10 +46,15 @@ class ReservationFragment : RainbowCakeFragment<ReservationViewState, Reservatio
             when (viewState) {
                 is Loading -> FullScreenLoading()
                 is ReservationContent -> Reservation(
-                    item = viewState.item!!,
-                    onIconClick = { navigator?.pop() }
+                    product = viewState.item!!,
+                    onIconClick = { navigator?.pop() },
+                    onReservationClick = ::onReservation
                 )
             }.exhaustive
         }
+    }
+
+    private fun onReservation(reservation: Reservation) {
+        //TODO
     }
 }

@@ -1,8 +1,7 @@
 package com.example.raktardemo.ui.pages.list.release
 
 import co.zsmb.rainbowcake.base.RainbowCakeViewModel
-import com.example.raktardemo.data.Group
-import com.example.raktardemo.data.Item
+import com.example.raktardemo.data.model.Item
 
 class ReleaseViewModel : RainbowCakeViewModel<ReleaseViewState>(Loading) {
 
@@ -10,7 +9,7 @@ class ReleaseViewModel : RainbowCakeViewModel<ReleaseViewState>(Loading) {
         viewState = ReleaseContent(item, false)
     }
 
-    fun setReleaseGroup(group: Group) {
+    fun setReleaseGroup(group: List<Item>) {
         viewState = ReleaseGroupContent(group, false)
     }
 }

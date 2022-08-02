@@ -15,8 +15,10 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.raktardemo.R
-import com.example.raktardemo.data.Group
-import com.example.raktardemo.data.Item
+import com.example.raktardemo.data.enums.PackageType
+import com.example.raktardemo.data.enums.QuantityUnit
+import com.example.raktardemo.data.model.Category
+import com.example.raktardemo.data.model.Item
 import com.example.raktardemo.ui.views.helpers.SegmentedControlTwoWaySwitch
 import com.example.raktardemo.ui.views.theme.Shapes
 
@@ -24,7 +26,7 @@ import com.example.raktardemo.ui.views.theme.Shapes
 fun List(
     items: List<Item>,
     onClicked: (Item) -> Unit,
-    onReleaseClicked: (Group) -> Unit
+    onReleaseClicked: (ArrayList<Item>) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -182,37 +184,47 @@ fun List(
                 }
                 else if(typeSwitchState){
                     val elem1 = Item(
+                        id = "0",
                         name = "elem1",
-                        category = "kábel",
-                        quantityUnit = "m",
-                        quantity = 0.0
+                        category = Category("0", "kábel"),
+                        manufacturer = "Dolog.Kft",
+                        serialNumber = "0",
+                        type = PackageType.Package,
+                        quantityUnit = QuantityUnit.Meter,
+                        defaultPackageQuantity = 1.0,
+                        openable = false,
+                        defaultPurchasePrice = null,
+                        minimumStoredQuantity = null
                     )
                     val elem2 = Item(
+                        id = "0",
                         name = "elem2",
-                        category = "kábel",
-                        quantityUnit = "m",
-                        quantity = 0.0
+                        category = Category("0", "kábel"),
+                        manufacturer = "Dolog.Kft",
+                        serialNumber = "0",
+                        type = PackageType.Package,
+                        quantityUnit = QuantityUnit.Meter,
+                        defaultPackageQuantity = 1.0,
+                        openable = false,
+                        defaultPurchasePrice = null,
+                        minimumStoredQuantity = null
                     )
                     val elem3 = Item(
+                        id = "0",
                         name = "elem3",
-                        category = "kábel",
-                        quantityUnit = "m",
-                        quantity = 0.0
+                        category = Category("0", "kábel"),
+                        manufacturer = "Dolog.Kft",
+                        serialNumber = "0",
+                        type = PackageType.Package,
+                        quantityUnit = QuantityUnit.Meter,
+                        defaultPackageQuantity = 1.0,
+                        openable = false,
+                        defaultPurchasePrice = null,
+                        minimumStoredQuantity = null
                     )
-                    val group1 = Group(
-                        number = 1111,
-                        items = mutableListOf(elem1, elem2, elem3, elem1, elem2)
-                    )
-                    val group2 = Group(
-                        number = 1112,
-                        items = mutableListOf(elem1, elem2, elem3)
-                    )
-                    val group3 = Group(
-                        number = 1113,
-                        items = mutableListOf(elem1, elem2, elem3)
-                    )
+                    val group = mutableListOf(elem1, elem2, elem3)
 
-                    val groups = mutableListOf(group1, group2, group3)
+                    val groups = mutableListOf(group, group, group)
 
                     Column(
                         modifier = Modifier

@@ -17,15 +17,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.example.raktardemo.data.Group
-import com.example.raktardemo.data.Item
+import com.example.raktardemo.data.model.Item
 import com.example.raktardemo.ui.views.theme.Shapes
 
 @Composable
 fun GroupDetail(
-    groups: List<Group>,
+    groups: List<List<Item>>,
     onClicked: (Item) -> Unit,
-    onReleaseClicked: (Group) -> Unit
+    onReleaseClicked: (ArrayList<Item>) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -96,9 +95,9 @@ fun GroupDetail(
 
 @Composable
 fun Groups(
-    group: Group,
+    group: List<Item>,
     onClicked: (Item) -> Unit,
-    onReleaseClicked: (Group) -> Unit
+    onReleaseClicked: (ArrayList<Item>) -> Unit
 ) {
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
@@ -117,7 +116,7 @@ fun Groups(
                 }
 
                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                    append(group.number.toString())
+                    append("1111")
                 }
             },
             modifier = Modifier
@@ -137,7 +136,7 @@ fun Groups(
                 )
             },
             onClick = {
-                onReleaseClicked(group)
+                onReleaseClicked(group as ArrayList<Item>)
             },
             modifier = Modifier
                 .height(28.dp)
@@ -158,7 +157,7 @@ fun Groups(
                 }
                 .height(110.dp)
         ) {
-            itemsIndexed(group.items) { _, item ->
+            itemsIndexed(group) { _, item ->
                 Items(
                     item = item,
                     onClicked = {

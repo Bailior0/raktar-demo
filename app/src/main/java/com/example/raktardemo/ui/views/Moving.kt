@@ -1,6 +1,5 @@
 package com.example.raktardemo.ui.views
 
-import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -10,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -22,17 +20,16 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.R
-import com.example.raktardemo.data.Item
+import com.example.raktardemo.data.model.Item
 import com.example.raktardemo.ui.views.helpers.SegmentedControlQuantitySwitch
 import com.example.raktardemo.ui.views.helpers.SegmentedControlTwoWaySwitch
 
 @Composable
 fun Moving(
-    item: Item,
-    onIconClick: () -> Unit = {}
+    product: Item,
+    onIconClick: () -> Unit = {},
+    onMovingClick: () -> Unit
 ) {
-    val context = LocalContext.current
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -308,7 +305,7 @@ fun Moving(
                     },
                     onClick = {
                         //TODO
-                        Toast.makeText(context, "Mozgatás", Toast.LENGTH_LONG).show()
+                        onMovingClick()
                     },
                     modifier = Modifier
                         .scale(2f)

@@ -1,6 +1,5 @@
 package com.example.raktardemo.ui.views
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -24,15 +23,31 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.R
-import com.example.raktardemo.data.Item
+import com.example.raktardemo.data.model.Item
+import com.example.raktardemo.data.model.Reservation
 import com.example.raktardemo.ui.views.helpers.DatePicker
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun Reservation(
-    item: Item,
-    onIconClick: () -> Unit = {}
+    product: Item,
+    onIconClick: () -> Unit = {},
+    onReservationClick: (Reservation) -> Unit
 ) {
     val context = LocalContext.current
+
+    val itemInput by remember { mutableStateOf("Termék") }
+    var quantityInput by remember { mutableStateOf("") }
+    var multiplierInput by remember { mutableStateOf("") }
+    var reservationGoalInput by remember { mutableStateOf("") }
+    var dateInput by remember { mutableStateOf("") }
+    var acquisitionInput by remember { mutableStateOf("Beszerzés") }
+
+    var datePickerState by remember { mutableStateOf(false) }
+
+    val available = 124
+    val unit = "db"
 
     Column(
         modifier = Modifier
@@ -69,17 +84,7 @@ fun Reservation(
                     button
                 ) = createRefs()
 
-                var itemInput by remember { mutableStateOf("Termék") }
-                var quantityInput by remember { mutableStateOf("") }
-                var multiplierInput by remember { mutableStateOf("") }
-                var reservationGoalInput by remember { mutableStateOf("") }
-                var dateInput by remember { mutableStateOf("") }
-                var acquisitionInput by remember { mutableStateOf("Beszerzés") }
 
-                var datePickerState by remember { mutableStateOf(false) }
-
-                var available = 124
-                var unit = "db"
 
                 ConstraintLayout(
                     modifier = Modifier
@@ -304,8 +309,17 @@ fun Reservation(
                         )
                     },
                     onClick = {
-                        //TODO
-                        Toast.makeText(context, "Foglal", Toast.LENGTH_LONG).show()
+                        onReservationClick(
+                            //TODO
+                            Reservation(
+                                reservationGoal = reservationGoalInput,
+                                reservationDate = Date(),
+                                reservationGoalDate = Date(),
+                                reservationQuantity = 0.0,
+                                cancelled = false,
+                                repeatAmount = 0
+                            )
+                        )
                     },
                     modifier = Modifier
                         .scale(2f)

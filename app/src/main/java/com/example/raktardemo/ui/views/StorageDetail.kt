@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.raktardemo.R
-import com.example.raktardemo.data.Storage
-import com.example.raktardemo.data.Worker
+import com.example.raktardemo.data.model.Storage
+import com.example.raktardemo.data.model.Worker
 
 @Composable
 fun StorageDetail(

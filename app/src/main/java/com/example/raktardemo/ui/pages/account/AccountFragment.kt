@@ -9,8 +9,8 @@ import co.zsmb.rainbowcake.base.RainbowCakeFragment
 import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.navigator
-import com.example.raktardemo.data.Storage
-import com.example.raktardemo.data.Worker
+import com.example.raktardemo.data.model.Storage
+import com.example.raktardemo.data.model.Worker
 import com.example.raktardemo.ui.pages.account.storage.StorageFragment
 import com.example.raktardemo.ui.views.Account
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
@@ -40,37 +40,48 @@ class AccountFragment : RainbowCakeFragment<AccountViewState, AccountViewModel>(
                 is Loading -> FullScreenLoading()
                 is AccountContent -> {
                     val worker = Worker(
+                        id = "0",
                         name = "Raktáros Réka",
                         email = "raktaros.reka@raktar.hu",
                         phoneNumber = "+36 10 111-1111",
                         storages = mutableListOf()
                     )
                     val storage1 = Storage(
+                        id = "0",
                         name = "Raktár1",
                         address = "1117 Budapest",
                         size = 1234.0,
                         description = "Raktár leírása",
-                        workers = mutableListOf(worker)
+                        workers = mutableListOf(worker),
+                        accountableWorker = "0",
+                        items = mutableListOf(null)
                     )
                     val storage2 = Storage(
+                        id = "0",
                         name = "Raktár2",
                         address = "1117 Budapest",
                         size = 1234.0,
                         description = "Raktár leírása",
-                        workers = mutableListOf(worker)
+                        workers = mutableListOf(worker),
+                        accountableWorker = "0",
+                        items = mutableListOf(null)
                     )
                     val storage3 = Storage(
+                        id = "0",
                         name = "Raktár3",
                         address = "1117 Budapest",
                         size = 1234.0,
                         description = "Raktár leírása",
-                        workers = mutableListOf(worker)
+                        workers = mutableListOf(worker),
+                        accountableWorker = "0",
+                        items = mutableListOf(null)
                     )
                     worker.storages = mutableListOf(storage1, storage2, storage3)
 
                     Account(
                         worker = worker,
-                        onClicked = ::onStorageSelected
+                        onClicked = ::onStorageSelected,
+                        onLogoutClick = ::onLogout
                     )
                 }
             }.exhaustive
@@ -79,5 +90,9 @@ class AccountFragment : RainbowCakeFragment<AccountViewState, AccountViewModel>(
 
     private fun onStorageSelected(storage: Storage) {
         navigator?.add(StorageFragment.newInstance(storage))
+    }
+
+    private fun onLogout() {
+        //TODO
     }
 }

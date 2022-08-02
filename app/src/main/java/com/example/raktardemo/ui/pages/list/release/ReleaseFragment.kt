@@ -10,8 +10,7 @@ import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.extensions.applyArgs
 import co.zsmb.rainbowcake.navigation.navigator
-import com.example.raktardemo.data.Group
-import com.example.raktardemo.data.Item
+import com.example.raktardemo.data.model.Item
 import com.example.raktardemo.ui.views.Release
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,16 +30,16 @@ class ReleaseFragment : RainbowCakeFragment<ReleaseViewState, ReleaseViewModel>(
             }
         }
 
-        fun newInstance(group: Group): ReleaseFragment {
+        fun newInstance(items: ArrayList<Item>): ReleaseFragment {
             return ReleaseFragment().applyArgs {
-                putParcelable(EXTRA_GROUP, group)
+                putParcelableArrayList(EXTRA_GROUP, items)
             }
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val item = arguments?.getParcelable<Item>(EXTRA_ITEM)
-        val group = arguments?.getParcelable<Group>(EXTRA_GROUP)
+        val group = arguments?.getParcelableArrayList<Item>(EXTRA_GROUP)
 
         if(item != null)
             viewModel.setRelease(item)
@@ -59,16 +58,22 @@ class ReleaseFragment : RainbowCakeFragment<ReleaseViewState, ReleaseViewModel>(
             when (viewState) {
                 is Loading -> FullScreenLoading()
                 is ReleaseContent -> Release(
-                    item = viewState.item!!,
-                    group = null,
-                    onIconClick = { navigator?.pop() }
+                    product = viewState.item!!,
+                    group = emptyList(),
+                    onIconClick = { navigator?.pop() },
+                    onReleaseClick = ::onRelease
                 )
                 is ReleaseGroupContent -> Release(
-                    item = null,
-                    group = viewState.group!!,
-                    onIconClick = { navigator?.pop() }
+                    product = null,
+                    group = viewState.group,
+                    onIconClick = { navigator?.pop() },
+                    onReleaseClick = ::onRelease
                 )
             }.exhaustive
         }
+    }
+
+    private fun onRelease() {
+        //TODO
     }
 }

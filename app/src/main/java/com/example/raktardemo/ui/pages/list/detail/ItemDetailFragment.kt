@@ -10,7 +10,7 @@ import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.extensions.applyArgs
 import co.zsmb.rainbowcake.navigation.navigator
-import com.example.raktardemo.data.Item
+import com.example.raktardemo.data.model.Item
 import com.example.raktardemo.ui.nav.NavFragment
 import com.example.raktardemo.ui.pages.list.acquisition.AcquisitionFragment
 import com.example.raktardemo.ui.pages.list.moving.MovingFragment
@@ -50,7 +50,7 @@ class ItemDetailFragment : RainbowCakeFragment<ItemDetailViewState, ItemDetailVi
             when (viewState) {
                 is Loading -> FullScreenLoading()
                 is ItemDetailLoaded -> ProductDetail(
-                    item = viewState.item!!,
+                    product = viewState.item!!,
                     onIconClick = { navigator?.popUntil(NavFragment::class) },
                     onReservationClick = { onReservationSelected(viewState.item!!) },
                     onAcquisitionClick = { onAcquisitionSelected(viewState.item!!) },

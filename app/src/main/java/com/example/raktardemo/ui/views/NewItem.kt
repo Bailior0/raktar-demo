@@ -1,6 +1,5 @@
 package com.example.raktardemo.ui.views
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -16,14 +15,26 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.raktardemo.data.enums.PackageType
+import com.example.raktardemo.data.enums.QuantityUnit
+import com.example.raktardemo.data.model.Category
+import com.example.raktardemo.data.model.Item
 import com.example.raktardemo.ui.views.helpers.ComboBox
 import com.example.raktardemo.ui.views.helpers.DatePicker
 import com.example.raktardemo.ui.views.helpers.SegmentedControlQuantitySwitch
 import com.example.raktardemo.ui.views.helpers.SegmentedControlTwoWaySwitch
 
 @Composable
-fun NewItem() {
+fun NewItem(
+    onAddClicked: (Item) -> Unit
+) {
     val context = LocalContext.current
+
+    var nameInput by remember { mutableStateOf("") }
+    var groupInput by remember { mutableStateOf("") }
+    var manufacturerInput by remember { mutableStateOf("") }
+    var serialInput by remember { mutableStateOf("") }
+    var defaultPriceInput by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -54,12 +65,6 @@ fun NewItem() {
                     serial,
                     defaultPrice,
                 ) = createRefs()
-
-                var nameInput by remember { mutableStateOf("") }
-                var groupInput by remember { mutableStateOf("") }
-                var manufacturerInput by remember { mutableStateOf("") }
-                var serialInput by remember { mutableStateOf("") }
-                var defaultPriceInput by remember { mutableStateOf("") }
 
                 Text(
                     text = "Termék adatok",
@@ -505,8 +510,22 @@ fun NewItem() {
                     )
                 },
                 onClick = {
-                    //TODO
-                    Toast.makeText(context, "Hozzáadás", Toast.LENGTH_LONG).show()
+                    onAddClicked(
+                        //TODO
+                        Item(
+                            id = "0",
+                            name = nameInput,
+                            category = Category("0", groupInput),
+                            manufacturer = manufacturerInput,
+                            serialNumber = serialInput,
+                            type = PackageType.Package,
+                            quantityUnit = QuantityUnit.Meter,
+                            defaultPackageQuantity = 1.0,
+                            openable = false,
+                            defaultPurchasePrice = defaultPriceInput.toDoubleOrNull(),
+                            minimumStoredQuantity = null
+                        )
+                    )
                 },
                 modifier = Modifier
                     .scale(2f)

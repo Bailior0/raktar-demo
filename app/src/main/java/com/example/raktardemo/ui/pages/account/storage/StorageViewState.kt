@@ -1,6 +1,6 @@
 package com.example.raktardemo.ui.pages.account.storage
 
-import com.example.raktardemo.data.Storage
+import com.example.raktardemo.data.model.Storage
 
 sealed class StorageViewState
 

@@ -1,6 +1,5 @@
 package com.example.raktardemo.ui.views
 
-import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -17,15 +16,16 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.R
-import com.example.raktardemo.data.Item
+import com.example.raktardemo.data.model.Item
 import com.example.raktardemo.ui.views.helpers.DatePicker
 import com.example.raktardemo.ui.views.helpers.SegmentedControlQuantitySwitch
 import com.example.raktardemo.ui.views.helpers.SegmentedControlTwoWaySwitch
 
 @Composable
 fun Acquisition(
-    item: Item,
-    onIconClick: () -> Unit = {}
+    product: Item,
+    onIconClick: () -> Unit = {},
+    onAcquisitionClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
 
@@ -280,10 +280,8 @@ fun Acquisition(
                                 .padding(25.dp, 0.dp)
                         )
                     },
-                    onClick = {
-                        //TODO
-                        Toast.makeText(context, "Beszerez", Toast.LENGTH_LONG).show()
-                    },
+                    //TODO
+                    onClick = onAcquisitionClick,
                     modifier = Modifier
                         .scale(2f)
                         .padding(0.dp, 25.dp, 0.dp, 0.dp)

@@ -1,7 +1,6 @@
 package com.example.raktardemo.ui.pages.list.release
 
-import com.example.raktardemo.data.Group
-import com.example.raktardemo.data.Item
+import com.example.raktardemo.data.model.Item
 
 sealed class ReleaseViewState
 
@@ -13,6 +12,6 @@ data class ReleaseContent (
 ) : ReleaseViewState()
 
 data class ReleaseGroupContent (
-    var group: Group? = null,
+    var group: List<Item?> = emptyList(),
     var isLoading: Boolean = true
 ) : ReleaseViewState()

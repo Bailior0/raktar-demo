@@ -10,7 +10,8 @@ import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.extensions.applyArgs
 import co.zsmb.rainbowcake.navigation.navigator
-import com.example.raktardemo.data.Item
+import com.example.raktardemo.data.model.Item
+import com.example.raktardemo.data.model.Reservation
 import com.example.raktardemo.ui.views.Acquisition
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,10 +46,15 @@ class AcquisitionFragment : RainbowCakeFragment<AcquisitionViewState, Acquisitio
             when (viewState) {
                 is Loading -> FullScreenLoading()
                 is AcquisitionContent -> Acquisition(
-                    item = viewState.item!!,
-                    onIconClick = { navigator?.pop() }
+                    product = viewState.item!!,
+                    onIconClick = { navigator?.pop() },
+                    onAcquisitionClick = ::onAcquisition
                 )
             }.exhaustive
         }
+    }
+
+    private fun onAcquisition() {
+        //TODO
     }
 }

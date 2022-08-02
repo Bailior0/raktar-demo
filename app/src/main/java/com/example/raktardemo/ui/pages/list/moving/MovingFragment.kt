@@ -10,7 +10,7 @@ import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.extensions.applyArgs
 import co.zsmb.rainbowcake.navigation.navigator
-import com.example.raktardemo.data.Item
+import com.example.raktardemo.data.model.Item
 import com.example.raktardemo.ui.views.Moving
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,10 +45,15 @@ class MovingFragment : RainbowCakeFragment<MovingViewState, MovingViewModel>() {
             when (viewState) {
                 is Loading -> FullScreenLoading()
                 is MovingContent -> Moving(
-                    item = viewState.item!!,
-                    onIconClick = { navigator?.pop() }
+                    product = viewState.item!!,
+                    onIconClick = { navigator?.pop() },
+                    onMovingClick = ::onMoving
                 )
             }.exhaustive
         }
+    }
+
+    private fun onMoving() {
+        //TODO
     }
 }

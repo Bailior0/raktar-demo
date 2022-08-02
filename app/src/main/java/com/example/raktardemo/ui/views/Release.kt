@@ -1,6 +1,5 @@
 package com.example.raktardemo.ui.views
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -25,16 +24,16 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.R
-import com.example.raktardemo.data.Group
-import com.example.raktardemo.data.Item
+import com.example.raktardemo.data.model.Item
 import com.example.raktardemo.ui.views.helpers.SegmentedControlQualitySwitch
 import com.example.raktardemo.ui.views.helpers.SegmentedControlQuantitySwitch
 
 @Composable
 fun Release(
-    item: Item?,
-    group: Group?,
-    onIconClick: () -> Unit = {}
+    product: Item?,
+    group: List<Item?>,
+    onIconClick: () -> Unit = {},
+    onReleaseClick: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -242,10 +241,8 @@ fun Release(
                                 .padding(25.dp, 0.dp)
                         )
                     },
-                    onClick = {
-                        //TODO
-                        Toast.makeText(context, "Kivezetés", Toast.LENGTH_LONG).show()
-                    },
+                    //TODO
+                    onClick = onReleaseClick,
                     modifier = Modifier
                         .scale(2f)
                         .padding(0.dp, 25.dp, 0.dp, 0.dp)

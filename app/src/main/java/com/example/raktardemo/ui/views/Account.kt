@@ -1,6 +1,5 @@
 package com.example.raktardemo.ui.views
 
-import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,7 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -22,18 +20,17 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.raktardemo.R
-import com.example.raktardemo.data.Storage
-import com.example.raktardemo.data.Worker
+import com.example.raktardemo.data.model.Storage
+import com.example.raktardemo.data.model.Worker
 import com.example.raktardemo.ui.views.theme.Shapes
 import com.example.raktardemo.ui.views.theme.Teal200
 
 @Composable
 fun Account(
     worker: Worker,
-    onClicked: (Storage) -> Unit
+    onClicked: (Storage) -> Unit,
+    onLogoutClick: () -> Unit = {}
 ) {
-    val context = LocalContext.current
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -185,10 +182,7 @@ fun Account(
                                 .padding(25.dp, 0.dp)
                         )
                     },
-                    onClick = {
-                        //TODO
-                        Toast.makeText(context, "Kijelentkezés", Toast.LENGTH_LONG).show()
-                    },
+                    onClick = onLogoutClick,
                     modifier = Modifier
                         .scale(2f)
                         .padding(0.dp, 50.dp, 0.dp, 50.dp)
