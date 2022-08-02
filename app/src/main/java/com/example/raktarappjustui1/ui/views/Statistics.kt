@@ -1,4 +1,4 @@
-package com.example.raktarappjustui1
+package com.example.raktarappjustui1.ui.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,13 +16,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.raktarappjustui1.R
 import com.example.raktarappjustui1.ui.views.helpers.ComboBox
 import com.example.raktarappjustui1.ui.views.helpers.DatePicker
 import com.example.raktarappjustui1.ui.views.helpers.ListMaker
-import com.example.raktarappjustui1.ui.views.theme.RaktarAppJustUi1Theme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset

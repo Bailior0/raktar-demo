@@ -13,19 +13,19 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.raktarappjustui1.data.Group
 import com.example.raktarappjustui1.data.Item
-import com.example.raktarappjustui1.ui.views.theme.RaktarAppJustUi1Theme
 import com.example.raktarappjustui1.ui.views.theme.Shapes
 
 @Composable
 fun GroupDetail(
-    groups: List<Group>
+    groups: List<Group>,
+    onClicked: (Item) -> Unit,
+    onReleaseClicked: (Group) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -84,7 +84,9 @@ fun GroupDetail(
             ) {
                 itemsIndexed(groups) { _, groups ->
                     Groups(
-                        group = groups
+                        group = groups,
+                        onClicked = onClicked,
+                        onReleaseClicked = onReleaseClicked
                     )
                 }
             }
@@ -94,7 +96,9 @@ fun GroupDetail(
 
 @Composable
 fun Groups(
-    group: Group
+    group: Group,
+    onClicked: (Item) -> Unit,
+    onReleaseClicked: (Group) -> Unit
 ) {
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
@@ -133,7 +137,7 @@ fun Groups(
                 )
             },
             onClick = {
-                //TODO
+                onReleaseClicked(group)
             },
             modifier = Modifier
                 .height(28.dp)
@@ -158,8 +162,7 @@ fun Groups(
                 Items(
                     item = item,
                     onClicked = {
-                        //TODO
-                        /*::onItemSelected*/
+                        onClicked(item)
                     }
                 )
             }

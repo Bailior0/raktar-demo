@@ -33,7 +33,6 @@ fun Account(
     onClicked: (Storage) -> Unit
 ) {
     val context = LocalContext.current
-    var showDetails by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier

@@ -14,14 +14,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktarappjustui1.ui.views.helpers.ComboBox
 import com.example.raktarappjustui1.ui.views.helpers.DatePicker
 import com.example.raktarappjustui1.ui.views.helpers.SegmentedControlQuantitySwitch
 import com.example.raktarappjustui1.ui.views.helpers.SegmentedControlTwoWaySwitch
-import com.example.raktarappjustui1.ui.views.theme.RaktarAppJustUi1Theme
 
 @Composable
 fun NewItem() {

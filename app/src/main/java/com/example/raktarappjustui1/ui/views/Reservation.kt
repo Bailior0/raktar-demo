@@ -25,11 +25,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktarappjustui1.R
+import com.example.raktarappjustui1.data.Item
 import com.example.raktarappjustui1.ui.views.helpers.DatePicker
 import com.example.raktarappjustui1.ui.views.theme.RaktarAppJustUi1Theme
 
 @Composable
-fun Reservation() {
+fun Reservation(
+    item: Item,
+    onIconClick: () -> Unit = {}
+) {
     val context = LocalContext.current
 
     Column(
@@ -38,7 +42,13 @@ fun Reservation() {
             .background(MaterialTheme.colors.background)
     ) {
         TopAppBar(
-            title = { Text(text = "Foglalás") }
+            title = { Text(text = "Foglalás") },
+            navigationIcon = {
+                IconButton(
+                    content = { Icon(painter = painterResource(id = R.drawable.baseline_arrow_back_24), contentDescription = null) },
+                    onClick = onIconClick
+                )
+            }
         )
 
         Column(

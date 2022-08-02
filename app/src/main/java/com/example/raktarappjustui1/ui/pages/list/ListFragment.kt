@@ -8,7 +8,11 @@ import androidx.compose.ui.platform.ComposeView
 import co.zsmb.rainbowcake.base.RainbowCakeFragment
 import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
+import co.zsmb.rainbowcake.navigation.navigator
+import com.example.raktarappjustui1.data.Group
 import com.example.raktarappjustui1.data.Item
+import com.example.raktarappjustui1.ui.pages.list.detail.ItemDetailFragment
+import com.example.raktarappjustui1.ui.pages.list.release.ReleaseFragment
 import com.example.raktarappjustui1.ui.views.helpers.FullScreenLoading
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -53,10 +57,23 @@ class ListFragment : RainbowCakeFragment<ListViewState, ListViewModel>() {
                         quantityUnit = "m",
                         quantity = 0.0
                     )
+                    val list = mutableListOf(elem1, elem2, elem3)
 
-                    com.example.raktarappjustui1.ui.views.List(mutableListOf(elem1, elem2, elem3 ))
+                    com.example.raktarappjustui1.ui.views.List(
+                        items = list,
+                        onClicked = ::onItemSelected,
+                        onReleaseClicked = ::onReleaseSelected
+                    )
                 }
             }.exhaustive
         }
+    }
+
+    private fun onItemSelected(item: Item) {
+        navigator?.add(ItemDetailFragment.newInstance(item))
+    }
+
+    private fun onReleaseSelected(group: Group) {
+        navigator?.add(ReleaseFragment.newInstance(group))
     }
 }

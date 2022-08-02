@@ -10,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -19,15 +18,14 @@ import com.example.raktarappjustui1.R
 import com.example.raktarappjustui1.data.Group
 import com.example.raktarappjustui1.data.Item
 import com.example.raktarappjustui1.ui.views.helpers.SegmentedControlTwoWaySwitch
-import com.example.raktarappjustui1.ui.views.theme.RaktarAppJustUi1Theme
 import com.example.raktarappjustui1.ui.views.theme.Shapes
 
 @Composable
 fun List(
-    items: List<Item>
+    items: List<Item>,
+    onClicked: (Item) -> Unit,
+    onReleaseClicked: (Group) -> Unit
 ) {
-    var showDetails by remember { mutableStateOf(false) }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -176,9 +174,7 @@ fun List(
                             ListItem(
                                 item = item,
                                 onClicked = {
-                                    //TODO
-                                    /*::onItemSelected*/
-                                    showDetails = !showDetails
+                                    onClicked(item)
                                 }
                             )
                         }
@@ -216,6 +212,8 @@ fun List(
                         items = mutableListOf(elem1, elem2, elem3)
                     )
 
+                    val groups = mutableListOf(group1, group2, group3)
+
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -228,14 +226,15 @@ fun List(
                                 width = Dimension.fillToConstraints
                             }
                     ) {
-                        GroupDetail(mutableListOf(group1, group2, group3))
+                        GroupDetail(
+                            groups = groups,
+                            onClicked = onClicked,
+                            onReleaseClicked = onReleaseClicked
+                        )
                     }
                 }
             }
         }
-    }
-    if(showDetails) {
-        ProductDetail()
     }
 }
 

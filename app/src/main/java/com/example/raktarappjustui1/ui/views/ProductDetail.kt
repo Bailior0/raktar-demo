@@ -16,27 +16,34 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktarappjustui1.R
+import com.example.raktarappjustui1.data.Item
 import com.example.raktarappjustui1.ui.views.helpers.ListMaker
-import com.example.raktarappjustui1.ui.views.theme.RaktarAppJustUi1Theme
 
 @Composable
-fun ProductDetail() {
-    var showReservation by remember { mutableStateOf(false) }
-    var showAcquisition by remember { mutableStateOf(false) }
-    var showRelease by remember { mutableStateOf(false) }
-    var showMoving by remember { mutableStateOf(false) }
-
+fun ProductDetail(
+    item: Item,
+    onIconClick: () -> Unit = {},
+    onReservationClick: () -> Unit = {},
+    onAcquisitionClick: () -> Unit = {},
+    onReleaseClick: () -> Unit = {},
+    onMovingClick: () -> Unit = {}
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.background)
     ) {
         TopAppBar(
-            title = { Text(text = "rg6-fehér") }
+            title = { Text(text = item.name) },
+            navigationIcon = {
+                IconButton(
+                    content = { Icon(painter = painterResource(id = R.drawable.baseline_arrow_back_24), contentDescription = null) },
+                    onClick = onIconClick
+                )
+            }
         )
 
         Column(
@@ -116,38 +123,30 @@ fun ProductDetail() {
                     CircularButton(
                         buttonColor = buttonColor,
                         icon = R.drawable.ic_baseline_lock_24,
-                        label = "Foglalás"
-                    ) {
-                        //TODO
-                        showReservation = !showReservation
-                    }
+                        label = "Foglalás",
+                        onClick = onReservationClick
+                    )
 
                     CircularButton(
                         buttonColor = buttonColor,
                         icon = R.drawable.ic_baseline_input_24,
-                        label = "Bevételezés"
-                    ) {
-                        //TODO
-                        showAcquisition = !showAcquisition
-                    }
+                        label = "Bevételezés",
+                        onClick = onAcquisitionClick
+                    )
 
                     CircularButton(
                         buttonColor = buttonColor,
                         icon = R.drawable.ic_baseline_output_24,
-                        label = "Kivezetés"
-                    ) {
-                        //TODO
-                        showRelease = !showRelease
-                    }
+                        label = "Kivezetés",
+                        onClick = onReleaseClick
+                    )
 
                     CircularButton(
                         buttonColor = buttonColor,
                         icon = R.drawable.ic_baseline_sync_24,
-                        label = "Mozgatás"
-                    ) {
-                        //TODO
-                        showMoving = !showMoving
-                    }
+                        label = "Mozgatás",
+                        onClick = onMovingClick
+                    )
                 }
 
                 Text(
@@ -349,19 +348,6 @@ fun ProductDetail() {
             }
 
         }
-    }
-
-    if(showReservation) {
-        Reservation()
-    }
-    if(showAcquisition) {
-        Acquisition()
-    }
-    if(showRelease) {
-        Release()
-    }
-    if(showMoving) {
-        Moving()
     }
 }
 
