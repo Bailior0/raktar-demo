@@ -15,18 +15,15 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.raktardemo.R
-import com.example.raktardemo.data.enums.PackageType
-import com.example.raktardemo.data.enums.QuantityUnit
-import com.example.raktardemo.data.model.Category
-import com.example.raktardemo.data.model.Item
+import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.helpers.SegmentedControlTwoWaySwitch
 import com.example.raktardemo.ui.views.theme.Shapes
 
 @Composable
 fun List(
-    items: List<Item>,
-    onClicked: (Item) -> Unit,
-    onReleaseClicked: (ArrayList<Item>) -> Unit
+    items: List<StoredItem>,
+    onClicked: (StoredItem) -> Unit,
+    onReleaseClicked: (ArrayList<StoredItem>) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -183,49 +180,6 @@ fun List(
                     }
                 }
                 else if(typeSwitchState){
-                    val elem1 = Item(
-                        id = "0",
-                        name = "elem1",
-                        category = Category("0", "kábel"),
-                        manufacturer = "Dolog.Kft",
-                        serialNumber = "0",
-                        type = PackageType.Package,
-                        quantityUnit = QuantityUnit.Meter,
-                        defaultPackageQuantity = 1.0,
-                        openable = false,
-                        defaultPurchasePrice = null,
-                        minimumStoredQuantity = null
-                    )
-                    val elem2 = Item(
-                        id = "0",
-                        name = "elem2",
-                        category = Category("0", "kábel"),
-                        manufacturer = "Dolog.Kft",
-                        serialNumber = "0",
-                        type = PackageType.Package,
-                        quantityUnit = QuantityUnit.Meter,
-                        defaultPackageQuantity = 1.0,
-                        openable = false,
-                        defaultPurchasePrice = null,
-                        minimumStoredQuantity = null
-                    )
-                    val elem3 = Item(
-                        id = "0",
-                        name = "elem3",
-                        category = Category("0", "kábel"),
-                        manufacturer = "Dolog.Kft",
-                        serialNumber = "0",
-                        type = PackageType.Package,
-                        quantityUnit = QuantityUnit.Meter,
-                        defaultPackageQuantity = 1.0,
-                        openable = false,
-                        defaultPurchasePrice = null,
-                        minimumStoredQuantity = null
-                    )
-                    val group = mutableListOf(elem1, elem2, elem3)
-
-                    val groups = mutableListOf(group, group, group)
-
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -239,7 +193,7 @@ fun List(
                             }
                     ) {
                         GroupDetail(
-                            groups = groups,
+                            groups = mutableListOf(mutableListOf(StoredItem())),
                             onClicked = onClicked,
                             onReleaseClicked = onReleaseClicked
                         )
@@ -252,8 +206,8 @@ fun List(
 
 @Composable
 fun ListItem(
-    item: Item,
-    onClicked: (Item) -> Unit
+    item: StoredItem,
+    onClicked: (StoredItem) -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -269,7 +223,7 @@ fun ListItem(
                 .padding(all = 5.dp),
         ) {
             Text(
-                text = item.name, color = Color.Black, fontSize = 18.sp
+                text = item.item.name, color = Color.Black, fontSize = 18.sp
             )
         }
     }

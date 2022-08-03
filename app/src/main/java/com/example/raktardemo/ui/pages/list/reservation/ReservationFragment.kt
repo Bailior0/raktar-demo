@@ -10,8 +10,8 @@ import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.extensions.applyArgs
 import co.zsmb.rainbowcake.navigation.navigator
-import com.example.raktardemo.data.model.Item
 import com.example.raktardemo.data.model.Reservation
+import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.Reservation
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,7 +24,7 @@ class ReservationFragment : RainbowCakeFragment<ReservationViewState, Reservatio
         private const val EXTRA_ITEM = "ITEM"
 
 
-        fun newInstance(item: Item): ReservationFragment {
+        fun newInstance(item: StoredItem): ReservationFragment {
             return ReservationFragment().applyArgs {
                 putParcelable(EXTRA_ITEM, item)
             }

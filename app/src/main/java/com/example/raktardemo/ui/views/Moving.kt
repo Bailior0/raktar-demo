@@ -20,13 +20,13 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.R
-import com.example.raktardemo.data.model.Item
+import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.helpers.SegmentedControlQuantitySwitch
 import com.example.raktardemo.ui.views.helpers.SegmentedControlTwoWaySwitch
 
 @Composable
 fun Moving(
-    product: Item,
+    product: StoredItem,
     onIconClick: () -> Unit = {},
     onMovingClick: () -> Unit
 ) {

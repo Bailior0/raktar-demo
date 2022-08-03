@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "863814750420",
+    "project_id": "raktarkezelo-b56a8",
+    "storage_bucket": "raktarkezelo-b56a8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:863814750420:android:42ba8bb58bf89a0cd46b41",
+        "android_client_info": {
+          "package_name": "com.example.raktardemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "863814750420-1b7mv0d6thv4ppb9hspdu3a4qsm6ieum.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUMBWDcJVDvX-mKV-JH-3hUZbUY0R-jWU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "863814750420-1b7mv0d6thv4ppb9hspdu3a4qsm6ieum.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "863814750420-70226ktbv79ijqtr161f5dubmr0e06tb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kosztid.Raktarkezelo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

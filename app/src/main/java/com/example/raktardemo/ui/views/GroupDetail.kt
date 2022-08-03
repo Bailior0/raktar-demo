@@ -17,14 +17,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.example.raktardemo.data.model.Item
+import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.theme.Shapes
 
 @Composable
 fun GroupDetail(
-    groups: List<List<Item>>,
-    onClicked: (Item) -> Unit,
-    onReleaseClicked: (ArrayList<Item>) -> Unit
+    groups: List<List<StoredItem>>,
+    onClicked: (StoredItem) -> Unit,
+    onReleaseClicked: (ArrayList<StoredItem>) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -95,9 +95,9 @@ fun GroupDetail(
 
 @Composable
 fun Groups(
-    group: List<Item>,
-    onClicked: (Item) -> Unit,
-    onReleaseClicked: (ArrayList<Item>) -> Unit
+    group: List<StoredItem>,
+    onClicked: (StoredItem) -> Unit,
+    onReleaseClicked: (ArrayList<StoredItem>) -> Unit
 ) {
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
@@ -136,7 +136,7 @@ fun Groups(
                 )
             },
             onClick = {
-                onReleaseClicked(group as ArrayList<Item>)
+                onReleaseClicked(group as ArrayList<StoredItem>)
             },
             modifier = Modifier
                 .height(28.dp)
@@ -171,8 +171,8 @@ fun Groups(
 
 @Composable
 fun Items(
-    item: Item,
-    onClicked: (Item) -> Unit
+    item: StoredItem,
+    onClicked: (StoredItem) -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -187,7 +187,7 @@ fun Items(
                 .padding(all = 5.dp),
         ) {
             Text(
-                text = item.name, color = Color.Black, fontSize = 18.sp
+                text = item.item.name, color = Color.Black, fontSize = 18.sp
             )
         }
     }

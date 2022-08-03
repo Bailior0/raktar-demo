@@ -9,10 +9,7 @@ import co.zsmb.rainbowcake.base.RainbowCakeFragment
 import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.navigator
-import com.example.raktardemo.data.enums.PackageType
-import com.example.raktardemo.data.enums.QuantityUnit
-import com.example.raktardemo.data.model.Category
-import com.example.raktardemo.data.model.Item
+import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.pages.list.detail.ItemDetailFragment
 import com.example.raktardemo.ui.pages.list.release.ReleaseFragment
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
@@ -41,49 +38,8 @@ class ListFragment : RainbowCakeFragment<ListViewState, ListViewModel>() {
             when (viewState) {
                 is Loading -> FullScreenLoading()
                 is ListContent -> {
-                    val elem1 = Item(
-                        id = "0",
-                        name = "elem1",
-                        category = Category("0", "kábel"),
-                        manufacturer = "Dolog.Kft",
-                        serialNumber = "0",
-                        type = PackageType.Package,
-                        quantityUnit = QuantityUnit.Meter,
-                        defaultPackageQuantity = 1.0,
-                        openable = false,
-                        defaultPurchasePrice = null,
-                        minimumStoredQuantity = null
-                    )
-                    val elem2 = Item(
-                        id = "0",
-                        name = "elem2",
-                        category = Category("0", "kábel"),
-                        manufacturer = "Dolog.Kft",
-                        serialNumber = "0",
-                        type = PackageType.Package,
-                        quantityUnit = QuantityUnit.Meter,
-                        defaultPackageQuantity = 1.0,
-                        openable = false,
-                        defaultPurchasePrice = null,
-                        minimumStoredQuantity = null
-                    )
-                    val elem3 = Item(
-                        id = "0",
-                        name = "elem3",
-                        category = Category("0", "kábel"),
-                        manufacturer = "Dolog.Kft",
-                        serialNumber = "0",
-                        type = PackageType.Package,
-                        quantityUnit = QuantityUnit.Meter,
-                        defaultPackageQuantity = 1.0,
-                        openable = false,
-                        defaultPurchasePrice = null,
-                        minimumStoredQuantity = null
-                    )
-                    val list = mutableListOf(elem1, elem2, elem3)
-
                     com.example.raktardemo.ui.views.List(
-                        items = list,
+                        items = viewState.list,
                         onClicked = ::onItemSelected,
                         onReleaseClicked = ::onReleaseSelected
                     )
@@ -92,11 +48,11 @@ class ListFragment : RainbowCakeFragment<ListViewState, ListViewModel>() {
         }
     }
 
-    private fun onItemSelected(item: Item) {
+    private fun onItemSelected(item: StoredItem) {
         navigator?.add(ItemDetailFragment.newInstance(item))
     }
 
-    private fun onReleaseSelected(items: ArrayList<Item>) {
+    private fun onReleaseSelected(items: ArrayList<StoredItem>) {
         navigator?.add(ReleaseFragment.newInstance(items))
     }
 }

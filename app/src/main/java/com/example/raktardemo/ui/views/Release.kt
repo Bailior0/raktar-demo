@@ -25,13 +25,14 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.R
 import com.example.raktardemo.data.model.Item
+import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.helpers.SegmentedControlQualitySwitch
 import com.example.raktardemo.ui.views.helpers.SegmentedControlQuantitySwitch
 
 @Composable
 fun Release(
-    product: Item?,
-    group: List<Item?>,
+    product: StoredItem?,
+    group: List<StoredItem?>,
     onIconClick: () -> Unit = {},
     onReleaseClick: () -> Unit
 ) {

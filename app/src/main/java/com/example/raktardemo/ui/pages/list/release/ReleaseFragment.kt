@@ -10,7 +10,7 @@ import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.extensions.applyArgs
 import co.zsmb.rainbowcake.navigation.navigator
-import com.example.raktardemo.data.model.Item
+import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.Release
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,13 +24,13 @@ class ReleaseFragment : RainbowCakeFragment<ReleaseViewState, ReleaseViewModel>(
         private const val EXTRA_GROUP = "GROUP"
 
 
-        fun newInstance(item: Item): ReleaseFragment {
+        fun newInstance(item: StoredItem): ReleaseFragment {
             return ReleaseFragment().applyArgs {
                 putParcelable(EXTRA_ITEM, item)
             }
         }
 
-        fun newInstance(items: ArrayList<Item>): ReleaseFragment {
+        fun newInstance(items: ArrayList<StoredItem>): ReleaseFragment {
             return ReleaseFragment().applyArgs {
                 putParcelableArrayList(EXTRA_GROUP, items)
             }
@@ -38,8 +38,8 @@ class ReleaseFragment : RainbowCakeFragment<ReleaseViewState, ReleaseViewModel>(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val item = arguments?.getParcelable<Item>(EXTRA_ITEM)
-        val group = arguments?.getParcelableArrayList<Item>(EXTRA_GROUP)
+        val item = arguments?.getParcelable<StoredItem>(EXTRA_ITEM)
+        val group = arguments?.getParcelableArrayList<StoredItem>(EXTRA_GROUP)
 
         if(item != null)
             viewModel.setRelease(item)

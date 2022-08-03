@@ -25,13 +25,14 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.R
 import com.example.raktardemo.data.model.Item
 import com.example.raktardemo.data.model.Reservation
+import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.helpers.DatePicker
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
 fun Reservation(
-    product: Item,
+    product: StoredItem,
     onIconClick: () -> Unit = {},
     onReservationClick: (Reservation) -> Unit
 ) {

@@ -5,12 +5,12 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Storage(
-    var id: String,
-    var name: String,
-    var address: String,
-    var size: Double,
-    var description: String,
-    var workers: List<Worker>,
-    var accountableWorker: String,
-    var items: List<StoredItem?>
+    var id: String = "0",
+    var name: String = "",
+    var address: String = "",
+    var size: Double = 0.0,
+    var description: String = "",
+    var workers: List<Worker> = emptyList(),
+    var accountableWorker: String = "",
+    var items: List<StoredItem?> = emptyList()
 ) : Parcelable

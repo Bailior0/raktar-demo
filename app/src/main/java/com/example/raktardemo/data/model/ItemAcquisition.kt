@@ -7,16 +7,16 @@ import java.util.*
 
 @Parcelize
 data class ItemAcquisition (
-    var id: String,
-    var acquisitionDate: Date,
-    var acquisitionWorker: String,
-    var expiryDate: Date,
-    var quantity: Double,
-    var acquisitionPrice: Double,
-    var pricePerUnit: Double,
-    var currentStorage: String,
-    var ownedBy: Ownership,
-    var packageCounts: List<Double>,
-    var reserved: List<Double>,
-    var released: List<Double>
+    var id: String = "0",
+    var acquisitionDate: String = "",
+    var acquisitionWorker: String = "",
+    var expiryDate: String = "",
+    var quantity: Double = 0.0,
+    var acquisitionPrice: Double = 0.0,
+    var pricePerUnit: Double = 0.0,
+    var currentStorage: String = "",
+    var ownedBy: Ownership = Ownership.Own,
+    var packageCounts: List<Double> = emptyList(),
+    var reserved: List<Double> = emptyList(),
+    var released: List<Double> = emptyList()
 ): Parcelable

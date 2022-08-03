@@ -10,7 +10,7 @@ import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.extensions.applyArgs
 import co.zsmb.rainbowcake.navigation.navigator
-import com.example.raktardemo.data.model.Item
+import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.Moving
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,7 +23,7 @@ class MovingFragment : RainbowCakeFragment<MovingViewState, MovingViewModel>() {
         private const val EXTRA_ITEM = "ITEM"
 
 
-        fun newInstance(item: Item): MovingFragment {
+        fun newInstance(item: StoredItem): MovingFragment {
             return MovingFragment().applyArgs {
                 putParcelable(EXTRA_ITEM, item)
             }

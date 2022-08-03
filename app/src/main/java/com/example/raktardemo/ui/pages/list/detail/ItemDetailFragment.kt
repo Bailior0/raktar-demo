@@ -10,7 +10,7 @@ import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.extensions.applyArgs
 import co.zsmb.rainbowcake.navigation.navigator
-import com.example.raktardemo.data.model.Item
+import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.nav.NavFragment
 import com.example.raktardemo.ui.pages.list.acquisition.AcquisitionFragment
 import com.example.raktardemo.ui.pages.list.moving.MovingFragment
@@ -28,7 +28,7 @@ class ItemDetailFragment : RainbowCakeFragment<ItemDetailViewState, ItemDetailVi
         private const val EXTRA_ITEM = "ITEM"
 
 
-        fun newInstance(item: Item): ItemDetailFragment {
+        fun newInstance(item: StoredItem): ItemDetailFragment {
             return ItemDetailFragment().applyArgs {
                 putParcelable(EXTRA_ITEM, item)
             }
@@ -61,19 +61,19 @@ class ItemDetailFragment : RainbowCakeFragment<ItemDetailViewState, ItemDetailVi
         }
     }
 
-    private fun onReservationSelected(item: Item) {
+    private fun onReservationSelected(item: StoredItem) {
         navigator?.add(ReservationFragment.newInstance(item))
     }
 
-    private fun onAcquisitionSelected(item: Item) {
+    private fun onAcquisitionSelected(item: StoredItem) {
         navigator?.add(AcquisitionFragment.newInstance(item))
     }
 
-    private fun onReleaseSelected(item: Item) {
+    private fun onReleaseSelected(item: StoredItem) {
         navigator?.add(ReleaseFragment.newInstance(item))
     }
 
-    private fun onMovingSelected(item: Item) {
+    private fun onMovingSelected(item: StoredItem) {
         navigator?.add(MovingFragment.newInstance(item))
     }
 }
