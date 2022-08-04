@@ -4,6 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import co.zsmb.rainbowcake.base.RainbowCakeFragment
 import co.zsmb.rainbowcake.extensions.exhaustive
@@ -15,6 +19,7 @@ import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.pages.list.release.ReleaseFragment
 import com.example.raktardemo.ui.views.Reservation
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
+import com.example.raktardemo.ui.views.theme.RaktarAppJustUi1Theme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -57,21 +62,28 @@ class ReservationFragment : RainbowCakeFragment<ReservationViewState, Reservatio
 
     override fun render(viewState: ReservationViewState) {
         (view as ComposeView).setContent {
-            when (viewState) {
-                is Loading -> FullScreenLoading()
-                is ReservationContent -> Reservation(
-                    product = viewState.item!!,
-                    group = emptyList(),
-                    onIconClick = { navigator?.pop() },
-                    onReservationClick = ::onReservation
-                )
-                is ReservationGroupContent -> Reservation(
-                    product = null,
-                    group = viewState.group,
-                    onIconClick = { navigator?.pop() },
-                    onReservationClick = ::onReservation
-                )
-            }.exhaustive
+            RaktarAppJustUi1Theme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background
+                ) {
+                    when (viewState) {
+                        is Loading -> FullScreenLoading()
+                        is ReservationContent -> Reservation(
+                            product = viewState.item!!,
+                            group = emptyList(),
+                            onIconClick = { navigator?.pop() },
+                            onReservationClick = ::onReservation
+                        )
+                        is ReservationGroupContent -> Reservation(
+                            product = null,
+                            group = viewState.group,
+                            onIconClick = { navigator?.pop() },
+                            onReservationClick = ::onReservation
+                        )
+                    }.exhaustive
+                }
+            }
         }
     }
 
