@@ -4,6 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import co.zsmb.rainbowcake.base.RainbowCakeFragment
 import co.zsmb.rainbowcake.extensions.exhaustive
@@ -18,6 +22,7 @@ import com.example.raktardemo.ui.pages.list.release.ReleaseFragment
 import com.example.raktardemo.ui.pages.list.reservation.ReservationFragment
 import com.example.raktardemo.ui.views.ProductDetail
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
+import com.example.raktardemo.ui.views.theme.RaktarAppJustUi1Theme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -47,17 +52,24 @@ class ItemDetailFragment : RainbowCakeFragment<ItemDetailViewState, ItemDetailVi
 
     override fun render(viewState: ItemDetailViewState) {
         (view as ComposeView).setContent {
-            when (viewState) {
-                is Loading -> FullScreenLoading()
-                is ItemDetailLoaded -> ProductDetail(
-                    product = viewState.item!!,
-                    onIconClick = { navigator?.popUntil(NavFragment::class) },
-                    onReservationClick = { onReservationSelected(viewState.item!!) },
-                    onAcquisitionClick = { onAcquisitionSelected(viewState.item!!) },
-                    onReleaseClick = { onReleaseSelected(viewState.item!!) },
-                    onMovingClick = { onMovingSelected(viewState.item!!) }
-                )
-            }.exhaustive
+            RaktarAppJustUi1Theme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background
+                ) {
+                    when (viewState) {
+                        is Loading -> FullScreenLoading()
+                        is ItemDetailLoaded -> ProductDetail(
+                            product = viewState.item!!,
+                            onIconClick = { navigator?.popUntil(NavFragment::class) },
+                            onReservationClick = { onReservationSelected(viewState.item!!) },
+                            onAcquisitionClick = { onAcquisitionSelected(viewState.item!!) },
+                            onReleaseClick = { onReleaseSelected(viewState.item!!) },
+                            onMovingClick = { onMovingSelected(viewState.item!!) }
+                        )
+                    }.exhaustive
+                }
+            }
         }
     }
 
