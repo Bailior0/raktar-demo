@@ -23,8 +23,8 @@ import com.example.raktardemo.ui.views.theme.Shapes
 fun List(
     items: List<StoredItem>,
     onClicked: (StoredItem) -> Unit,
-    onReleaseClicked: (ArrayList<StoredItem>) -> Unit,
-    onReserveClicked: (ArrayList<StoredItem>) -> Unit
+    onReleaseClicked: (ArrayList<StoredItem>, String) -> Unit,
+    onReserveClicked: (ArrayList<StoredItem>, String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -156,7 +156,9 @@ fun List(
                         }
                     }
                 } else if (typeSwitchState) {
-                    Column(
+                    val itemGroups = ArrayList(items.groupBy{it.item.category.id}.values)
+
+                    LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(0.dp, 25.dp, 0.dp, 15.dp)
@@ -169,12 +171,14 @@ fun List(
                                 width = Dimension.fillToConstraints
                             }
                     ) {
-                        GroupDetail(
-                            groups = mutableListOf(mutableListOf(StoredItem())),
-                            onClicked = onClicked,
-                            onReleaseClicked = onReleaseClicked,
-                            onReserveClicked = onReserveClicked
-                        )
+                        itemsIndexed(itemGroups) { _, item ->
+                            GroupDetail(
+                                groups = item,
+                                onClicked = onClicked,
+                                onReleaseClicked = onReleaseClicked,
+                                onReserveClicked = onReserveClicked
+                            )
+                        }
                     }
                 }
             }

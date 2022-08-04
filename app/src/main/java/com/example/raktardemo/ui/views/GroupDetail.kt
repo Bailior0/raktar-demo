@@ -16,16 +16,15 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.theme.Shapes
 
 @Composable
 fun GroupDetail(
-    groups: List<List<StoredItem>>,
+    groups: List<StoredItem>,
     onClicked: (StoredItem) -> Unit,
-    onReleaseClicked: (ArrayList<StoredItem>) -> Unit,
-    onReserveClicked: (ArrayList<StoredItem>) -> Unit
+    onReleaseClicked: (ArrayList<StoredItem>, String) -> Unit,
+    onReserveClicked: (ArrayList<StoredItem>, String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -64,7 +63,7 @@ fun GroupDetail(
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )) {
-                        append("kábel")
+                        append(groups[0].item.category.name)
                     }
                 },
                 modifier = Modifier
@@ -83,13 +82,23 @@ fun GroupDetail(
                         start.linkTo(parent.start)
                         bottom.linkTo(parent.bottom)
                         end.linkTo(parent.end)
-                        height = Dimension.fillToConstraints
-                        width = Dimension.fillToConstraints
                     }
+                    .height(200.dp)
             ) {
-                itemsIndexed(groups) { _, groups ->
+                val itemGroups = groups.groupBy{
+                    when {
+                        it.itemAcquisitions.isNotEmpty() -> it.itemAcquisitions.firstOrNull()?.id
+                        else -> null
+                    }
+                }.filterKeys { it != null }
+
+                val itemAcquisitionId = ArrayList(itemGroups.keys)
+
+                itemsIndexed(ArrayList(itemGroups.values)) { index, group ->
                     Groups(
-                        group = groups,
+                        index = index,
+                        group = group,
+                        itemAcquisitionId = itemAcquisitionId,
                         onClicked = onClicked,
                         onReleaseClicked = onReleaseClicked,
                         onReserveClicked = onReserveClicked
@@ -102,10 +111,12 @@ fun GroupDetail(
 
 @Composable
 fun Groups(
+    index: Int,
+    itemAcquisitionId: ArrayList<String?>,
     group: List<StoredItem>,
     onClicked: (StoredItem) -> Unit,
-    onReleaseClicked: (ArrayList<StoredItem>) -> Unit,
-    onReserveClicked: (ArrayList<StoredItem>) -> Unit,
+    onReleaseClicked: (ArrayList<StoredItem>, String) -> Unit,
+    onReserveClicked: (ArrayList<StoredItem>, String) -> Unit,
 ) {
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
@@ -125,7 +136,7 @@ fun Groups(
                 }
 
                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                    append("1111")
+                    append(itemAcquisitionId[index]!!)
                 }
             },
             modifier = Modifier
@@ -141,20 +152,21 @@ fun Groups(
                 Text(
                     text = "Kivezetés",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 9.sp
+                    fontSize = 12.sp
                 )
             },
             onClick = {
-                onReleaseClicked(group as ArrayList<StoredItem>)
+                onReleaseClicked(group as ArrayList<StoredItem>, itemAcquisitionId[index]!!)
             },
             modifier = Modifier
-                .height(28.dp)
-                //.width(90.dp)
+                .height(26.dp)
+                .width(80.dp)
                 .padding(2.dp, 0.dp)
                 .constrainAs(releaseButton) {
                     top.linkTo(item.bottom)
                     end.linkTo(reserveButton.start)
-                }
+                },
+            contentPadding = PaddingValues(0.dp)
         )
 
         Button(
@@ -162,20 +174,21 @@ fun Groups(
                 Text(
                     text = "Foglalás",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 9.sp
+                    fontSize = 12.sp
                 )
             },
             onClick = {
-                onReserveClicked(group as ArrayList<StoredItem>)
+                onReserveClicked(group as ArrayList<StoredItem>, itemAcquisitionId[index]!!)
             },
             modifier = Modifier
-                .height(28.dp)
-                //.width(90.dp)
+                .height(26.dp)
+                .width(80.dp)
                 .padding(0.dp, 0.dp, 5.dp, 0.dp)
                 .constrainAs(reserveButton) {
                     top.linkTo(item.bottom)
                     end.linkTo(parent.end)
-                }
+                },
+            contentPadding = PaddingValues(0.dp)
         )
 
         LazyColumn(

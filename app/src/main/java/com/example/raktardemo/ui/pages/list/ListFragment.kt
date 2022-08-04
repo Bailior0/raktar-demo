@@ -54,11 +54,11 @@ class ListFragment : RainbowCakeFragment<ListViewState, ListViewModel>() {
         navigator?.add(ItemDetailFragment.newInstance(item))
     }
 
-    private fun onReleaseSelected(items: ArrayList<StoredItem>) {
-        navigator?.add(ReleaseFragment.newInstance(items))
+    private fun onReleaseSelected(items: ArrayList<StoredItem>, acquisitionId: String) {
+        navigator?.add(ReleaseFragment.newInstance(items, acquisitionId))
     }
 
-    private fun onReserveSelected(items: ArrayList<StoredItem>) {
-        navigator?.add(ReservationFragment.newInstance(items))
+    private fun onReserveSelected(items: ArrayList<StoredItem>, acquisitionId: String) {
+        navigator?.add(ReservationFragment.newInstance(items, acquisitionId))
     }
 }

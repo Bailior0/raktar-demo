@@ -1,5 +1,6 @@
 package com.example.raktardemo.ui.views
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -24,7 +25,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.R
-import com.example.raktardemo.data.model.Item
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.helpers.SegmentedControlQualitySwitch
 import com.example.raktardemo.ui.views.helpers.SegmentedControlQuantitySwitch
@@ -33,10 +33,13 @@ import com.example.raktardemo.ui.views.helpers.SegmentedControlQuantitySwitch
 fun Release(
     product: StoredItem?,
     group: List<StoredItem?>,
+    acqId: String?,
     onIconClick: () -> Unit = {},
     onReleaseClick: () -> Unit
 ) {
     val context = LocalContext.current
+
+    Log.i("dolog", "$group $acqId")
 
     Column(
         modifier = Modifier

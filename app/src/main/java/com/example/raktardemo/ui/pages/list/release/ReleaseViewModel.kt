@@ -9,7 +9,7 @@ class ReleaseViewModel : RainbowCakeViewModel<ReleaseViewState>(Loading) {
         viewState = ReleaseContent(item, false)
     }
 
-    fun setReleaseGroup(group: List<StoredItem>) {
-        viewState = ReleaseGroupContent(group, false)
+    fun setReleaseGroup(group: List<StoredItem>, acqId: String?) {
+        viewState = ReleaseGroupContent(group, acqId, false)
     }
 }

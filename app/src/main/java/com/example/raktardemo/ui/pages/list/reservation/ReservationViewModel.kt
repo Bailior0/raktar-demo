@@ -10,7 +10,7 @@ class ReservationViewModel : RainbowCakeViewModel<ReservationViewState>(Loading)
         viewState = ReservationContent(item, false)
     }
 
-    fun setReservationGroup(group: List<StoredItem>) {
-        viewState = ReservationGroupContent(group, false)
+    fun setReservationGroup(group: List<StoredItem>, acqId: String?) {
+        viewState = ReservationGroupContent(group, acqId, false)
     }
 }

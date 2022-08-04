@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -23,17 +22,16 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.R
-import com.example.raktardemo.data.model.Item
 import com.example.raktardemo.data.model.Reservation
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.helpers.DatePicker
-import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
 fun Reservation(
     product: StoredItem?,
     group: List<StoredItem?>,
+    acqId: String?,
     onIconClick: () -> Unit = {},
     onReservationClick: (Reservation) -> Unit
 ) {

@@ -22,6 +22,7 @@ class ReleaseFragment : RainbowCakeFragment<ReleaseViewState, ReleaseViewModel>(
     companion object {
         private const val EXTRA_ITEM = "ITEM"
         private const val EXTRA_GROUP = "GROUP"
+        private const val EXTRA_ACQID = "ACQID"
 
         fun newInstance(item: StoredItem): ReleaseFragment {
             return ReleaseFragment().applyArgs {
@@ -29,9 +30,10 @@ class ReleaseFragment : RainbowCakeFragment<ReleaseViewState, ReleaseViewModel>(
             }
         }
 
-        fun newInstance(items: ArrayList<StoredItem>): ReleaseFragment {
+        fun newInstance(items: ArrayList<StoredItem>, acqId: String): ReleaseFragment {
             return ReleaseFragment().applyArgs {
                 putParcelableArrayList(EXTRA_GROUP, items)
+                putString(EXTRA_ACQID, acqId)
             }
         }
     }
@@ -39,11 +41,12 @@ class ReleaseFragment : RainbowCakeFragment<ReleaseViewState, ReleaseViewModel>(
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val item = arguments?.getParcelable<StoredItem>(EXTRA_ITEM)
         val group = arguments?.getParcelableArrayList<StoredItem>(EXTRA_GROUP)
+        val acqId = arguments?.getString(EXTRA_ACQID)
 
         if(item != null)
             viewModel.setRelease(item)
         else if(group != null)
-            viewModel.setReleaseGroup(group)
+            viewModel.setReleaseGroup(group, acqId)
 
         return ComposeView(requireContext()).apply {
             setContent {
@@ -59,12 +62,14 @@ class ReleaseFragment : RainbowCakeFragment<ReleaseViewState, ReleaseViewModel>(
                 is ReleaseContent -> Release(
                     product = viewState.item!!,
                     group = emptyList(),
+                    acqId = null,
                     onIconClick = { navigator?.pop() },
                     onReleaseClick = ::onRelease
                 )
                 is ReleaseGroupContent -> Release(
                     product = null,
                     group = viewState.group,
+                    acqId = viewState.acqId,
                     onIconClick = { navigator?.pop() },
                     onReleaseClick = ::onRelease
                 )

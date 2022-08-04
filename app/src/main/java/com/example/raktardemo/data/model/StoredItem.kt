@@ -8,19 +8,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class StoredItem (
     var id: String = "0",
-    var item: Item = Item(
-        id = "0",
-        name = "",
-        category = Category("0", ""),
-        manufacturer = "",
-        serialNumber = "",
-        type = PackageType.Piece,
-        quantityUnit = QuantityUnit.Piece,
-        defaultPackageQuantity = 0.0,
-        openable = false,
-        defaultPurchasePrice = null,
-        minimumStoredQuantity = null
-    ),
+    var item: Item = Item(),
 //    TODO: felhasznált itemeket a bevétekben külön tömbbe rakni, hogy legyen nyoma, de ne kelljen külön osztály?
     var itemAcquisitions: List<ItemAcquisition> = emptyList(),
     var reservations: List<Reservation> = emptyList(),
