@@ -23,7 +23,8 @@ import com.example.raktardemo.ui.views.theme.Shapes
 fun List(
     items: List<StoredItem>,
     onClicked: (StoredItem) -> Unit,
-    onReleaseClicked: (ArrayList<StoredItem>) -> Unit
+    onReleaseClicked: (ArrayList<StoredItem>) -> Unit,
+    onReserveClicked: (ArrayList<StoredItem>) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -43,53 +44,52 @@ fun List(
                 modifier = Modifier.fillMaxSize()
             ) {
                 val (
-                    item,
                     searchbar,
                     menu,
                     buttons,
                     list
                 ) = createRefs()
+
                 var typeSwitchState by remember { mutableStateOf(false) }
 
                 var text by remember { mutableStateOf("") }
+
                 var showMenu by remember { mutableStateOf(false) }
+                var selectedMenuItem by remember { mutableStateOf(0) }
+                val menuItemList = listOf("Név", "Vonalkód", "Készlet", "Gyártó")
 
                 OutlinedTextField(
                     value = text,
                     onValueChange = { text = it },
                     leadingIcon = {
-                        IconButton(
-                            onClick = {
-                                //Search
-                                //TODO
-                            }
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_baseline_search_24),
-                                contentDescription = null
-                            )
-                        }
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_baseline_search_24),
+                            contentDescription = null
+                        )
                     },
                     trailingIcon = {
-                        IconButton(
-                            onClick = { showMenu = !showMenu }
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_filter_alt_24),
-                                contentDescription = null
-                            )
+                        if (!typeSwitchState) {
+                            IconButton(
+                                onClick = { showMenu = !showMenu }
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_filter_alt_24),
+                                    contentDescription = null
+                                )
+                            }
                         }
                     },
                     label = { Text("Kereső") },
+                    singleLine = true,
                     modifier = Modifier
-                        .padding(5.dp, 0.dp, 0.dp, 0.dp)
                         .constrainAs(searchbar) {
-                            top.linkTo(item.bottom)
+                            top.linkTo(parent.top)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                         }
                         .fillMaxWidth()
                 )
+
                 Box(
                     modifier = Modifier
                         .constrainAs(menu) {
@@ -101,48 +101,25 @@ fun List(
                         expanded = showMenu,
                         onDismissRequest = { showMenu = false }
                     ) {
-                        DropdownMenuItem(
-                            onClick = {
-                                //TODO
-                            },
-                            modifier = Modifier.height(30.dp)
-                        ) {
-                            Text(text = "Név")
+                        menuItemList.forEachIndexed { index, s ->
+                            DropdownMenuItem(
+                                //modifier = Modifier.height(30.dp),
+                                onClick = {
+                                    selectedMenuItem = index
+                                    showMenu = false
+                                }
+                            ) {
+                                Text(text = s)
+                            }
+                            //Divider(color = Color.LightGray, thickness = 1.dp)
                         }
-                        Divider(color = Color.LightGray, thickness = 1.dp)
-                        DropdownMenuItem(
-                            onClick = {
-                                //TODO
-                            },
-                            modifier = Modifier.height(30.dp)
-                        ) {
-                            Text(text = "Darabszám")
-                        }
-                        Divider(color = Color.LightGray, thickness = 1.dp)
-                        DropdownMenuItem(
-                            onClick = {
-                                //TODO
-                            },
-                            modifier = Modifier.height(30.dp)
-                        ) {
-                            Text(text = "Alacsony készlet")
-                        }
-                        Divider(color = Color.LightGray, thickness = 1.dp)
-                        DropdownMenuItem(
-                            onClick = {
-                                //TODO
-                            },
-                            modifier = Modifier.height(30.dp)
-                        ) {
-                            Text(text = "Készleten")
-                        }
+
                     }
                 }
 
-
                 Box(
                     modifier = Modifier
-                        .padding(0.dp, 25.dp, 0.dp, 0.dp)
+                        .padding(0.dp, 5.dp, 0.dp, 0.dp)
                         .constrainAs(buttons) {
                             top.linkTo(searchbar.bottom)
                             start.linkTo(parent.start)
@@ -159,7 +136,7 @@ fun List(
                 if (!typeSwitchState) {
                     LazyColumn(
                         modifier = Modifier
-                            .padding(0.dp, 0.dp, 0.dp, 15.dp)
+                            .padding(0.dp, 25.dp, 0.dp, 15.dp)
                             .constrainAs(list) {
                                 top.linkTo(buttons.bottom)
                                 start.linkTo(parent.start)
@@ -178,11 +155,11 @@ fun List(
                             )
                         }
                     }
-                }
-                else if(typeSwitchState){
+                } else if (typeSwitchState) {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
+                            .padding(0.dp, 25.dp, 0.dp, 15.dp)
                             .constrainAs(list) {
                                 top.linkTo(buttons.bottom)
                                 start.linkTo(parent.start)
@@ -195,7 +172,8 @@ fun List(
                         GroupDetail(
                             groups = mutableListOf(mutableListOf(StoredItem())),
                             onClicked = onClicked,
-                            onReleaseClicked = onReleaseClicked
+                            onReleaseClicked = onReleaseClicked,
+                            onReserveClicked = onReserveClicked
                         )
                     }
                 }

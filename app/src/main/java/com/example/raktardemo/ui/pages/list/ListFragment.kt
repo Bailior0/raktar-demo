@@ -12,6 +12,7 @@ import co.zsmb.rainbowcake.navigation.navigator
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.pages.list.detail.ItemDetailFragment
 import com.example.raktardemo.ui.pages.list.release.ReleaseFragment
+import com.example.raktardemo.ui.pages.list.reservation.ReservationFragment
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -41,7 +42,8 @@ class ListFragment : RainbowCakeFragment<ListViewState, ListViewModel>() {
                     com.example.raktardemo.ui.views.List(
                         items = viewState.list,
                         onClicked = ::onItemSelected,
-                        onReleaseClicked = ::onReleaseSelected
+                        onReleaseClicked = ::onReleaseSelected,
+                        onReserveClicked = ::onReserveSelected
                     )
                 }
             }.exhaustive
@@ -54,5 +56,9 @@ class ListFragment : RainbowCakeFragment<ListViewState, ListViewModel>() {
 
     private fun onReleaseSelected(items: ArrayList<StoredItem>) {
         navigator?.add(ReleaseFragment.newInstance(items))
+    }
+
+    private fun onReserveSelected(items: ArrayList<StoredItem>) {
+        navigator?.add(ReservationFragment.newInstance(items))
     }
 }

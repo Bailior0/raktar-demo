@@ -3,6 +3,7 @@ package com.example.raktardemo.ui.views
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -13,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.data.enums.PackageType
@@ -173,6 +175,7 @@ fun NewItem(
                     value = defaultPriceInput,
                     onValueChange = { defaultPriceInput = it },
                     singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     placeholder = {
                         Text(
                             text = "Alapért. beszerzési ár",
@@ -253,6 +256,7 @@ fun NewItem(
                     value = quantityInput,
                     onValueChange = { quantityInput = it },
                     singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     placeholder = {
                         Text(
                             text = "Mennyiség",
@@ -294,6 +298,7 @@ fun NewItem(
                         value = packageSizeInput,
                         onValueChange = { packageSizeInput = it },
                         singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         placeholder = {
                             Text(
                                 text = "Csomag mérete",
@@ -468,6 +473,7 @@ fun NewItem(
                     value = minQuantityInput,
                     onValueChange = { minQuantityInput = it },
                     singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     placeholder = {
                         Text(
                             text = "Min. tárolt mennyiség",

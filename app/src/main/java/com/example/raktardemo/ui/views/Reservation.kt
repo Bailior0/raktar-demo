@@ -32,18 +32,19 @@ import java.util.*
 
 @Composable
 fun Reservation(
-    product: StoredItem,
+    product: StoredItem?,
+    group: List<StoredItem?>,
     onIconClick: () -> Unit = {},
     onReservationClick: (Reservation) -> Unit
 ) {
     val context = LocalContext.current
 
-    val itemInput by remember { mutableStateOf("Termék") }
+    //val itemInput by remember { mutableStateOf("Termék") }
     var quantityInput by remember { mutableStateOf("") }
     var multiplierInput by remember { mutableStateOf("") }
     var reservationGoalInput by remember { mutableStateOf("") }
     var dateInput by remember { mutableStateOf("") }
-    var acquisitionInput by remember { mutableStateOf("Beszerzés") }
+    //var acquisitionInput by remember { mutableStateOf("Beszerzés") }
 
     var datePickerState by remember { mutableStateOf(false) }
 
@@ -77,17 +78,33 @@ fun Reservation(
             ) {
                 val (
                     item,
+                    //acquisition,
                     availableQuantity,
                     quantityToReserve,
                     reservationGoal,
                     reservationGoalDate,
-                    acquisition,
                     button
                 ) = createRefs()
 
+                if (product == null){
+                    Text(
+                        text = "ide kéne valami",
+                        modifier = Modifier
+                            .constrainAs(item) {
+                                top.linkTo(parent.top)
+                            }
+                    )
+                } else {
+                    Text(
+                        text = product.item.name,
+                        modifier = Modifier
+                            .constrainAs(item) {
+                                top.linkTo(parent.top)
+                            }
+                    )
+                }
 
-
-                ConstraintLayout(
+                /*ConstraintLayout(
                     modifier = Modifier
                         .fillMaxWidth()
                         .constrainAs(item) {
@@ -117,7 +134,7 @@ fun Reservation(
                                 contentDescription = null
                             )
                         },
-                        onClick = { /*TODO*/ },
+                        onClick = { *//*TODO*//* },
                         modifier = Modifier
                             .constrainAs(picker) {
                                 top.linkTo(parent.top)
@@ -125,9 +142,9 @@ fun Reservation(
                                 end.linkTo(parent.end)
                             }
                     )
-                }
+                }*/
 
-                ConstraintLayout(
+                /*ConstraintLayout(
                     modifier = Modifier
                         .fillMaxWidth()
                         .constrainAs(acquisition) {
@@ -157,7 +174,7 @@ fun Reservation(
                                 contentDescription = null
                             )
                         },
-                        onClick = { /*TODO*/ },
+                        onClick = { *//*TODO*//* },
                         modifier = Modifier
                             .constrainAs(picker) {
                                 top.linkTo(parent.top)
@@ -165,7 +182,7 @@ fun Reservation(
                                 end.linkTo(parent.end)
                             }
                     )
-                }
+                }*/
 
                 Text(
                     buildAnnotatedString {
@@ -184,7 +201,7 @@ fun Reservation(
                     modifier = Modifier
                         .padding(5.dp, 25.dp, 0.dp, 0.dp)
                         .constrainAs(availableQuantity) {
-                            top.linkTo(acquisition.bottom)
+                            top.linkTo(item.bottom)
                             start.linkTo(parent.start)
                         }
                 )

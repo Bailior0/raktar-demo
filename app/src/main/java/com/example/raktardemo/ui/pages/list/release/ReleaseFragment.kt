@@ -23,7 +23,6 @@ class ReleaseFragment : RainbowCakeFragment<ReleaseViewState, ReleaseViewModel>(
         private const val EXTRA_ITEM = "ITEM"
         private const val EXTRA_GROUP = "GROUP"
 
-
         fun newInstance(item: StoredItem): ReleaseFragment {
             return ReleaseFragment().applyArgs {
                 putParcelable(EXTRA_ITEM, item)

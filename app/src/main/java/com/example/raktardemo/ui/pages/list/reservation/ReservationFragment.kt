@@ -12,6 +12,7 @@ import co.zsmb.rainbowcake.navigation.extensions.applyArgs
 import co.zsmb.rainbowcake.navigation.navigator
 import com.example.raktardemo.data.model.Reservation
 import com.example.raktardemo.data.model.StoredItem
+import com.example.raktardemo.ui.pages.list.release.ReleaseFragment
 import com.example.raktardemo.ui.views.Reservation
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,17 +23,30 @@ class ReservationFragment : RainbowCakeFragment<ReservationViewState, Reservatio
 
     companion object {
         private const val EXTRA_ITEM = "ITEM"
-
+        private const val EXTRA_GROUP = "GROUP"
 
         fun newInstance(item: StoredItem): ReservationFragment {
             return ReservationFragment().applyArgs {
                 putParcelable(EXTRA_ITEM, item)
             }
         }
+
+        fun newInstance(items: ArrayList<StoredItem>): ReservationFragment {
+            return ReservationFragment().applyArgs {
+                putParcelableArrayList(EXTRA_GROUP, items)
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        viewModel.setReservation(arguments?.getParcelable(EXTRA_ITEM)!!)
+        //viewModel.setReservation(arguments?.getParcelable(EXTRA_ITEM)!!)
+        val item = arguments?.getParcelable<StoredItem>(ReservationFragment.EXTRA_ITEM)
+        val group = arguments?.getParcelableArrayList<StoredItem>(ReservationFragment.EXTRA_GROUP)
+
+        if(item != null)
+            viewModel.setReservation(item)
+        else if(group != null)
+            viewModel.setReservationGroup(group)
 
         return ComposeView(requireContext()).apply {
             setContent {
@@ -47,6 +61,13 @@ class ReservationFragment : RainbowCakeFragment<ReservationViewState, Reservatio
                 is Loading -> FullScreenLoading()
                 is ReservationContent -> Reservation(
                     product = viewState.item!!,
+                    group = emptyList(),
+                    onIconClick = { navigator?.pop() },
+                    onReservationClick = ::onReservation
+                )
+                is ReservationGroupContent -> Reservation(
+                    product = null,
+                    group = viewState.group,
                     onIconClick = { navigator?.pop() },
                     onReservationClick = ::onReservation
                 )

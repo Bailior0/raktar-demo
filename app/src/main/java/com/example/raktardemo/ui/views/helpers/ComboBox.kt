@@ -56,7 +56,7 @@ fun ComboBox(
                     onExpandedChanged(false)
                 }
             ) {
-                Text(text = s)
+
             }
         }
     }

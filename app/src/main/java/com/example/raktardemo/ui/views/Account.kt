@@ -15,6 +15,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -22,6 +23,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.example.raktardemo.R
 import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.Worker
+import com.example.raktardemo.ui.views.theme.RaktarAppJustUi1Theme
 import com.example.raktardemo.ui.views.theme.Shapes
 import com.example.raktardemo.ui.views.theme.Teal200
 
@@ -178,14 +180,12 @@ fun Account(
                         Text(
                             text = "Kijelentkezés",
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier
-                                .padding(25.dp, 0.dp)
                         )
                     },
                     onClick = onLogoutClick,
                     modifier = Modifier
                         .scale(2f)
-                        .padding(0.dp, 50.dp, 0.dp, 50.dp)
+                        .padding(0.dp, 50.dp)
                         .constrainAs(button) {
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
@@ -224,11 +224,12 @@ fun StorageItem(
     }
 }
 
-/*@Preview
+@Preview
 @Composable
 fun AccountPreview() {
     RaktarAppJustUi1Theme {
         val worker = Worker(
+            id = "alma",
             name = "Raktáros Réka",
             email = "raktaros.reka@raktar.hu",
             phoneNumber = "+36 10 111-1111",
@@ -257,6 +258,6 @@ fun AccountPreview() {
         )
         worker.storages = mutableListOf(storage1, storage2, storage3, storage2, storage2, storage2, storage2, storage2, storage2, storage2, storage2, storage2, storage2, storage2, storage2, storage3, storage3, storage3, storage3, storage3, storage3, storage3, storage3, storage3)
 
-        Account(worker)
+        Account(worker, {}, {})
     }
-}*/
+}

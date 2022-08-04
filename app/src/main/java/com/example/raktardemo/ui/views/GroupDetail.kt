@@ -24,7 +24,8 @@ import com.example.raktardemo.ui.views.theme.Shapes
 fun GroupDetail(
     groups: List<List<StoredItem>>,
     onClicked: (StoredItem) -> Unit,
-    onReleaseClicked: (ArrayList<StoredItem>) -> Unit
+    onReleaseClicked: (ArrayList<StoredItem>) -> Unit,
+    onReserveClicked: (ArrayList<StoredItem>) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -55,9 +56,14 @@ fun GroupDetail(
                         start.linkTo(parent.start)
                     }
             )
+
             Text(
                 buildAnnotatedString {
-                    withStyle(style = SpanStyle(color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold)) {
+                    withStyle(style = SpanStyle(
+                        color = Color.Black,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )) {
                         append("kábel")
                     }
                 },
@@ -85,7 +91,8 @@ fun GroupDetail(
                     Groups(
                         group = groups,
                         onClicked = onClicked,
-                        onReleaseClicked = onReleaseClicked
+                        onReleaseClicked = onReleaseClicked,
+                        onReserveClicked = onReserveClicked
                     )
                 }
             }
@@ -97,7 +104,8 @@ fun GroupDetail(
 fun Groups(
     group: List<StoredItem>,
     onClicked: (StoredItem) -> Unit,
-    onReleaseClicked: (ArrayList<StoredItem>) -> Unit
+    onReleaseClicked: (ArrayList<StoredItem>) -> Unit,
+    onReserveClicked: (ArrayList<StoredItem>) -> Unit,
 ) {
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
@@ -105,7 +113,8 @@ fun Groups(
         val (
             item,
             acquisition,
-            button,
+            releaseButton,
+            reserveButton,
             list
         ) = createRefs()
 
@@ -120,7 +129,7 @@ fun Groups(
                 }
             },
             modifier = Modifier
-                .padding(2.dp, 0.dp)
+                .padding(5.dp, 0.dp)
                 .constrainAs(acquisition) {
                     top.linkTo(item.bottom)
                     start.linkTo(parent.start)
@@ -140,7 +149,30 @@ fun Groups(
             },
             modifier = Modifier
                 .height(28.dp)
-                .constrainAs(button) {
+                //.width(90.dp)
+                .padding(2.dp, 0.dp)
+                .constrainAs(releaseButton) {
+                    top.linkTo(item.bottom)
+                    end.linkTo(reserveButton.start)
+                }
+        )
+
+        Button(
+            content = {
+                Text(
+                    text = "Foglalás",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 9.sp
+                )
+            },
+            onClick = {
+                onReserveClicked(group as ArrayList<StoredItem>)
+            },
+            modifier = Modifier
+                .height(28.dp)
+                //.width(90.dp)
+                .padding(0.dp, 0.dp, 5.dp, 0.dp)
+                .constrainAs(reserveButton) {
                     top.linkTo(item.bottom)
                     end.linkTo(parent.end)
                 }
@@ -148,9 +180,9 @@ fun Groups(
 
         LazyColumn(
             modifier = Modifier
-                .padding(0.dp, 0.dp, 0.dp, 15.dp)
+                .padding(0.dp, 2.dp, 0.dp, 15.dp)
                 .constrainAs(list) {
-                    top.linkTo(button.bottom)
+                    top.linkTo(reserveButton.bottom)
                     start.linkTo(parent.start)
                     bottom.linkTo(parent.bottom)
                     end.linkTo(parent.end)

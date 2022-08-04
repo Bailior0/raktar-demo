@@ -55,7 +55,7 @@ fun Acquisition(
                     .fillMaxSize()
             ) {
                 val (
-                    product,
+                    productField,
                     warehouse,
                     quantitySwitch,
                     quantity,
@@ -80,7 +80,7 @@ fun Acquisition(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 2.dp)
-                        .constrainAs(product) {
+                        .constrainAs(productField) {
                             top.linkTo(parent.top)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
@@ -124,7 +124,7 @@ fun Acquisition(
                             .fillMaxWidth()
                             .padding(0.dp, 2.dp)
                             .constrainAs(warehouse) {
-                                top.linkTo(product.bottom)
+                                top.linkTo(productField.bottom)
                                 start.linkTo(parent.start)
                                 end.linkTo(parent.end)
                             }
@@ -198,6 +198,7 @@ fun Acquisition(
                     value = priceInput,
                     onValueChange = { priceInput = it },
                     singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     placeholder = {
                         Text(
                             text = "Beszerzési ár",
