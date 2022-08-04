@@ -25,27 +25,25 @@ data class StoredItem (
     var itemAcquisitions: List<ItemAcquisition> = emptyList(),
     var reservations: List<Reservation> = emptyList(),
     var releases: List<Release> = emptyList(),
+    var currentQuantity: Double = 0.0,
+    var freeQuantity: Double = 0.0
 
-    var currentQuantity: Double = 0.0
-    /* {
+): Parcelable {
+    init {
         var cnt = freeQuantity
-        for resItem in itemAcquisitions {
-            for reserved in resItem.reserved {
+        for(resItem in itemAcquisitions) {
+            for(reserved in resItem.reserved) {
                 cnt += reserved
             }
         }
-        return cnt
-    }*/,
+        currentQuantity = cnt
 
-    var freeQuantity: Double = 0.0
-    /* {
-        var cnt = 0.0
-        for acqItem in itemAcquisitions {
-            for count in acqItem.packageCounts {
-                cnt += count
+        var cnt2 = 0.0
+        for(acqItem in itemAcquisitions) {
+            for(count in acqItem.packageCounts) {
+                cnt2 += count
             }
         }
-        return cnt
-    }*/
-
-): Parcelable
+        freeQuantity = cnt2
+    }
+}
