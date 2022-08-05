@@ -1,8 +1,6 @@
 package com.example.raktardemo.data.model
 
 import android.os.Parcelable
-import com.example.raktardemo.data.enums.PackageType
-import com.example.raktardemo.data.enums.QuantityUnit
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

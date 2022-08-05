@@ -146,7 +146,7 @@ fun List(
                                 width = Dimension.fillToConstraints
                             }
                     ) {
-                        itemsIndexed(items) { _, item ->
+                        itemsIndexed(items.filter { it.item.name.contains(text, true)}) { _, item ->
                             ListItem(
                                 item = item,
                                 onClicked = {
@@ -156,11 +156,9 @@ fun List(
                         }
                     }
                 } else if (typeSwitchState) {
-                    //val itemGroups = ArrayList(items.groupBy{it.item.category.id}.values)
-
                     val itemGroups = ArrayList(items.groupBy{
                         when {
-                            it.itemAcquisitions.isNotEmpty() -> it.item.category.id
+                            it.itemAcquisitions.isNotEmpty() && it.item.name.contains(text, true) -> it.item.category.id
                             else -> null
                         }
                     }.filterKeys { it != null }.values)

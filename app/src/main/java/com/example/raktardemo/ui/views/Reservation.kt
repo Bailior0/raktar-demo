@@ -329,8 +329,8 @@ fun Reservation(
                             //TODO
                             Reservation(
                                 reservationGoal = reservationGoalInput,
-                                reservationDate = Date(),
-                                reservationGoalDate = Date(),
+                                reservationDate = "",
+                                reservationGoalDate = "",
                                 reservationQuantity = 0.0,
                                 cancelled = false,
                                 repeatAmount = 0

@@ -1,8 +1,10 @@
 package com.example.raktardemo.ui.views
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -81,7 +83,7 @@ fun ProductDetail(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Raktár2")
+                            append("TODO")
                         }
                     },
                     modifier = Modifier
@@ -99,7 +101,7 @@ fun ProductDetail(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("1000 csomag / 3050 méter")
+                            append("TODO")
                         }
                     },
                     textAlign = TextAlign.End,
@@ -156,7 +158,7 @@ fun ProductDetail(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Hama Hama Hama Hama Hama Hama Hama Hama Hama Hama Hama Hama")
+                            append(product.item.manufacturer)
                         }
                     },
                     modifier = Modifier
@@ -174,7 +176,7 @@ fun ProductDetail(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("kábel kábel kábel kábel kábel kábel kábel kábel kábel kábel kábel kábel kábel kábel kábel")
+                            append(product.item.category.name)
                         }
                     },
                     textAlign = TextAlign.End,
@@ -193,7 +195,7 @@ fun ProductDetail(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("123456789123456789123456789123456789123456789")
+                            append(product.item.serialNumber)
                         }
                     },
                     modifier = Modifier
@@ -212,7 +214,7 @@ fun ProductDetail(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("43274368946")
+                            append("TODO")
                         }
                     },
                     textAlign = TextAlign.End,
@@ -232,7 +234,7 @@ fun ProductDetail(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("csomag")
+                            append(product.item.type.name)
                         }
                     },
                     modifier = Modifier
@@ -251,7 +253,7 @@ fun ProductDetail(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("méter")
+                            append(product.item.quantityUnit.name)
                         }
                     },
                     textAlign = TextAlign.End,
@@ -271,11 +273,11 @@ fun ProductDetail(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("70000000000000000000000000 forint/kilométer\n")
+                            append("TODO")
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("20000 forint/csomag")
+                            append("TODO")
                         }
                     },
                     modifier = Modifier
@@ -294,7 +296,12 @@ fun ProductDetail(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("igen")
+                            append(
+                                when(product.item.openable) {
+                                    true -> "igen"
+                                    false -> "nem"
+                                }
+                            )
                         }
                     },
                     textAlign = TextAlign.End,
@@ -314,7 +321,7 @@ fun ProductDetail(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("300000000000000000000000000000000000000000000000000000000001 méter")
+                            append("TODO")
                         }
                     },
                     modifier = Modifier
@@ -334,19 +341,22 @@ fun ProductDetail(
                     .padding(5.dp, 30.dp, 5.dp, 5.dp)
                     .background(MaterialTheme.colors.secondary, RoundedCornerShape(5.dp))
             ) {
-                item {
-                    ListMaker("foglalva", "100 méter", "2022.02.02.")
-                    ListMaker("bevételezve", "5000 méter", "2023.03.03.")
-                    ListMaker("foglalva", "5800 méter", "2023.03.04.")
-                    ListMaker("bevételezve", "200 méter", "2023.03.05.")
-                    ListMaker("bevételezve", "8000 méter", "2023.03.06.")
-                    ListMaker("foglalva", "60 méter", "2023.03.09.")
-                    ListMaker("foglalva", "910 méter", "2023.03.11.")
-                    ListMaker("bevételezve", "323 méter", "2023.03.24.")
-                    ListMaker("bevételezve", "700 méter", "2023.03.25.")
+                val itemOperations: MutableList<Triple<String, String, String>> = mutableListOf()
+                for(reservation in product.reservations)
+                    itemOperations.add(Triple("foglalva", reservation.reservationQuantity.toString() + " " + product.item.quantityUnit.toString(), reservation.reservationDate))
+                for(acquisition in product.itemAcquisitions)
+                    itemOperations.add(Triple("bevételezve", acquisition.quantity.toString() + " " + product.item.quantityUnit.toString(), acquisition.acquisitionDate))
+
+                itemOperations.sortBy { it.third }
+
+                itemsIndexed(itemOperations) { _, item ->
+                    ListMaker(
+                        text1 = item.first,
+                        text2 = item.second,
+                        text3 = item.third
+                    )
                 }
             }
-
         }
     }
 }

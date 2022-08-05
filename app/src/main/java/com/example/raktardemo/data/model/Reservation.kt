@@ -6,10 +6,10 @@ import java.util.*
 
 @Parcelize
 data class Reservation(
-    var reservationGoal: String,
-    var reservationDate: Date,
-    var reservationGoalDate: Date,
-    var reservationQuantity: Double,
-    var cancelled: Boolean,
-    var repeatAmount: Int
+    var reservationGoal: String = "",
+    var reservationDate: String = "",
+    var reservationGoalDate: String = "",
+    var reservationQuantity: Double = 0.0,
+    var cancelled: Boolean = false,
+    var repeatAmount: Int = 0
 ): Parcelable
