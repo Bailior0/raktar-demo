@@ -168,7 +168,7 @@ fun List(
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(0.dp, 25.dp, 0.dp, 15.dp)
+                            .padding(0.dp, 0.dp, 0.dp, 5.dp)
                             .constrainAs(list) {
                                 top.linkTo(buttons.bottom)
                                 start.linkTo(parent.start)

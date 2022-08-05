@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.theme.Shapes
+import java.lang.Math.max
+import kotlin.math.min
 
 @Composable
 fun GroupDetail(
@@ -26,6 +28,16 @@ fun GroupDetail(
     onReleaseClicked: (ArrayList<StoredItem>, String) -> Unit,
     onReserveClicked: (ArrayList<StoredItem>, String) -> Unit
 ) {
+    val acqItems: MutableList<Pair<String, StoredItem>> = mutableListOf()
+
+    for(grp in groups)
+        for(acq in grp.itemAcquisitions)
+            acqItems.add(Pair(acq.id, grp))
+
+    val itemGroups = acqItems.groupBy{it.first}
+
+    val array = ArrayList(itemGroups.values)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -83,17 +95,10 @@ fun GroupDetail(
                         bottom.linkTo(parent.bottom)
                         end.linkTo(parent.end)
                     }
-                    .height(200.dp)
+                    //.height(83.dp)
+                    .height(min((83 * array.size * array[0].size /* * array.forEach { (list) -> list.size }*/), 200).dp)
             ) {
-                val acqItems: MutableList<Pair<String, StoredItem>> = mutableListOf()
-
-                for(grp in groups)
-                    for(acq in grp.itemAcquisitions)
-                        acqItems.add(Pair(acq.id, grp))
-
-                val itemGroups = acqItems.groupBy{it.first}
-
-                itemsIndexed(ArrayList(itemGroups.values)) { _, group ->
+                itemsIndexed(array) { _, group ->
                     Groups(
                         itemAcquisitionId = group.unzip().first[0],
                         group = group.unzip().second,
@@ -197,7 +202,8 @@ fun Groups(
                     bottom.linkTo(parent.bottom)
                     end.linkTo(parent.end)
                 }
-                .height(110.dp)
+                //.height(110.dp)
+                .height(min((40 * group.size), 110).dp)
         ) {
             itemsIndexed(group) { _, item ->
                 Items(
