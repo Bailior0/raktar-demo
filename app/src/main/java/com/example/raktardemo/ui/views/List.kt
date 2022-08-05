@@ -156,7 +156,14 @@ fun List(
                         }
                     }
                 } else if (typeSwitchState) {
-                    val itemGroups = ArrayList(items.groupBy{it.item.category.id}.values)
+                    //val itemGroups = ArrayList(items.groupBy{it.item.category.id}.values)
+
+                    val itemGroups = ArrayList(items.groupBy{
+                        when {
+                            it.itemAcquisitions.isNotEmpty() -> it.item.category.id
+                            else -> null
+                        }
+                    }.filterKeys { it != null }.values)
 
                     LazyColumn(
                         modifier = Modifier

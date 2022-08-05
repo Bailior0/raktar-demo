@@ -85,20 +85,18 @@ fun GroupDetail(
                     }
                     .height(200.dp)
             ) {
-                val itemGroups = groups.groupBy{
-                    when {
-                        it.itemAcquisitions.isNotEmpty() -> it.itemAcquisitions.firstOrNull()?.id
-                        else -> null
-                    }
-                }.filterKeys { it != null }
+                val acqItems: MutableList<Pair<String, StoredItem>> = mutableListOf()
 
-                val itemAcquisitionId = ArrayList(itemGroups.keys)
+                for(grp in groups)
+                    for(acq in grp.itemAcquisitions)
+                        acqItems.add(Pair(acq.id, grp))
 
-                itemsIndexed(ArrayList(itemGroups.values)) { index, group ->
+                val itemGroups = acqItems.groupBy{it.first}
+
+                itemsIndexed(ArrayList(itemGroups.values)) { _, group ->
                     Groups(
-                        index = index,
-                        group = group,
-                        itemAcquisitionId = itemAcquisitionId,
+                        itemAcquisitionId = group.unzip().first[0],
+                        group = group.unzip().second,
                         onClicked = onClicked,
                         onReleaseClicked = onReleaseClicked,
                         onReserveClicked = onReserveClicked
@@ -111,8 +109,7 @@ fun GroupDetail(
 
 @Composable
 fun Groups(
-    index: Int,
-    itemAcquisitionId: ArrayList<String?>,
+    itemAcquisitionId: String,
     group: List<StoredItem>,
     onClicked: (StoredItem) -> Unit,
     onReleaseClicked: (ArrayList<StoredItem>, String) -> Unit,
@@ -136,7 +133,7 @@ fun Groups(
                 }
 
                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                    append(itemAcquisitionId[index]!!)
+                    append(itemAcquisitionId)
                 }
             },
             modifier = Modifier
@@ -156,7 +153,7 @@ fun Groups(
                 )
             },
             onClick = {
-                onReleaseClicked(group as ArrayList<StoredItem>, itemAcquisitionId[index]!!)
+                onReleaseClicked(group as ArrayList<StoredItem>, itemAcquisitionId)
             },
             modifier = Modifier
                 .height(26.dp)
@@ -178,7 +175,7 @@ fun Groups(
                 )
             },
             onClick = {
-                onReserveClicked(group as ArrayList<StoredItem>, itemAcquisitionId[index]!!)
+                onReserveClicked(group as ArrayList<StoredItem>, itemAcquisitionId)
             },
             modifier = Modifier
                 .height(26.dp)
