@@ -16,14 +16,6 @@ data class StoredItem (
 
 ): Parcelable {
     init {
-        var cnt = freeQuantity
-        for(resItem in itemAcquisitions) {
-            for(reserved in resItem.reserved) {
-                cnt += reserved
-            }
-        }
-        currentQuantity = cnt
-
         var cnt2 = 0.0
         for(acqItem in itemAcquisitions) {
             for(count in acqItem.packageCounts) {
@@ -31,5 +23,13 @@ data class StoredItem (
             }
         }
         freeQuantity = cnt2
+
+        var cnt = freeQuantity
+        for(resItem in itemAcquisitions) {
+            for(reserved in resItem.reserved) {
+                cnt += reserved
+            }
+        }
+        currentQuantity = cnt
     }
 }

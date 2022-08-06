@@ -55,6 +55,7 @@ fun List(
                 var text by remember { mutableStateOf("") }
 
                 var showMenu by remember { mutableStateOf(false) }
+                var checkedState by remember { mutableStateOf(false) }
                 var selectedMenuItem by remember { mutableStateOf(0) }
                 val menuItemList = listOf("Név", "Készlet", "Gyártó")
 
@@ -113,7 +114,17 @@ fun List(
                             }
                             //Divider(color = Color.LightGray, thickness = 1.dp)
                         }
-
+                        DropdownMenuItem(
+                            onClick = {}
+                        ) {
+                            Text(text = "Készleten")
+                            Checkbox(
+                                checked = checkedState,
+                                onCheckedChange = {
+                                    checkedState = it
+                                }
+                            )
+                        }
                     }
                 }
 
@@ -134,6 +145,20 @@ fun List(
                 }
 
                 if (!typeSwitchState) {
+                    var sortedItems = items
+
+                    if(checkedState)
+                        sortedItems = sortedItems.filter {it.currentQuantity > 0.0}
+
+                    sortedItems = sortedItems.filter { it.item.name.contains(text, true) || it.item.serialNumber.contains(text, true) || it.item.category.name.contains(text, true)}
+
+                    sortedItems = when(selectedMenuItem) {
+                        0 -> sortedItems.sortedBy { it.item.name }
+                        1 -> sortedItems.sortedBy { it.currentQuantity }
+                        2 -> sortedItems.sortedBy { it.item.manufacturer }
+                        else -> sortedItems.sortedBy { it.item.name }
+                    }
+
                     LazyColumn(
                         modifier = Modifier
                             .padding(0.dp, 25.dp, 0.dp, 15.dp)
@@ -146,16 +171,7 @@ fun List(
                                 width = Dimension.fillToConstraints
                             }
                     ) {
-                        var sortedItems = items
-
-                        sortedItems = when(selectedMenuItem) {
-                            0 -> sortedItems.sortedBy { it.item.name }
-                            1 -> sortedItems.sortedBy { it.currentQuantity }
-                            2 -> sortedItems.sortedBy { it.item.manufacturer }
-                            else -> sortedItems.sortedBy { it.item.name }
-                        }
-
-                        itemsIndexed(sortedItems.filter { it.item.name.contains(text, true) || it.item.serialNumber.contains(text, true)}) { _, item ->
+                        itemsIndexed(sortedItems) { _, item ->
                             ListItem(
                                 item = item,
                                 onClicked = {
@@ -165,9 +181,14 @@ fun List(
                         }
                     }
                 } else if (typeSwitchState) {
-                    val itemGroups = ArrayList(items.groupBy{
+                    var sortedItems = items
+
+                    if(checkedState)
+                        sortedItems = sortedItems.filter {it.currentQuantity > 0.0}
+
+                    val itemGroups = ArrayList(sortedItems.groupBy{
                         when {
-                            it.itemAcquisitions.isNotEmpty() && (it.item.name.contains(text, true) || it.item.serialNumber.contains(text, true)) -> it.item.category.id
+                            it.itemAcquisitions.isNotEmpty() && (it.item.name.contains(text, true) || it.item.serialNumber.contains(text, true) || it.item.category.name.contains(text, true)) -> it.item.category.id
                             else -> null
                         }
                     }.filterKeys { it != null }.values)
