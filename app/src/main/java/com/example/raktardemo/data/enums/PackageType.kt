@@ -2,9 +2,9 @@ package com.example.raktardemo.data.enums
 
 import com.google.firebase.firestore.PropertyName
 
-enum class PackageType {
+enum class PackageType(val translation: String) {
     @PropertyName("package")
-    Package,
+    Package("csomag"),
     @PropertyName("piece")
-    Piece
+    Piece("darab")
 }

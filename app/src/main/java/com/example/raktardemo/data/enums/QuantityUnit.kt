@@ -2,15 +2,15 @@ package com.example.raktardemo.data.enums
 
 import com.google.firebase.firestore.PropertyName
 
-enum class QuantityUnit {
+enum class QuantityUnit(val translation: String) {
     @PropertyName("liter")
-    Liter,
+    Liter("liter"),
     @PropertyName("kilogram")
-    Kilogram,
+    Kilogram("kilogramm"),
     @PropertyName("piece")
-    Piece,
+    Piece("darab"),
     @PropertyName("meter")
-    Meter,
+    Meter("méter"),
     @PropertyName("other")
-    Other
+    Other("egyéb")
 }

@@ -1,5 +1,12 @@
 package com.example.raktardemo.data.enums
 
+import com.google.firebase.firestore.PropertyName
+
 enum class StatisticsType {
-    Movements, Charts, Notifications
+    @PropertyName("movements")
+    Movements,
+    @PropertyName("charts")
+    Charts,
+    @PropertyName("notifications")
+    Notifications
 }

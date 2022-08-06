@@ -2,9 +2,9 @@ package com.example.raktardemo.data.enums
 
 import com.google.firebase.firestore.PropertyName
 
-enum class PackageState {
+enum class PackageState(val translation: String) {
     @PropertyName("opened")
-    Opened,
+    Opened("bontott"),
     @PropertyName("full")
-    Full
+    Full("bontatlan")
 }

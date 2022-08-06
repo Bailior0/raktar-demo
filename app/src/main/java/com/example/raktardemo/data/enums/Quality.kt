@@ -2,11 +2,11 @@ package com.example.raktardemo.data.enums
 
 import com.google.firebase.firestore.PropertyName
 
-enum class Quality {
+enum class Quality(val translation: String) {
     @PropertyName("good")
-    Good,
+    Good("jó"),
     @PropertyName("faulty")
-    Faulty,
+    Faulty("hibás"),
     @PropertyName("other")
-    Other
+    Other("egyéb")
 }
