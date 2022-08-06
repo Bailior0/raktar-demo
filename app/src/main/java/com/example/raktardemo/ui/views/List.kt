@@ -56,7 +56,7 @@ fun List(
 
                 var showMenu by remember { mutableStateOf(false) }
                 var selectedMenuItem by remember { mutableStateOf(0) }
-                val menuItemList = listOf("Név", "Vonalkód", "Készlet", "Gyártó")
+                val menuItemList = listOf("Név", "Készlet", "Gyártó")
 
                 OutlinedTextField(
                     value = text,
@@ -146,7 +146,16 @@ fun List(
                                 width = Dimension.fillToConstraints
                             }
                     ) {
-                        itemsIndexed(items.filter { it.item.name.contains(text, true)}) { _, item ->
+                        var sortedItems = items
+
+                        sortedItems = when(selectedMenuItem) {
+                            0 -> sortedItems.sortedBy { it.item.name }
+                            1 -> sortedItems.sortedBy { it.currentQuantity }
+                            2 -> sortedItems.sortedBy { it.item.manufacturer }
+                            else -> sortedItems.sortedBy { it.item.name }
+                        }
+
+                        itemsIndexed(sortedItems.filter { it.item.name.contains(text, true) || it.item.serialNumber.contains(text, true)}) { _, item ->
                             ListItem(
                                 item = item,
                                 onClicked = {
@@ -158,7 +167,7 @@ fun List(
                 } else if (typeSwitchState) {
                     val itemGroups = ArrayList(items.groupBy{
                         when {
-                            it.itemAcquisitions.isNotEmpty() && it.item.name.contains(text, true) -> it.item.category.id
+                            it.itemAcquisitions.isNotEmpty() && (it.item.name.contains(text, true) || it.item.serialNumber.contains(text, true)) -> it.item.category.id
                             else -> null
                         }
                     }.filterKeys { it != null }.values)
