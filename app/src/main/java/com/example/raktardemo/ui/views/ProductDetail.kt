@@ -1,6 +1,5 @@
 package com.example.raktardemo.ui.views
 
-import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -234,7 +233,7 @@ fun ProductDetail(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append(product.item.type.name)
+                            append(product.item.type)
                         }
                     },
                     modifier = Modifier
@@ -253,7 +252,7 @@ fun ProductDetail(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append(product.item.quantityUnit.name)
+                            append(product.item.quantityUnit)
                         }
                     },
                     textAlign = TextAlign.End,
