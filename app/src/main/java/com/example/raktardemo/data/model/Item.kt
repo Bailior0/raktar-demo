@@ -15,12 +15,8 @@ data class Item(
     var manufacturer: String = "",
     var serialNumber: String = "",
     // TODO: vonalkód
-    @get:Exclude
-    var typeEnum: PackageType = PackageType.Piece,
-    var type: String = typeEnum.toString().lowercase(),
-    @get:Exclude
-    var quantityUnitEnum: QuantityUnit = QuantityUnit.Piece,
-    var quantityUnit: String = quantityUnitEnum.toString().lowercase(),
+    var type: PackageType = PackageType.Piece,
+    var quantityUnit: QuantityUnit = QuantityUnit.Piece,
     var defaultPackageQuantity: Double = 0.0,
     var openable: Boolean = false, // on piece false by default
     var defaultPurchasePrice: Double? = null,

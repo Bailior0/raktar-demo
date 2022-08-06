@@ -2,7 +2,6 @@ package com.example.raktardemo.data.model
 
 import android.os.Parcelable
 import com.example.raktardemo.data.enums.Ownership
-import com.google.firebase.firestore.Exclude
 import kotlinx.parcelize.Parcelize
 import java.util.*
 
@@ -16,9 +15,7 @@ data class ItemAcquisition (
     var acquisitionPrice: Double = 0.0,
     var pricePerUnit: Double = 0.0,
     var currentStorage: String = "",
-    @get:Exclude
-    var ownedByEnum: Ownership = Ownership.Own,
-    var ownedBy: String = ownedByEnum.toString().lowercase(),
+    var ownedBy: Ownership = Ownership.Own,
     var packageCounts: List<Double> = emptyList(),
     var reserved: List<Double> = emptyList(),
     var released: List<Double> = emptyList()

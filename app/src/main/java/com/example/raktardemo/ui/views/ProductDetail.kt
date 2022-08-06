@@ -233,7 +233,7 @@ fun ProductDetail(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append(product.item.type)
+                            append(product.item.type.toString())
                         }
                     },
                     modifier = Modifier
@@ -252,7 +252,7 @@ fun ProductDetail(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append(product.item.quantityUnit)
+                            append(product.item.quantityUnit.toString())
                         }
                     },
                     textAlign = TextAlign.End,
@@ -342,9 +342,9 @@ fun ProductDetail(
             ) {
                 val itemOperations: MutableList<Triple<String, String, String>> = mutableListOf()
                 for(reservation in product.reservations)
-                    itemOperations.add(Triple("foglalva", reservation.reservationQuantity.toString() + " " + product.item.quantityUnit.toString(), reservation.reservationDate))
+                    itemOperations.add(Triple("foglalva", reservation.reservationQuantity.toString() + " " + product.item.quantityUnit, reservation.reservationDate))
                 for(acquisition in product.itemAcquisitions)
-                    itemOperations.add(Triple("bevételezve", acquisition.quantity.toString() + " " + product.item.quantityUnit.toString(), acquisition.acquisitionDate))
+                    itemOperations.add(Triple("bevételezve", acquisition.quantity.toString() + " " + product.item.quantityUnit, acquisition.acquisitionDate))
 
                 itemOperations.sortBy { it.third }
 
