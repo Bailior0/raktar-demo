@@ -17,12 +17,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.R
 import com.example.raktardemo.data.model.StoredItem
@@ -67,6 +69,7 @@ fun Release(
                     .fillMaxSize()
             ) {
                 val (
+                    itemLabel,
                     item,
                     acquisition,
                     quantitySwitch,
@@ -86,81 +89,53 @@ fun Release(
                 var movable = 4
                 var unit = "db"
 
-                ConstraintLayout(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .constrainAs(item) {
-                            top.linkTo(parent.top)
-                        }
-                ) {
-                    val (text, picker) = createRefs()
-
+                if (product == null){
                     Text(
-                        text = itemInput,
+                        text = "Beszerzés: ",
                         color = Color.Gray,
+                        fontSize = 20.sp,
+                        fontStyle = FontStyle.Italic,
                         modifier = Modifier
-                            .width((LocalConfiguration.current.screenWidthDp - 150).dp)
-                            .constrainAs(text) {
+                            .width(((LocalConfiguration.current.screenWidthDp / 2) + 50).dp)
+                            .constrainAs(itemLabel) {
                                 top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
                                 start.linkTo(parent.start)
                             }
                     )
 
-                    Button(
-                        content = {
-                            Text(text = "Választ")
-
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_baseline_chevron_right_24),
-                                contentDescription = null
-                            )
-                        },
-                        onClick = { /*TODO*/ },
+                    Text(
+                        text = acqId ?: "null",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.End,
                         modifier = Modifier
-                            .constrainAs(picker) {
+                            .constrainAs(item) {
                                 top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
                                 end.linkTo(parent.end)
                             }
                     )
-                }
-
-                ConstraintLayout(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .constrainAs(acquisition) {
-                            top.linkTo(item.bottom)
-                        }
-                ) {
-                    val (text, picker) = createRefs()
-
+                } else {
                     Text(
-                        text = acquisitionInput,
+                        text = "Termék: ",
                         color = Color.Gray,
+                        fontSize = 20.sp,
+                        fontStyle = FontStyle.Italic,
                         modifier = Modifier
-                            .width((LocalConfiguration.current.screenWidthDp - 150).dp)
-                            .constrainAs(text) {
+                            .constrainAs(itemLabel) {
                                 top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
                                 start.linkTo(parent.start)
                             }
                     )
 
-                    Button(
-                        content = {
-                            Text(text = "Választ")
-
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_baseline_chevron_right_24),
-                                contentDescription = null
-                            )
-                        },
-                        onClick = { /*TODO*/ },
+                    Text(
+                        text = product.item.name,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.End,
                         modifier = Modifier
-                            .constrainAs(picker) {
+                            .width(((LocalConfiguration.current.screenWidthDp / 2) + 60).dp)
+                            .constrainAs(item) {
                                 top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
                                 end.linkTo(parent.end)
                             }
                     )
@@ -170,7 +145,7 @@ fun Release(
                     modifier = Modifier
                         .padding(5.dp, 25.dp, 0.dp, 0.dp)
                         .constrainAs(quantitySwitch) {
-                            top.linkTo(acquisition.bottom)
+                            top.linkTo(item.bottom)
                             start.linkTo(parent.start)
                         }
                 ) {
