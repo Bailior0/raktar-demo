@@ -131,7 +131,7 @@ fun ProductDetail(
                     CircularButton(
                         buttonColor = buttonColor,
                         icon = R.drawable.ic_baseline_input_24,
-                        label = "Bevételezés",
+                        label = "Beszerzés",
                         onClick = onAcquisitionClick
                     )
 
@@ -344,7 +344,7 @@ fun ProductDetail(
                 for(reservation in product.reservations)
                     itemOperations.add(Triple("foglalva", reservation.reservationQuantity.toString() + " " + product.item.quantityUnit.translation, reservation.reservationDate))
                 for(acquisition in product.itemAcquisitions)
-                    itemOperations.add(Triple("bevételezve", acquisition.quantity.toString() + " " + product.item.quantityUnit.translation, acquisition.acquisitionDate))
+                    itemOperations.add(Triple("beszerezve", acquisition.quantity.toString() + " " + product.item.quantityUnit.translation, acquisition.acquisitionDate))
 
                 itemOperations.sortBy { it.third }
 
