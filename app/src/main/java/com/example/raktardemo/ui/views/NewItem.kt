@@ -209,11 +209,15 @@ fun NewItem(
                 ) = createRefs()
 
                 var quantityInput by remember { mutableStateOf("") }
-                var unitOfQuantityInput by remember { mutableStateOf("") }
+                //var unitOfQuantityInput by remember { mutableStateOf("") }
                 var packageSizeInput by remember { mutableStateOf("") }
 
                 var quantitySwitchState by remember { mutableStateOf(false) }
                 var openableSwitchState by remember { mutableStateOf(false) }
+
+                val unitList = listOf("méter", "liter", "kilogramm", "darab", "egyéb")
+                var unitSelectedIndex by remember { mutableStateOf(0) }
+                var unitExpanded by remember { mutableStateOf(false) }
 
                 Text(
                     text = "Csomagolási adatok",
@@ -273,7 +277,7 @@ fun NewItem(
                         }
                 )
 
-                OutlinedTextField(
+                /*OutlinedTextField(
                     value = unitOfQuantityInput,
                     onValueChange = { unitOfQuantityInput = it },
                     singleLine = true,
@@ -291,7 +295,50 @@ fun NewItem(
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                         }
-                )
+                )*/
+
+                ConstraintLayout(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(5.dp)
+                        .constrainAs(unitOfQuantity) {
+                            top.linkTo(quantity.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        }
+                ) {
+                    val (text, comboBox) = createRefs()
+
+                    Text(
+                        text = "Mértékegység: ",
+                        color = Color.Gray,
+                        modifier = Modifier
+                            .constrainAs(text) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                start.linkTo(parent.start)
+                            }
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .constrainAs(comboBox) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                end.linkTo(parent.end)
+                            }
+                    ) {
+                        ComboBox(
+                            list = unitList,
+                            selectedIndex = unitSelectedIndex,
+                            onIndexChanged = { unitSelectedIndex = it },
+                            isExpanded = unitExpanded,
+                            onExpandedChanged = { unitExpanded = it },
+                            textWidth = 60.dp
+                        )
+                    }
+                }
+
 
                 if (!quantitySwitchState) {
                     OutlinedTextField(

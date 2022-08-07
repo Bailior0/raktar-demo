@@ -11,12 +11,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.R
 import com.example.raktardemo.data.model.StoredItem
+import com.example.raktardemo.ui.views.helpers.ComboBox
 import com.example.raktardemo.ui.views.helpers.DatePicker
 import com.example.raktardemo.ui.views.helpers.SegmentedControlQuantitySwitch
 import com.example.raktardemo.ui.views.helpers.SegmentedControlTwoWaySwitch
@@ -38,7 +42,12 @@ fun Acquisition(
             title = { Text(text = "Beszerzés") },
             navigationIcon = {
                 IconButton(
-                    content = { Icon(painter = painterResource(id = R.drawable.baseline_arrow_back_24), contentDescription = null) },
+                    content = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.baseline_arrow_back_24),
+                            contentDescription = null
+                        )
+                    },
                     onClick = onIconClick
                 )
             }
@@ -55,7 +64,8 @@ fun Acquisition(
                     .fillMaxSize()
             ) {
                 val (
-                    productField,
+                    itemLabel,
+                    item,
                     warehouse,
                     quantitySwitch,
                     quantity,
@@ -65,8 +75,6 @@ fun Acquisition(
                     button
                 ) = createRefs()
 
-                var productInput by remember { mutableStateOf("Termék") }
-                var warehouseInput by remember { mutableStateOf("Raktár") }
                 var quantityInput by remember { mutableStateOf("") }
                 var dateInput by remember { mutableStateOf("") }
                 var priceInput by remember { mutableStateOf("") }
@@ -76,23 +84,51 @@ fun Acquisition(
 
                 var datePickerState by remember { mutableStateOf(false) }
 
+                val warehouseList = listOf("Raktár1", "Raktár2", "Raktár3")
+                var warehouseExpanded by remember { mutableStateOf(false) }
+                var warehouseSelectedIndex by remember { mutableStateOf(0) }
+
+                Text(
+                    text = "Termék: ",
+                    color = Color.Gray,
+                    fontSize = 20.sp,
+                    fontStyle = FontStyle.Italic,
+                    modifier = Modifier
+                        .constrainAs(itemLabel) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                        }
+                )
+
+                Text(
+                    text = product.item.name,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier
+                        .width(((LocalConfiguration.current.screenWidthDp / 2) + 60).dp)
+                        .constrainAs(item) {
+                            top.linkTo(parent.top)
+                            end.linkTo(parent.end)
+                        }
+                )
+
                 ConstraintLayout(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(0.dp, 2.dp)
-                        .constrainAs(productField) {
-                            top.linkTo(parent.top)
+                        .padding(0.dp, 15.dp, 0.dp, 0.dp)
+                        .constrainAs(warehouse) {
+                            top.linkTo(item.bottom)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                         }
                 ) {
-                    val (text, picker) = createRefs()
+                    val (text, comboBox) = createRefs()
 
                     Text(
-                        text = productInput,
+                        text = "Raktár választása: ",
                         color = Color.Gray,
                         modifier = Modifier
-                            .width((LocalConfiguration.current.screenWidthDp - 150).dp)
                             .constrainAs(text) {
                                 top.linkTo(parent.top)
                                 bottom.linkTo(parent.bottom)
@@ -100,66 +136,23 @@ fun Acquisition(
                             }
                     )
 
-                    Button(
-                        content = {
-                            Text(text = "Választ")
-
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_baseline_chevron_right_24),
-                                contentDescription = null
-                            )
-                        },
-                        onClick = { /*TODO*/ },
+                    Box(
                         modifier = Modifier
-                            .constrainAs(picker) {
+                            .constrainAs(comboBox) {
                                 top.linkTo(parent.top)
                                 bottom.linkTo(parent.bottom)
                                 end.linkTo(parent.end)
                             }
-                    )
-                }
-
-                ConstraintLayout(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(0.dp, 2.dp)
-                            .constrainAs(warehouse) {
-                                top.linkTo(productField.bottom)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                            }
-                        ) {
-                    val (text, picker) = createRefs()
-
-                    Text(
-                        text = warehouseInput,
-                        color = Color.Gray,
-                        modifier = Modifier
-                            .width((LocalConfiguration.current.screenWidthDp - 150).dp)
-                            .constrainAs(text) {
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
-                                start.linkTo(parent.start)
-                            }
-                    )
-
-                    Button(
-                        content = {
-                            Text(text = "Választ")
-
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_baseline_chevron_right_24),
-                                contentDescription = null
-                            )
-                        },
-                        onClick = { /*TODO*/ },
-                        modifier = Modifier
-                            .constrainAs(picker) {
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
-                                end.linkTo(parent.end)
-                            }
-                    )
+                    ) {
+                        ComboBox(
+                            warehouseList,
+                            warehouseSelectedIndex,
+                            { warehouseSelectedIndex = it },
+                            warehouseExpanded,
+                            { warehouseExpanded = it },
+                            60.dp
+                        )
+                    }
                 }
 
                 Box(

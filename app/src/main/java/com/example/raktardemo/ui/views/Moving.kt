@@ -12,15 +12,18 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.R
 import com.example.raktardemo.data.model.StoredItem
+import com.example.raktardemo.ui.views.helpers.ComboBox
 import com.example.raktardemo.ui.views.helpers.SegmentedControlQuantitySwitch
 import com.example.raktardemo.ui.views.helpers.SegmentedControlTwoWaySwitch
 
@@ -56,6 +59,7 @@ fun Moving(
                     .fillMaxWidth()
             ) {
                 val (
+                    itemLabel,
                     item,
                     quantitySwitch,
                     movableQuantity,
@@ -67,60 +71,46 @@ fun Moving(
                     button
                 ) = createRefs()
 
-                var itemInput by remember { mutableStateOf("Instant Pot Duo 7-in-1 Electric Pressure Cooker, Slow Cooker, Rice Cooker, Steamer, Sauté, Yogurt Maker, Warmer & Sterilizer, Includes Free App with over 1900 Recipes, Stainless Steel, 3 Quart ") }
                 var quantityInput by remember { mutableStateOf("") }
 
                 var quantitySwitchState by remember { mutableStateOf(false) }
 
-                var currentWarehouseInput by remember { mutableStateOf("Raktár") }
+                val warehouseList = listOf("Raktár1", "Raktár2", "Raktár3")
+                var curentWarehouseExpanded by remember { mutableStateOf(false) }
+                var curentWarehouseSelectedIndex by remember { mutableStateOf(0) }
 
-                var destinationWarehouseInput by remember { mutableStateOf("Raktár") }
+                var destinationWarehouseExpanded by remember { mutableStateOf(false) }
+                var destinationWarehouseSelectedIndex by remember { mutableStateOf(1) }
 
                 var movable = 4
                 var unit = "db"
 
                 var packageSwitchState by remember { mutableStateOf(false) }
 
-
-                ConstraintLayout(
+                Text(
+                    text = "Termék: ",
+                    color = Color.Gray,
+                    fontSize = 20.sp,
+                    fontStyle = FontStyle.Italic,
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .constrainAs(itemLabel) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                        }
+                )
+
+                Text(
+                    text = product.item.name,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier
+                        .width(((LocalConfiguration.current.screenWidthDp / 2) + 60).dp)
                         .constrainAs(item) {
                             top.linkTo(parent.top)
+                            end.linkTo(parent.end)
                         }
-                ) {
-                    val (text, picker) = createRefs()
-
-                    Text(
-                        text = itemInput,
-                        color = Color.Gray,
-                        modifier = Modifier
-                            .width((LocalConfiguration.current.screenWidthDp - 150).dp)
-                            .constrainAs(text) {
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
-                                start.linkTo(parent.start)
-                            }
-                    )
-
-                    Button(
-                        content = {
-                            Text(text = "Választ")
-                            
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_baseline_chevron_right_24),
-                                contentDescription = null
-                            )
-                        },
-                        onClick = { /*TODO*/ },
-                        modifier = Modifier
-                            .constrainAs(picker) {
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
-                                end.linkTo(parent.end)
-                            }
-                    )
-                }
+                )
 
                 Box(
                     modifier = Modifier
@@ -214,19 +204,17 @@ fun Moving(
                         .fillMaxWidth()
                         .padding(5.dp, 25.dp, 5.dp, 0.dp)
                         .constrainAs(currentWarehouse) {
-                            if (!quantitySwitchState)
-                                top.linkTo(switch.bottom)
-                            else
-                                top.linkTo(quantity.bottom)
+                            top.linkTo(switch.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
                         }
                 ) {
-                    val (text, picker) = createRefs()
+                    val (text, comboBox) = createRefs()
 
                     Text(
-                        text = currentWarehouseInput,
+                        text = "Raktár választása: ",
                         color = Color.Gray,
                         modifier = Modifier
-                            .width((LocalConfiguration.current.screenWidthDp - 150).dp)
                             .constrainAs(text) {
                                 top.linkTo(parent.top)
                                 bottom.linkTo(parent.bottom)
@@ -234,23 +222,26 @@ fun Moving(
                             }
                     )
 
-                    Button(
-                        content = {
-                            Text(text = "Választ")
-
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_baseline_chevron_right_24),
-                                contentDescription = null
-                            )
-                        },
-                        onClick = { /*TODO*/ },
+                    Box(
                         modifier = Modifier
-                            .constrainAs(picker) {
+                            .constrainAs(comboBox) {
                                 top.linkTo(parent.top)
                                 bottom.linkTo(parent.bottom)
                                 end.linkTo(parent.end)
                             }
-                    )
+                    ) {
+                        ComboBox(
+                            warehouseList,
+                            curentWarehouseSelectedIndex,
+                            {
+                                if (destinationWarehouseSelectedIndex != it )
+                                    curentWarehouseSelectedIndex = it
+                            },
+                            curentWarehouseExpanded,
+                            { curentWarehouseExpanded = it },
+                            60.dp
+                        )
+                    }
                 }
 
                 ConstraintLayout(
@@ -259,15 +250,16 @@ fun Moving(
                         .padding(5.dp, 5.dp, 5.dp, 0.dp)
                         .constrainAs(destinationWarehouse) {
                             top.linkTo(currentWarehouse.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
                         }
                 ) {
-                    val (text, picker) = createRefs()
+                    val (text, comboBox) = createRefs()
 
                     Text(
-                        text = destinationWarehouseInput,
+                        text = "Raktár választása: ",
                         color = Color.Gray,
                         modifier = Modifier
-                            .width((LocalConfiguration.current.screenWidthDp - 150).dp)
                             .constrainAs(text) {
                                 top.linkTo(parent.top)
                                 bottom.linkTo(parent.bottom)
@@ -275,23 +267,26 @@ fun Moving(
                             }
                     )
 
-                    Button(
-                        content = {
-                            Text(text = "Választ")
-
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_baseline_chevron_right_24),
-                                contentDescription = null
-                            )
-                        },
-                        onClick = { /*TODO*/ },
+                    Box(
                         modifier = Modifier
-                            .constrainAs(picker) {
+                            .constrainAs(comboBox) {
                                 top.linkTo(parent.top)
                                 bottom.linkTo(parent.bottom)
                                 end.linkTo(parent.end)
                             }
-                    )
+                    ) {
+                        ComboBox(
+                            warehouseList,
+                            destinationWarehouseSelectedIndex,
+                            {
+                                if (it != curentWarehouseSelectedIndex)
+                                    destinationWarehouseSelectedIndex = it
+                            },
+                            destinationWarehouseExpanded,
+                            { destinationWarehouseExpanded = it },
+                            60.dp
+                        )
+                    }
                 }
 
                 Button(
