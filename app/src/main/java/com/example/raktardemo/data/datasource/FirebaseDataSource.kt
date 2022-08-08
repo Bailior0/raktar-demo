@@ -22,25 +22,25 @@ class FirebaseDataSource @Inject constructor() {
     private val database = Firebase.firestore
 
     suspend fun getItems(): Flow<List<StoredItem>> = callbackFlow {
-            val listenerRegistration = database.collection("storedItems")
-                .addSnapshotListener { querySnapshot: QuerySnapshot?, firebaseFirestoreException: FirebaseFirestoreException? ->
-                    if (firebaseFirestoreException != null) {
-                        cancel(message = "Error fetching items",
-                            cause = firebaseFirestoreException)
-                        return@addSnapshotListener
-                    }
-                    val items = mutableListOf<StoredItem>()
-                    if (querySnapshot != null) {
-                        for(document in querySnapshot) {
-                            items.add(document.toObject())
-                        }
-                    }
-                    this.trySend(items).isSuccess
+        val listenerRegistration = database.collection("storedItems")
+            .addSnapshotListener { querySnapshot: QuerySnapshot?, firebaseFirestoreException: FirebaseFirestoreException? ->
+                if (firebaseFirestoreException != null) {
+                    cancel(message = "Error fetching items",
+                        cause = firebaseFirestoreException)
+                    return@addSnapshotListener
                 }
-            awaitClose {
-                Log.d("failure", "Cancelling items listener")
-                listenerRegistration.remove()
+                val items = mutableListOf<StoredItem>()
+                if (querySnapshot != null) {
+                    for(document in querySnapshot) {
+                        items.add(document.toObject())
+                    }
+                }
+                this.trySend(items).isSuccess
             }
+        awaitClose {
+            Log.d("failure", "Cancelling items listener")
+            listenerRegistration.remove()
+        }
     }
 
     /*suspend fun getItems(): List<StoredItem> {
