@@ -38,7 +38,7 @@ class FirebaseDataSource @Inject constructor() {
                     this.trySend(items).isSuccess
                 }
             awaitClose {
-                Log.d("failure", "Cancelling posts listener")
+                Log.d("failure", "Cancelling items listener")
                 listenerRegistration.remove()
             }
     }
