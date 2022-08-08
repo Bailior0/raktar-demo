@@ -6,9 +6,19 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class ListViewModel @Inject constructor(private val databaseInteractor: DatabaseInteractor) : RainbowCakeViewModel<ListViewState>(Loading) {
+class ListViewModel @Inject constructor(
+    private val listPresenter: ListPresenter
+) : RainbowCakeViewModel<ListViewState>(Loading) {
 
     fun setList() = execute {
-        viewState = ListContent(list = databaseInteractor.getItems(), isLoading = false)
+        val items = listPresenter.getItems()
+
+        viewState = ListContent(
+            list = items,
+            isLoading = false
+        )
     }
+    /*fun setList() = execute {
+        viewState = ListContent(list = databaseInteractor.getItems(), isLoading = false)
+    }*/
 }
