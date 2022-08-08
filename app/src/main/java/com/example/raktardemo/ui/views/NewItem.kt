@@ -22,6 +22,8 @@ import com.example.raktardemo.data.enums.PackageType
 import com.example.raktardemo.data.enums.QuantityUnit
 import com.example.raktardemo.data.model.*
 import com.example.raktardemo.ui.views.helpers.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun NewItem(
@@ -583,18 +585,33 @@ fun NewItem(
                                     true -> PackageType.Piece
                                 },
                                 quantityUnit = unitList[unitSelectedIndex],
-                                defaultPackageQuantity = quantityInput.toDouble(),
+                                defaultPackageQuantity = when(quantityInput != "" && quantityInput.toDouble() > 0.0){
+                                    true -> quantityInput.toDouble()
+                                    false -> 0.0
+                                },
                                 openable = !openableSwitchState,
-                                defaultPurchasePrice = defaultPriceInput.toDoubleOrNull(),
-                                minimumStoredQuantity = minQuantityInput.toDoubleOrNull()
+                                defaultPurchasePrice = when(defaultPriceInput != "" && defaultPriceInput.toDouble() > 0.0){
+                                    true -> defaultPriceInput.toDouble()
+                                    false -> 0.0
+                                },
+                                minimumStoredQuantity = when(minQuantityInput != "" && minQuantityInput.toDouble() > 0.0){
+                                    true -> minQuantityInput.toDouble()
+                                    false -> 0.0
+                                },
                             ),
                             itemAcquisitions = mutableListOf(
                                 ItemAcquisition(
-                                    acquisitionDate = "",
+                                    acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date()),
                                     acquisitionWorker = "",
                                     expiryDate = dateInput,
-                                    quantity = quantityInput.toDouble(),
-                                    acquisitionPrice = defaultPriceInput.toDouble(),
+                                    quantity = when(quantityInput != "" && quantityInput.toDouble() > 0.0){
+                                        true -> quantityInput.toDouble()
+                                        false -> 0.0
+                                    },
+                                    acquisitionPrice = when(defaultPriceInput != "" && defaultPriceInput.toDouble() > 0.0){
+                                        true -> defaultPriceInput.toDouble()
+                                        false -> 0.0
+                                    },
                                     pricePerUnit = when(defaultPriceInput != "" && defaultPriceInput.toDouble() > 0.0 && packageSizeInput != "" && packageSizeInput.toDouble() > 0.0){
                                         true -> defaultPriceInput.toDouble()/packageSizeInput.toDouble()
                                         false -> 0.0
