@@ -1,12 +1,9 @@
 package com.example.raktardemo.ui.views
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,12 +13,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.R
+import com.example.raktardemo.data.model.Item
+import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.helpers.ComboBox
 import com.example.raktardemo.ui.views.helpers.DatePicker
 import com.example.raktardemo.ui.views.helpers.ListMaker
+import com.example.raktardemo.ui.views.theme.RaktarAppJustUi1Theme
+import com.example.raktardemo.ui.views.theme.Shapes
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
@@ -275,7 +277,6 @@ fun Traffic() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(0.dp, 5.dp, 0.dp, 100.dp)
-                    .background(MaterialTheme.colors.secondary, RoundedCornerShape(5.dp))
                     .constrainAs(list) {
                         top.linkTo(comboBoxRow.bottom)
                     }
@@ -321,8 +322,6 @@ fun Traffic() {
             }
         }
     }
-
-
 }
 
 @Composable
@@ -461,7 +460,7 @@ fun Notifications() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp, 25.dp, 12.dp, 65.dp)
-                .background(MaterialTheme.colors.secondary, RoundedCornerShape(5.dp))
+                //.background(MaterialTheme.colors.secondary, RoundedCornerShape(5.dp))
                 .constrainAs(list) {
                     top.linkTo(parent.top)
                 }
@@ -508,11 +507,13 @@ fun Notifications() {
     }
 }
 
-/*@OptIn(ExperimentalPagerApi::class)
+/*
+@OptIn(ExperimentalPagerApi::class)
 @Preview
 @Composable
 fun StatisticsPreview() {
     RaktarAppJustUi1Theme {
-        Statistics()
+        Traffic()
     }
-}*/
+}
+*/
