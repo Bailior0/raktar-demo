@@ -343,7 +343,7 @@ fun NewItem(
                                 end.linkTo(parent.end)
                             }
                     ) {
-                        QuantityUnitComboBox(
+                        ComboBox(
                             list = unitList,
                             selectedIndex = unitSelectedIndex,
                             onIndexChanged = { unitSelectedIndex = it },
@@ -470,7 +470,7 @@ fun NewItem(
                                 end.linkTo(parent.end)
                             }
                     ) {
-                        StorageComboBox(
+                        ComboBox(
                             warehouseList,
                             warehouseSelectedIndex,
                             { warehouseSelectedIndex = it },
