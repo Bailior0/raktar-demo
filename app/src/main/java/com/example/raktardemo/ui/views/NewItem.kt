@@ -17,19 +17,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.raktardemo.data.enums.Ownership
 import com.example.raktardemo.data.enums.PackageType
 import com.example.raktardemo.data.enums.QuantityUnit
-import com.example.raktardemo.data.model.Category
-import com.example.raktardemo.data.model.Item
-import com.example.raktardemo.data.model.ItemAcquisition
-import com.example.raktardemo.data.model.StoredItem
-import com.example.raktardemo.ui.views.helpers.ComboBox
-import com.example.raktardemo.ui.views.helpers.DatePicker
-import com.example.raktardemo.ui.views.helpers.SegmentedControlQuantitySwitch
-import com.example.raktardemo.ui.views.helpers.SegmentedControlTwoWaySwitch
+import com.example.raktardemo.data.model.*
+import com.example.raktardemo.ui.views.helpers.*
 
 @Composable
 fun NewItem(
+    storages: List<Storage>,
     onAddClicked: (StoredItem) -> Unit
 ) {
     val context = LocalContext.current
@@ -49,7 +45,8 @@ fun NewItem(
     var quantitySwitchState by remember { mutableStateOf(false) }
     var openableSwitchState by remember { mutableStateOf(false) }
 
-    val unitList = listOf("méter", "liter", "kilogramm", "darab", "egyéb")
+    val unitList = QuantityUnit.values().toList()
+
     var unitSelectedIndex by remember { mutableStateOf(0) }
     var unitExpanded by remember { mutableStateOf(false) }
 
@@ -61,7 +58,7 @@ fun NewItem(
     var ownerSwitchState by remember { mutableStateOf(false) }
     var datePickerState by remember { mutableStateOf(false) }
 
-    val warehouseList = listOf("Raktár1", "Raktár2", "Raktár3")
+    val warehouseList = storages
     var warehouseExpanded by remember { mutableStateOf(false) }
     var warehouseSelectedIndex by remember { mutableStateOf(0) }
 
@@ -344,7 +341,7 @@ fun NewItem(
                                 end.linkTo(parent.end)
                             }
                     ) {
-                        ComboBox(
+                        QuantityUnitComboBox(
                             list = unitList,
                             selectedIndex = unitSelectedIndex,
                             onIndexChanged = { unitSelectedIndex = it },
@@ -471,7 +468,7 @@ fun NewItem(
                                 end.linkTo(parent.end)
                             }
                     ) {
-                        ComboBox(
+                        StorageComboBox(
                             warehouseList,
                             warehouseSelectedIndex,
                             { warehouseSelectedIndex = it },
@@ -585,42 +582,31 @@ fun NewItem(
                                     false -> PackageType.Package
                                     true -> PackageType.Piece
                                 },
-                                //quantityUnit = ,
-                                //defaultPackageQuantity = ,
-                                //openable = ,
+                                quantityUnit = unitList[unitSelectedIndex],
+                                defaultPackageQuantity = quantityInput.toDouble(),
+                                openable = !openableSwitchState,
                                 defaultPurchasePrice = defaultPriceInput.toDoubleOrNull(),
-                                //minimumStoredQuantity =
+                                minimumStoredQuantity = minQuantityInput.toDoubleOrNull()
                             ),
                             itemAcquisitions = mutableListOf(
                                 ItemAcquisition(
-
+                                    acquisitionDate = "",
+                                    acquisitionWorker = "",
+                                    expiryDate = dateInput,
+                                    quantity = quantityInput.toDouble(),
+                                    acquisitionPrice = defaultPriceInput.toDouble(),
+                                    pricePerUnit = when(defaultPriceInput != "" && defaultPriceInput.toDouble() > 0.0 && packageSizeInput != "" && packageSizeInput.toDouble() > 0.0){
+                                        true -> defaultPriceInput.toDouble()/packageSizeInput.toDouble()
+                                        false -> 0.0
+                                    },
+                                    currentStorage = warehouseList[warehouseSelectedIndex].id,
+                                    ownedBy = when(ownerSwitchState) {
+                                        false -> Ownership.Own
+                                        true -> Ownership.Foreign
+                                    }
                                 )
                             )
                         )
-
-
-                        /*var quantityInput by remember { mutableStateOf("") }
-                        var packageSizeInput by remember { mutableStateOf("") }
-
-                        var quantitySwitchState by remember { mutableStateOf(false) }
-                        var openableSwitchState by remember { mutableStateOf(false) }
-
-                        val unitList = listOf("méter", "liter", "kilogramm", "darab", "egyéb")
-                        var unitSelectedIndex by remember { mutableStateOf(0) }
-                        var unitExpanded by remember { mutableStateOf(false) }
-
-
-
-                        var dateInput by remember { mutableStateOf("") }
-                        var minQuantityInput by remember { mutableStateOf("") }
-
-                        var ownerSwitchState by remember { mutableStateOf(false) }
-                        var datePickerState by remember { mutableStateOf(false) }
-
-                        val warehouseList = listOf("Raktár1", "Raktár2", "Raktár3")
-                        var warehouseExpanded by remember { mutableStateOf(false) }
-                        var warehouseSelectedIndex by remember { mutableStateOf(0) }*/
-
                     )
                 },
                 modifier = Modifier

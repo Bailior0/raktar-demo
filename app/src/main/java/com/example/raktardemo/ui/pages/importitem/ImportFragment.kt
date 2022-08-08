@@ -36,6 +36,7 @@ class ImportFragment : RainbowCakeFragment<ImportViewState, ImportViewModel>() {
             when (viewState) {
                 is Loading -> FullScreenLoading()
                 is ImportContent -> NewItem(
+                    storages = viewState.storages,
                     onAddClicked = ::onItemAdded
                 )
             }.exhaustive

@@ -9,8 +9,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ImportViewModel @Inject constructor(private val databaseInteractor: DatabaseInteractor) : RainbowCakeViewModel<ImportViewState>(Loading) {
 
-    fun setImport() {
-        viewState = ImportContent(false)
+    fun setImport() = execute {
+        viewState = ImportContent(storages = databaseInteractor.getStorages(), isLoading = false)
     }
 
     fun onItemAdded(item: StoredItem) = execute {
