@@ -1,15 +1,17 @@
 package com.example.raktardemo.domain
 
+import android.util.Log
 import com.example.raktardemo.data.datasource.FirebaseDataSource
 import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class DatabaseInteractor @Inject constructor(
     private val firebaseDataSource: FirebaseDataSource
 ) {
 
-    suspend fun getItems(): List<StoredItem> {
+    suspend fun getItems(): Flow<List<StoredItem>> {
         return firebaseDataSource.getItems()
     }
 

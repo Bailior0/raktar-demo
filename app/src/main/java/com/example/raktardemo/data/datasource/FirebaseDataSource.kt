@@ -2,10 +2,17 @@ package com.example.raktardemo.data.datasource
 
 import android.util.Log
 import com.example.raktardemo.data.model.*
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,7 +21,29 @@ class FirebaseDataSource @Inject constructor() {
 
     private val database = Firebase.firestore
 
-    suspend fun getItems(): List<StoredItem> {
+    suspend fun getItems(): Flow<List<StoredItem>> = callbackFlow {
+            val listenerRegistration = database.collection("storedItems")
+                .addSnapshotListener { querySnapshot: QuerySnapshot?, firebaseFirestoreException: FirebaseFirestoreException? ->
+                    if (firebaseFirestoreException != null) {
+                        cancel(message = "Error fetching items",
+                            cause = firebaseFirestoreException)
+                        return@addSnapshotListener
+                    }
+                    val items = mutableListOf<StoredItem>()
+                    if (querySnapshot != null) {
+                        for(document in querySnapshot) {
+                            items.add(document.toObject())
+                        }
+                    }
+                    this.trySend(items).isSuccess
+                }
+            awaitClose {
+                Log.d("failure", "Cancelling posts listener")
+                listenerRegistration.remove()
+            }
+    }
+
+    /*suspend fun getItems(): List<StoredItem> {
         val items = mutableListOf<StoredItem>()
         database.collection("storedItems").get()
             .addOnSuccessListener { documents ->
@@ -28,7 +57,7 @@ class FirebaseDataSource @Inject constructor() {
             .await()
 
         return items
-    }
+    }*/
 
     suspend fun addItem(item: StoredItem) {
         database.collection("storedItems").add(item)
