@@ -1,16 +1,15 @@
 package com.example.raktardemo.data.model
 
 import android.os.Parcelable
+import com.google.firebase.firestore.DocumentId
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Storage(
-    var id: String = "0",
+    @DocumentId
+    var id: String = "",
     var name: String = "",
     var address: String = "",
     var size: Double = 0.0,
-    var description: String = "",
-    var workers: List<Worker> = emptyList(),
-    var accountableWorker: String = "",
-    var items: List<StoredItem?> = emptyList()
+    var description: String = ""
 ) : Parcelable

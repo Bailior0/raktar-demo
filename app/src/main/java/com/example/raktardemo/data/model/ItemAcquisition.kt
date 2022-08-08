@@ -7,7 +7,7 @@ import java.util.*
 
 @Parcelize
 data class ItemAcquisition (
-    var id: String = "0",
+    var id: String = UUID.randomUUID().toString(),
     var acquisitionDate: String = "",
     var acquisitionWorker: String = "",
     var expiryDate: String = "",

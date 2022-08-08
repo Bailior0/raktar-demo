@@ -16,4 +16,8 @@ class DatabaseInteractor @Inject constructor(
     suspend fun getStorages(): List<Storage> {
         return firebaseDataSource.getStorages()
     }
+
+    suspend fun onItemAdded(item: StoredItem) {
+        firebaseDataSource.addItem(item)
+    }
 }

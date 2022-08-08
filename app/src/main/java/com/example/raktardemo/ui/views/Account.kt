@@ -15,7 +15,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -23,13 +22,13 @@ import androidx.constraintlayout.compose.Dimension
 import com.example.raktardemo.R
 import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.Worker
-import com.example.raktardemo.ui.views.theme.RaktarAppJustUi1Theme
 import com.example.raktardemo.ui.views.theme.Shapes
 import com.example.raktardemo.ui.views.theme.Teal200
 
 @Composable
 fun Account(
     worker: Worker,
+    storageList: List<Storage>,
     onClicked: (Storage) -> Unit,
     onLogoutClick: () -> Unit = {}
 ) {
@@ -165,7 +164,7 @@ fun Account(
                             width = Dimension.fillToConstraints
                         }
                 ) {
-                    itemsIndexed(worker.storages) { _, storage ->
+                    itemsIndexed(storageList) { _, storage ->
                         StorageItem(
                             storage = storage,
                             onClicked = {
@@ -224,7 +223,7 @@ fun StorageItem(
     }
 }
 
-@Preview
+/*@Preview
 @Composable
 fun AccountPreview() {
     RaktarAppJustUi1Theme {
@@ -232,32 +231,28 @@ fun AccountPreview() {
             id = "alma",
             name = "Raktáros Réka",
             email = "raktaros.reka@raktar.hu",
-            phoneNumber = "+36 10 111-1111",
-            storages = mutableListOf()
+            phoneNumber = "+36 10 111-1111"
         )
         val storage1 = Storage(
             name = "Raktár1",
             address = "1117 Budapest",
             size = 1234.0,
-            description = "Raktár leírása",
-            workers = mutableListOf(worker)
+            description = "Raktár leírása"
         )
         val storage2 = Storage(
             name = "Raktár2",
             address = "1117 Budapest",
             size = 1234.0,
-            description = "Raktár leírása",
-            workers = mutableListOf(worker)
+            description = "Raktár leírása"
         )
         val storage3 = Storage(
             name = "Raktár3",
             address = "1117 Budapest",
             size = 1234.0,
-            description = "Raktár leírása",
-            workers = mutableListOf(worker)
+            description = "Raktár leírása"
         )
         worker.storages = mutableListOf(storage1, storage2, storage3, storage2, storage2, storage2, storage2, storage2, storage2, storage2, storage2, storage2, storage2, storage2, storage2, storage3, storage3, storage3, storage3, storage3, storage3, storage3, storage3, storage3)
 
         Account(worker, {}, {})
     }
-}
+}*/

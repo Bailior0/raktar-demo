@@ -2,9 +2,11 @@ package com.example.raktardemo.data.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import java.util.*
 
 @Parcelize
 data class Reservation(
+    var id: String = UUID.randomUUID().toString(),
     var reservationGoal: String = "",
     var reservationDate: String = "",
     var reservationGoalDate: String = "",

@@ -30,6 +30,16 @@ class FirebaseDataSource @Inject constructor() {
         return items
     }
 
+    suspend fun addItem(item: StoredItem) {
+        database.collection("storedItems").add(item)
+            .addOnSuccessListener { documentReference ->
+                Log.d("success", "DocumentSnapshot written with ID: $documentReference.")
+            }
+            .addOnFailureListener { exception ->
+                Log.d("failure", "Error getting documents: ", exception)
+            }.await()
+    }
+
     suspend fun getStorages(): List<Storage> {
         val storages = mutableListOf<Storage>()
         database.collection("storages").get()
@@ -45,6 +55,29 @@ class FirebaseDataSource @Inject constructor() {
         return storages
     }
 
+    suspend fun getAccount(accountId: String): Worker {
+        var account = Worker()
+        database.collection("accounts").document(accountId).get()
+            .addOnSuccessListener { documentSnapshot  ->
+                account = documentSnapshot.toObject()!!
+            }
+            .addOnFailureListener { exception ->
+                Log.d("failure", "Error getting document: ", exception)
+            }
+            .await()
+
+        return account
+    }
+
+    suspend fun addAccount(account: Worker) {
+        database.collection("accounts").add(account)
+            .addOnSuccessListener { documentReference ->
+                Log.d("success", "DocumentSnapshot written with ID: $documentReference.")
+            }
+            .addOnFailureListener { exception ->
+                Log.d("failure", "Error getting documents: ", exception)
+            }.await()
+    }
 
     /*suspend fun setDefaultItems() {
         val item = StoredItem(

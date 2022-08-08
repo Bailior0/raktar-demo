@@ -21,6 +21,8 @@ import com.example.raktardemo.data.enums.PackageType
 import com.example.raktardemo.data.enums.QuantityUnit
 import com.example.raktardemo.data.model.Category
 import com.example.raktardemo.data.model.Item
+import com.example.raktardemo.data.model.ItemAcquisition
+import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.helpers.ComboBox
 import com.example.raktardemo.ui.views.helpers.DatePicker
 import com.example.raktardemo.ui.views.helpers.SegmentedControlQuantitySwitch
@@ -28,7 +30,7 @@ import com.example.raktardemo.ui.views.helpers.SegmentedControlTwoWaySwitch
 
 @Composable
 fun NewItem(
-    onAddClicked: (Item) -> Unit
+    onAddClicked: (StoredItem) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -37,6 +39,31 @@ fun NewItem(
     var manufacturerInput by remember { mutableStateOf("") }
     var serialInput by remember { mutableStateOf("") }
     var defaultPriceInput by remember { mutableStateOf("") }
+
+
+
+    var quantityInput by remember { mutableStateOf("") }
+    //var unitOfQuantityInput by remember { mutableStateOf("") }
+    var packageSizeInput by remember { mutableStateOf("") }
+
+    var quantitySwitchState by remember { mutableStateOf(false) }
+    var openableSwitchState by remember { mutableStateOf(false) }
+
+    val unitList = listOf("méter", "liter", "kilogramm", "darab", "egyéb")
+    var unitSelectedIndex by remember { mutableStateOf(0) }
+    var unitExpanded by remember { mutableStateOf(false) }
+
+
+
+    var dateInput by remember { mutableStateOf("") }
+    var minQuantityInput by remember { mutableStateOf("") }
+
+    var ownerSwitchState by remember { mutableStateOf(false) }
+    var datePickerState by remember { mutableStateOf(false) }
+
+    val warehouseList = listOf("Raktár1", "Raktár2", "Raktár3")
+    var warehouseExpanded by remember { mutableStateOf(false) }
+    var warehouseSelectedIndex by remember { mutableStateOf(0) }
 
     Column(
         modifier = Modifier
@@ -207,17 +234,6 @@ fun NewItem(
                     packageSize,
                     openableSwitch,
                 ) = createRefs()
-
-                var quantityInput by remember { mutableStateOf("") }
-                //var unitOfQuantityInput by remember { mutableStateOf("") }
-                var packageSizeInput by remember { mutableStateOf("") }
-
-                var quantitySwitchState by remember { mutableStateOf(false) }
-                var openableSwitchState by remember { mutableStateOf(false) }
-
-                val unitList = listOf("méter", "liter", "kilogramm", "darab", "egyéb")
-                var unitSelectedIndex by remember { mutableStateOf(0) }
-                var unitExpanded by remember { mutableStateOf(false) }
 
                 Text(
                     text = "Csomagolási adatok",
@@ -399,15 +415,7 @@ fun NewItem(
                     minQuantity,
                 ) = createRefs()
 
-                var dateInput by remember { mutableStateOf("") }
-                var minQuantityInput by remember { mutableStateOf("") }
 
-                var ownerSwitchState by remember { mutableStateOf(false) }
-                var datePickerState by remember { mutableStateOf(false) }
-
-                val warehouseList = listOf("Raktár1", "Raktár2", "Raktár3")
-                var warehouseExpanded by remember { mutableStateOf(false) }
-                var warehouseSelectedIndex by remember { mutableStateOf(0) }
 
                 Text(
                     text = "Raktározás",
@@ -565,19 +573,54 @@ fun NewItem(
                 onClick = {
                     onAddClicked(
                         //TODO
-                        Item(
-                            id = "0",
-                            name = nameInput,
-                            category = Category("0", groupInput),
-                            manufacturer = manufacturerInput,
-                            serialNumber = serialInput,
-                            type = PackageType.Package,
-                            quantityUnit = QuantityUnit.Meter,
-                            defaultPackageQuantity = 1.0,
-                            openable = false,
-                            defaultPurchasePrice = defaultPriceInput.toDoubleOrNull(),
-                            minimumStoredQuantity = null
+                        StoredItem(
+                            item = Item(
+                                name = nameInput,
+                                category = Category(
+                                    name = groupInput
+                                ),
+                                manufacturer = manufacturerInput,
+                                serialNumber = serialInput,
+                                type = when(quantitySwitchState) {
+                                    false -> PackageType.Package
+                                    true -> PackageType.Piece
+                                },
+                                //quantityUnit = ,
+                                //defaultPackageQuantity = ,
+                                //openable = ,
+                                defaultPurchasePrice = defaultPriceInput.toDoubleOrNull(),
+                                //minimumStoredQuantity =
+                            ),
+                            itemAcquisitions = mutableListOf(
+                                ItemAcquisition(
+
+                                )
+                            )
                         )
+
+
+                        /*var quantityInput by remember { mutableStateOf("") }
+                        var packageSizeInput by remember { mutableStateOf("") }
+
+                        var quantitySwitchState by remember { mutableStateOf(false) }
+                        var openableSwitchState by remember { mutableStateOf(false) }
+
+                        val unitList = listOf("méter", "liter", "kilogramm", "darab", "egyéb")
+                        var unitSelectedIndex by remember { mutableStateOf(0) }
+                        var unitExpanded by remember { mutableStateOf(false) }
+
+
+
+                        var dateInput by remember { mutableStateOf("") }
+                        var minQuantityInput by remember { mutableStateOf("") }
+
+                        var ownerSwitchState by remember { mutableStateOf(false) }
+                        var datePickerState by remember { mutableStateOf(false) }
+
+                        val warehouseList = listOf("Raktár1", "Raktár2", "Raktár3")
+                        var warehouseExpanded by remember { mutableStateOf(false) }
+                        var warehouseSelectedIndex by remember { mutableStateOf(0) }*/
+
                     )
                 },
                 modifier = Modifier

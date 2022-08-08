@@ -1,10 +1,14 @@
 package com.example.raktardemo.ui.pages.account
 
 import co.zsmb.rainbowcake.base.RainbowCakeViewModel
+import com.example.raktardemo.domain.DatabaseInteractor
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class AccountViewModel : RainbowCakeViewModel<AccountViewState>(Loading) {
+@HiltViewModel
+class AccountViewModel @Inject constructor(private val databaseInteractor: DatabaseInteractor) : RainbowCakeViewModel<AccountViewState>(Loading) {
 
-    fun setImport() {
-        viewState = AccountContent(false)
+    fun setImport() = execute {
+        viewState = AccountContent(storages = databaseInteractor.getStorages(), isLoading = false)
     }
 }

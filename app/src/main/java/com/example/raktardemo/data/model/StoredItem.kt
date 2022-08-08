@@ -1,11 +1,14 @@
 package com.example.raktardemo.data.model
 
 import android.os.Parcelable
+import com.google.firebase.firestore.DocumentId
 import kotlinx.parcelize.Parcelize
+import java.util.*
 
 @Parcelize
 data class StoredItem (
-    var id: String = "0",
+    @DocumentId
+    var id: String = "",
     var item: Item = Item(),
 //    TODO: felhasznált itemeket a bevétekben külön tömbbe rakni, hogy legyen nyoma, de ne kelljen külön osztály?
     var itemAcquisitions: List<ItemAcquisition> = emptyList(),

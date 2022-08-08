@@ -8,9 +8,7 @@ import androidx.compose.ui.platform.ComposeView
 import co.zsmb.rainbowcake.base.RainbowCakeFragment
 import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
-import co.zsmb.rainbowcake.navigation.navigator
-import com.example.raktardemo.data.model.Item
-import com.example.raktardemo.ui.pages.list.detail.ItemDetailFragment
+import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.NewItem
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,7 +42,8 @@ class ImportFragment : RainbowCakeFragment<ImportViewState, ImportViewModel>() {
         }
     }
 
-    private fun onItemAdded(item: Item) {
-        //TODO
+    private fun onItemAdded(item: StoredItem) {
+        viewModel.onItemAdded(item)
+        //navigator?.pop()
     }
 }

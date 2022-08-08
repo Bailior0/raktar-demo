@@ -1,15 +1,14 @@
 package com.example.raktardemo.data.model
 
 import android.os.Parcelable
-import com.example.raktardemo.data.enums.Ownership
 import com.example.raktardemo.data.enums.PackageType
 import com.example.raktardemo.data.enums.QuantityUnit
-import com.google.firebase.firestore.Exclude
 import kotlinx.parcelize.Parcelize
+import java.util.*
 
 @Parcelize
 data class Item(
-    var id: String = "0",
+    var id: String = UUID.randomUUID().toString(),
     var name: String = "",
     var category: Category = Category("0", ""),
     var manufacturer: String = "",

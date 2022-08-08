@@ -2,11 +2,8 @@ package com.example.raktardemo.ui.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -19,10 +16,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import com.example.raktardemo.R
 import com.example.raktardemo.data.model.Storage
-import com.example.raktardemo.data.model.Worker
 
 @Composable
 fun StorageDetail(
@@ -61,9 +56,7 @@ fun StorageDetail(
                     storageAddress,
                     address,
                     storageDescription,
-                    description,
-                    storageMaintainers,
-                    maintainers,
+                    description
                 ) = createRefs()
 
                 Text(
@@ -182,74 +175,7 @@ fun StorageDetail(
                         },
                     textAlign = TextAlign.Justify
                 )
-
-                Text(
-                    buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = Color.Gray)) {
-                            append("Raktárért felelős személyek")
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(5.dp, 25.dp, 0.dp, 8.dp)
-                        .constrainAs(storageMaintainers) {
-                            top.linkTo(description.bottom)
-                            start.linkTo(parent.start)
-                        }
-                )
-
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(5.dp, 0.dp, 0.dp, 10.dp)
-                        .constrainAs(maintainers) {
-                            top.linkTo(storageMaintainers.bottom)
-                            start.linkTo(parent.start)
-                            bottom.linkTo(parent.bottom)
-                            end.linkTo(parent.end)
-                            height = Dimension.fillToConstraints
-                        }
-                ) {
-                    itemsIndexed(storage.workers) { _, worker ->
-                        WorkerItem(
-                            worker = worker
-                        )
-                    }
-                }
             }
-        }
-    }
-}
-
-@Composable
-fun WorkerItem(
-    worker: Worker
-) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier
-            .height(IntrinsicSize.Min)
-            .padding(bottom = 5.dp)
-    ) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.Start,
-            modifier = Modifier.weight(1f),
-        ) {
-            Text(
-                worker.name,
-                maxLines = 1,
-                softWrap = true,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                worker.email,
-                maxLines = 1,
-                softWrap = true
-            )
-            Text(
-                worker.phoneNumber,
-                maxLines = 1,
-                softWrap = true
-            )
         }
     }
 }

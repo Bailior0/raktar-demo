@@ -43,43 +43,12 @@ class AccountFragment : RainbowCakeFragment<AccountViewState, AccountViewModel>(
                         id = "0",
                         name = "Raktáros Réka",
                         email = "raktaros.reka@raktar.hu",
-                        phoneNumber = "+36 10 111-1111",
-                        storages = mutableListOf()
+                        phoneNumber = "+36 10 111-1111"
                     )
-                    val storage1 = Storage(
-                        id = "0",
-                        name = "Raktár1",
-                        address = "1117 Budapest",
-                        size = 1234.0,
-                        description = "Raktár leírása",
-                        workers = mutableListOf(worker),
-                        accountableWorker = "0",
-                        items = mutableListOf(null)
-                    )
-                    val storage2 = Storage(
-                        id = "0",
-                        name = "Raktár2",
-                        address = "1117 Budapest",
-                        size = 1234.0,
-                        description = "Raktár leírása",
-                        workers = mutableListOf(worker),
-                        accountableWorker = "0",
-                        items = mutableListOf(null)
-                    )
-                    val storage3 = Storage(
-                        id = "0",
-                        name = "Raktár3",
-                        address = "1117 Budapest",
-                        size = 1234.0,
-                        description = "Raktár leírása",
-                        workers = mutableListOf(worker),
-                        accountableWorker = "0",
-                        items = mutableListOf(null)
-                    )
-                    worker.storages = mutableListOf(storage1, storage2, storage3)
 
                     Account(
                         worker = worker,
+                        storageList = viewState.storages,
                         onClicked = ::onStorageSelected,
                         onLogoutClick = ::onLogout
                     )

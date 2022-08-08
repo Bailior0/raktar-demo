@@ -188,7 +188,7 @@ fun List(
 
                     val itemGroups = ArrayList(sortedItems.groupBy{
                         when {
-                            it.itemAcquisitions.isNotEmpty() && (it.item.name.contains(text, true) || it.item.serialNumber.contains(text, true) || it.item.category.name.contains(text, true)) -> it.item.category.id
+                            it.itemAcquisitions.isNotEmpty() && (it.item.name.contains(text, true) || it.item.serialNumber.contains(text, true) || it.item.category.name.contains(text, true)) -> it.item.category.name
                             else -> null
                         }
                     }.filterKeys { it != null }.values)
