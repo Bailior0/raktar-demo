@@ -334,11 +334,9 @@ fun ProductDetail(
 
             LazyColumn(
                 modifier = Modifier
-                    //.fillMaxSize()
                     .fillMaxWidth()
-                    .height(180.dp)
-                    .padding(5.dp, 30.dp, 5.dp, 5.dp)
-                    .background(MaterialTheme.colors.secondary, RoundedCornerShape(5.dp))
+                    .height(160.dp)
+                    .padding(5.dp, 40.dp, 5.dp, 5.dp)
             ) {
                 val itemOperations: MutableList<Triple<String, String, String>> = mutableListOf()
                 for(reservation in product.reservations)

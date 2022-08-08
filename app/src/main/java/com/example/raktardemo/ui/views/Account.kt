@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -66,7 +67,6 @@ fun Account(
                 IconButton(
                     onClick = { },
                     modifier = Modifier
-                        .padding(2.dp, 0.dp)
                         .constrainAs(editIcon) {
                             top.linkTo(item.bottom)
                             end.linkTo(parent.end)
@@ -85,7 +85,6 @@ fun Account(
                         }
                     },
                     modifier = Modifier
-                        .padding(5.dp, 0.dp, 0.dp, 0.dp)
                         .constrainAs(loggedIn) {
                             top.linkTo(item.bottom)
                             start.linkTo(parent.start)
@@ -98,7 +97,6 @@ fun Account(
                         }
                     },
                     modifier = Modifier
-                        .padding(5.dp, 0.dp, 0.dp, 0.dp)
                         .constrainAs(name) {
                             top.linkTo(loggedIn.bottom)
                             start.linkTo(parent.start)
@@ -111,7 +109,6 @@ fun Account(
                         }
                     },
                     modifier = Modifier
-                        .padding(5.dp, 0.dp, 0.dp, 0.dp)
                         .constrainAs(email) {
                             top.linkTo(name.bottom)
                             start.linkTo(parent.start)
@@ -124,33 +121,24 @@ fun Account(
                         }
                     },
                     modifier = Modifier
-                        .padding(5.dp, 0.dp, 0.dp, 0.dp)
                         .constrainAs(phone) {
                             top.linkTo(email.bottom)
                             start.linkTo(parent.start)
                         }
                 )
 
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                Text(
+                    text = "Kezelt raktárak: ",
+                    color = Color.Gray,
+                    fontSize = 20.sp,
+                    fontStyle = FontStyle.Italic,
                     modifier = Modifier
                         .padding(0.dp, 15.dp, 0.dp, 10.dp)
                         .constrainAs(maintainedStorages) {
                             top.linkTo(phone.bottom)
                             start.linkTo(parent.start)
                         }
-                        .background(Color.LightGray, Shapes.small)
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        buildAnnotatedString {
-                            withStyle(style = SpanStyle(color = Color.Black, fontSize = 25.sp, fontWeight = FontWeight.Bold)) {
-                                append("Kezelt raktárak")
-                            }
-                        }
-                    )
-                }
-
+                )
 
                 LazyColumn(
                     modifier = Modifier
@@ -207,7 +195,7 @@ fun StorageItem(
             .clickable(onClick = { onClicked(storage) })
             .height(IntrinsicSize.Min)
             .padding(all = 1.dp)
-            .background(Teal200, Shapes.small)
+            .background(Color.LightGray, Shapes.small)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
