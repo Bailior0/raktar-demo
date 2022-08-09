@@ -161,7 +161,7 @@ fun Acquisition(
                     }
                 }
 
-                Box(
+                /*Box(
                     modifier = Modifier
                         .padding(5.dp, 25.dp, 0.dp, 0.dp)
                         .constrainAs(quantitySwitch) {
@@ -170,7 +170,7 @@ fun Acquisition(
                         }
                 ) {
                     SegmentedControlQuantitySwitch(quantitySwitchState) { quantitySwitchState = it }
-                }
+                }*/
 
                 OutlinedTextField(
                     value = quantityInput,
@@ -185,9 +185,9 @@ fun Acquisition(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(0.dp, 2.dp)
+                        .padding(0.dp, 25.dp, 0.dp, 2.dp)
                         .constrainAs(quantity) {
-                            top.linkTo(quantitySwitch.bottom)
+                            top.linkTo(warehouse.bottom)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                         }
