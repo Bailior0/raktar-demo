@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -96,8 +97,8 @@ fun GroupDetail(
                         bottom.linkTo(parent.bottom)
                         end.linkTo(parent.end)
                     }
-                    //.height(83.dp)
-                    .height(min((83 * array.size * array[0].size /* * array.forEach { (list) -> list.size }*/), 200).dp)
+                    //.height(145.dp)
+                    .height(min((145 * array.size * array[0].size /* * array.forEach { (list) -> list.size }*/), 200).dp)
             ) {
                 itemsIndexed(array) { _, group ->
                     Groups(
@@ -127,7 +128,6 @@ fun Groups(
         modifier = Modifier.fillMaxSize()
     ) {
         val (
-            item,
             acquisition,
             releaseButton,
             reserveButton,
@@ -145,9 +145,10 @@ fun Groups(
                 }
             },
             modifier = Modifier
-                .padding(5.dp, 0.dp)
+                .padding(5.dp, 7.dp, 5.dp, 0.dp)
+                .width((LocalConfiguration.current.screenWidthDp/3).dp)
                 .constrainAs(acquisition) {
-                    top.linkTo(item.bottom)
+                    top.linkTo(parent.top)
                     start.linkTo(parent.start)
                 }
         )
@@ -168,7 +169,8 @@ fun Groups(
                 .width(80.dp)
                 .padding(2.dp, 0.dp)
                 .constrainAs(releaseButton) {
-                    top.linkTo(item.bottom)
+                    //top.linkTo(parent.top)
+                    bottom.linkTo(acquisition.bottom)
                     end.linkTo(reserveButton.start)
                 },
             contentPadding = PaddingValues(0.dp)
@@ -190,7 +192,8 @@ fun Groups(
                 .width(80.dp)
                 .padding(0.dp, 0.dp, 5.dp, 0.dp)
                 .constrainAs(reserveButton) {
-                    top.linkTo(item.bottom)
+                    //top.linkTo(parent.top)
+                    bottom.linkTo(acquisition.bottom)
                     end.linkTo(parent.end)
                 },
             contentPadding = PaddingValues(0.dp)
@@ -200,7 +203,7 @@ fun Groups(
             modifier = Modifier
                 .padding(0.dp, 2.dp, 0.dp, 15.dp)
                 .constrainAs(list) {
-                    top.linkTo(reserveButton.bottom)
+                    top.linkTo(acquisition.bottom)
                     start.linkTo(parent.start)
                     bottom.linkTo(parent.bottom)
                     end.linkTo(parent.end)
