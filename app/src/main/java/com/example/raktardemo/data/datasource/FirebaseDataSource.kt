@@ -3,7 +3,6 @@ package com.example.raktardemo.data.datasource
 import android.util.Log
 import com.example.raktardemo.data.model.*
 import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -25,8 +24,7 @@ class FirebaseDataSource @Inject constructor() {
         val listenerRegistration = database.collection("storedItems")
             .addSnapshotListener { querySnapshot: QuerySnapshot?, firebaseFirestoreException: FirebaseFirestoreException? ->
                 if (firebaseFirestoreException != null) {
-                    cancel(message = "Error fetching items",
-                        cause = firebaseFirestoreException)
+                    cancel(message = "Error fetching items", cause = firebaseFirestoreException)
                     return@addSnapshotListener
                 }
                 val items = mutableListOf<StoredItem>()
@@ -61,6 +59,17 @@ class FirebaseDataSource @Inject constructor() {
 
     suspend fun addItem(item: StoredItem) {
         database.collection("storedItems").add(item)
+            .addOnSuccessListener { documentReference ->
+                Log.d("success", "DocumentSnapshot written with ID: $documentReference.")
+            }
+            .addOnFailureListener { exception ->
+                Log.d("failure", "Error getting documents: ", exception)
+            }.await()
+    }
+
+    suspend fun updateItem(item: StoredItem) {
+        Log.d("success", "DocumentSnapshot written with ID: ${item.id}.")
+        database.collection("storedItems").document(item.id).set(item)
             .addOnSuccessListener { documentReference ->
                 Log.d("success", "DocumentSnapshot written with ID: $documentReference.")
             }

@@ -45,6 +45,5 @@ class ImportFragment : RainbowCakeFragment<ImportViewState, ImportViewModel>() {
 
     private fun onItemAdded(item: StoredItem) {
         viewModel.onItemAdded(item)
-        //navigator?.pop()
     }
 }

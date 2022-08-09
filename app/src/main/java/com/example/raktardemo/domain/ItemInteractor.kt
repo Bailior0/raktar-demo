@@ -22,4 +22,8 @@ class DatabaseInteractor @Inject constructor(
     suspend fun onItemAdded(item: StoredItem) {
         firebaseDataSource.addItem(item)
     }
+
+    suspend fun onItemUpdated(item: StoredItem) {
+        firebaseDataSource.updateItem(item)
+    }
 }

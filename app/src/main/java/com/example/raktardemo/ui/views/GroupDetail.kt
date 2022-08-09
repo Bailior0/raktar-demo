@@ -16,15 +16,16 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.theme.Shapes
-import java.lang.Math.max
 import kotlin.math.min
 
 @Composable
 fun GroupDetail(
     groups: List<StoredItem>,
-    onClicked: (StoredItem) -> Unit,
+    storages: List<Storage>,
+    onClicked: (StoredItem, List<Storage>) -> Unit,
     onReleaseClicked: (ArrayList<StoredItem>, String) -> Unit,
     onReserveClicked: (ArrayList<StoredItem>, String) -> Unit
 ) {
@@ -102,6 +103,7 @@ fun GroupDetail(
                     Groups(
                         itemAcquisitionId = group.unzip().first[0],
                         group = group.unzip().second,
+                        storages = storages,
                         onClicked = onClicked,
                         onReleaseClicked = onReleaseClicked,
                         onReserveClicked = onReserveClicked
@@ -116,7 +118,8 @@ fun GroupDetail(
 fun Groups(
     itemAcquisitionId: String,
     group: List<StoredItem>,
-    onClicked: (StoredItem) -> Unit,
+    storages: List<Storage>,
+    onClicked: (StoredItem, List<Storage>) -> Unit,
     onReleaseClicked: (ArrayList<StoredItem>, String) -> Unit,
     onReserveClicked: (ArrayList<StoredItem>, String) -> Unit,
 ) {
@@ -208,9 +211,8 @@ fun Groups(
             itemsIndexed(group) { _, item ->
                 Items(
                     item = item,
-                    onClicked = {
-                        onClicked(item)
-                    }
+                    storages = storages,
+                    onClicked = onClicked
                 )
             }
         }
@@ -220,12 +222,19 @@ fun Groups(
 @Composable
 fun Items(
     item: StoredItem,
-    onClicked: (StoredItem) -> Unit
+    storages: List<Storage>,
+    onClicked: (StoredItem, List<Storage>) -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
-            .clickable(onClick = { onClicked(item) })
+            .clickable(onClick = {
+                val acqStorages = storages
+                for(acq in item.itemAcquisitions)
+                    acqStorages.filter { it.id == acq.currentStorage }
+
+                onClicked(item, acqStorages)
+            })
             .height(IntrinsicSize.Min)
             .padding(all = 1.dp)
             .background(Color.LightGray, Shapes.small)

@@ -32,6 +32,7 @@ fun ComboBox(
     Button(
         content = {
             Row() {
+                if(list.isNotEmpty())
                 when (list[0]) {
                     is String -> {
                         stringList = list as List<String>
@@ -92,6 +93,7 @@ fun ComboBox(
         expanded = isExpanded,
         onDismissRequest = { onExpandedChanged(false) },
     ) {
+        if(list.isNotEmpty())
         when (list[0]) {
             is String -> {
                 stringList.forEachIndexed { index, s ->

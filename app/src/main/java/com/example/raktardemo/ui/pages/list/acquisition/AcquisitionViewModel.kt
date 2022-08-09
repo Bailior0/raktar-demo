@@ -1,11 +1,21 @@
 package com.example.raktardemo.ui.pages.list.acquisition
 
 import co.zsmb.rainbowcake.base.RainbowCakeViewModel
+import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class AcquisitionViewModel : RainbowCakeViewModel<AcquisitionViewState>(Loading) {
+@HiltViewModel
+class AcquisitionViewModel @Inject constructor(
+    private val acquisitionPresenter: AcquisitionPresenter
+) : RainbowCakeViewModel<AcquisitionViewState>(Loading) {
 
-    fun setAcquisition(item: StoredItem) {
-        viewState = AcquisitionContent(item, false)
+    fun setAcquisition(item: StoredItem, storages: List<Storage>) {
+        viewState = AcquisitionContent(item, storages, false)
+    }
+
+    fun onAcquisition(item: StoredItem) = execute  {
+        acquisitionPresenter.onAcquisition(item)
     }
 }

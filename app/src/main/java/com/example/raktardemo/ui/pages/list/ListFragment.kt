@@ -9,6 +9,7 @@ import co.zsmb.rainbowcake.base.RainbowCakeFragment
 import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.navigator
+import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.pages.list.detail.ItemDetailFragment
 import com.example.raktardemo.ui.pages.list.release.ReleaseFragment
@@ -41,6 +42,7 @@ class ListFragment : RainbowCakeFragment<ListViewState, ListViewModel>() {
                 is ListContent -> {
                     com.example.raktardemo.ui.views.List(
                         items = viewState.list,
+                        storages = viewState.storages,
                         onClicked = ::onItemSelected,
                         onReleaseClicked = ::onReleaseSelected,
                         onReserveClicked = ::onReserveSelected
@@ -50,8 +52,8 @@ class ListFragment : RainbowCakeFragment<ListViewState, ListViewModel>() {
         }
     }
 
-    private fun onItemSelected(item: StoredItem) {
-        navigator?.add(ItemDetailFragment.newInstance(item))
+    private fun onItemSelected(item: StoredItem, storages: List<Storage>) {
+        navigator?.add(ItemDetailFragment.newInstance(item, storages as ArrayList<Storage>))
     }
 
     private fun onReleaseSelected(items: ArrayList<StoredItem>, acquisitionId: String) {

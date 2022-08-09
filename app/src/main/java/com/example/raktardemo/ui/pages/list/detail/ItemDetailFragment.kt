@@ -14,6 +14,7 @@ import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.extensions.applyArgs
 import co.zsmb.rainbowcake.navigation.navigator
+import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.nav.NavFragment
 import com.example.raktardemo.ui.pages.list.acquisition.AcquisitionFragment
@@ -31,17 +32,18 @@ class ItemDetailFragment : RainbowCakeFragment<ItemDetailViewState, ItemDetailVi
 
     companion object {
         private const val EXTRA_ITEM = "ITEM"
+        private const val EXTRA_STORAGES = "STORAGES"
 
-
-        fun newInstance(item: StoredItem): ItemDetailFragment {
+        fun newInstance(item: StoredItem, storages: ArrayList<Storage>): ItemDetailFragment {
             return ItemDetailFragment().applyArgs {
                 putParcelable(EXTRA_ITEM, item)
+                putParcelableArrayList(EXTRA_STORAGES, storages)
             }
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        viewModel.setDetail(arguments?.getParcelable(EXTRA_ITEM)!!)
+        viewModel.setDetail(arguments?.getParcelable(EXTRA_ITEM)!!, arguments?.getParcelableArrayList(EXTRA_STORAGES)!!)
 
         return ComposeView(requireContext()).apply {
             setContent {
@@ -63,7 +65,7 @@ class ItemDetailFragment : RainbowCakeFragment<ItemDetailViewState, ItemDetailVi
                             product = viewState.item!!,
                             onIconClick = { navigator?.popUntil(NavFragment::class) },
                             onReservationClick = { onReservationSelected(viewState.item!!) },
-                            onAcquisitionClick = { onAcquisitionSelected(viewState.item!!) },
+                            onAcquisitionClick = { onAcquisitionSelected(viewState.item!!, viewState.storages) },
                             onReleaseClick = { onReleaseSelected(viewState.item!!) },
                             onMovingClick = { onMovingSelected(viewState.item!!) }
                         )
@@ -77,8 +79,8 @@ class ItemDetailFragment : RainbowCakeFragment<ItemDetailViewState, ItemDetailVi
         navigator?.add(ReservationFragment.newInstance(item))
     }
 
-    private fun onAcquisitionSelected(item: StoredItem) {
-        navigator?.add(AcquisitionFragment.newInstance(item))
+    private fun onAcquisitionSelected(item: StoredItem, storages: ArrayList<Storage>) {
+        navigator?.add(AcquisitionFragment.newInstance(item, storages))
     }
 
     private fun onReleaseSelected(item: StoredItem) {

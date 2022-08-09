@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.raktardemo.R
+import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.helpers.SegmentedControlTwoWaySwitch
 import com.example.raktardemo.ui.views.theme.Shapes
@@ -22,7 +23,8 @@ import com.example.raktardemo.ui.views.theme.Shapes
 @Composable
 fun List(
     items: List<StoredItem>,
-    onClicked: (StoredItem) -> Unit,
+    storages: List<Storage>,
+    onClicked: (StoredItem, List<Storage>) -> Unit,
     onReleaseClicked: (ArrayList<StoredItem>, String) -> Unit,
     onReserveClicked: (ArrayList<StoredItem>, String) -> Unit
 ) {
@@ -174,9 +176,8 @@ fun List(
                         itemsIndexed(sortedItems) { _, item ->
                             ListItem(
                                 item = item,
-                                onClicked = {
-                                    onClicked(item)
-                                }
+                                storages = storages,
+                                onClicked = onClicked
                             )
                         }
                     }
@@ -209,6 +210,7 @@ fun List(
                         itemsIndexed(itemGroups) { _, item ->
                             GroupDetail(
                                 groups = item,
+                                storages = storages,
                                 onClicked = onClicked,
                                 onReleaseClicked = onReleaseClicked,
                                 onReserveClicked = onReserveClicked
@@ -224,12 +226,19 @@ fun List(
 @Composable
 fun ListItem(
     item: StoredItem,
-    onClicked: (StoredItem) -> Unit
+    storages: List<Storage>,
+    onClicked: (StoredItem, List<Storage>) -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
-            .clickable(onClick = { onClicked(item) })
+            .clickable(onClick = {
+                val acqStorages = storages
+                for(acq in item.itemAcquisitions)
+                    acqStorages.filter { it.id == acq.currentStorage }
+
+                onClicked(item, acqStorages)
+            })
             .height(IntrinsicSize.Min)
             .padding(all = 1.dp)
             .background(Color.LightGray, Shapes.small)

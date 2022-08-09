@@ -19,17 +19,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.R
+import com.example.raktardemo.data.enums.Ownership
+import com.example.raktardemo.data.model.ItemAcquisition
+import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.helpers.ComboBox
 import com.example.raktardemo.ui.views.helpers.DatePicker
 import com.example.raktardemo.ui.views.helpers.SegmentedControlQuantitySwitch
 import com.example.raktardemo.ui.views.helpers.SegmentedControlTwoWaySwitch
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun Acquisition(
     product: StoredItem,
+    storages: List<Storage>,
     onIconClick: () -> Unit = {},
-    onAcquisitionClick: () -> Unit = {}
+    onAcquisitionClick: (StoredItem) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -84,7 +90,7 @@ fun Acquisition(
 
                 var datePickerState by remember { mutableStateOf(false) }
 
-                val warehouseList = listOf("Raktár1", "Raktár2", "Raktár3")
+                val warehouseList = storages
                 var warehouseExpanded by remember { mutableStateOf(false) }
                 var warehouseSelectedIndex by remember { mutableStateOf(0) }
 
@@ -275,7 +281,35 @@ fun Acquisition(
                         )
                     },
                     //TODO
-                    onClick = onAcquisitionClick,
+                    onClick = {
+                        val acquisitions = product.itemAcquisitions as MutableList<ItemAcquisition>
+                        acquisitions.add(
+                            ItemAcquisition(
+                                acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date()),
+                                acquisitionWorker = "",
+                                expiryDate = dateInput,
+                                quantity = when(quantityInput != "" && quantityInput.toDouble() > 0.0){
+                                    true -> quantityInput.toDouble()
+                                    false -> 0.0
+                                },
+                                acquisitionPrice = when(priceInput != "" && priceInput.toDouble() > 0.0){
+                                    true -> priceInput.toDouble()
+                                    false -> 0.0
+                                },
+                                pricePerUnit = when(priceInput != "" && priceInput.toDouble() > 0.0 && quantityInput != "" && quantityInput.toDouble() > 0.0){
+                                    true -> priceInput.toDouble()/quantityInput.toDouble()
+                                    false -> 0.0
+                                },
+                                currentStorage = warehouseList[warehouseSelectedIndex].id,
+                                ownedBy = when(ownerSwitchState) {
+                                    false -> Ownership.Own
+                                    true -> Ownership.Foreign
+                                }
+                            )
+                        )
+                        product.itemAcquisitions = acquisitions
+                        onAcquisitionClick(product)
+                    },
                     modifier = Modifier
                         .scale(2f)
                         .padding(0.dp, 25.dp, 0.dp, 0.dp)

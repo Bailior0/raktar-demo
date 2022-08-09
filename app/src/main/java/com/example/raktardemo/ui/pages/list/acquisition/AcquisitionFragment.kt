@@ -14,7 +14,9 @@ import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.extensions.applyArgs
 import co.zsmb.rainbowcake.navigation.navigator
+import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
+import com.example.raktardemo.ui.pages.list.detail.ItemDetailFragment
 import com.example.raktardemo.ui.views.Acquisition
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
 import com.example.raktardemo.ui.views.theme.RaktarAppJustUi1Theme
@@ -26,17 +28,18 @@ class AcquisitionFragment : RainbowCakeFragment<AcquisitionViewState, Acquisitio
 
     companion object {
         private const val EXTRA_ITEM = "ITEM"
+        private const val EXTRA_STORAGES = "STORAGES"
 
-
-        fun newInstance(item: StoredItem): AcquisitionFragment {
+        fun newInstance(item: StoredItem, storages: ArrayList<Storage>): AcquisitionFragment {
             return AcquisitionFragment().applyArgs {
                 putParcelable(EXTRA_ITEM, item)
+                putParcelableArrayList(EXTRA_STORAGES, storages)
             }
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        viewModel.setAcquisition(arguments?.getParcelable(EXTRA_ITEM)!!)
+        viewModel.setAcquisition(arguments?.getParcelable(EXTRA_ITEM)!!, arguments?.getParcelableArrayList(EXTRA_STORAGES)!!)
 
         return ComposeView(requireContext()).apply {
             setContent {
@@ -56,6 +59,7 @@ class AcquisitionFragment : RainbowCakeFragment<AcquisitionViewState, Acquisitio
                         is Loading -> FullScreenLoading()
                         is AcquisitionContent -> Acquisition(
                             product = viewState.item!!,
+                            storages = viewState.storages,
                             onIconClick = { navigator?.pop() },
                             onAcquisitionClick = ::onAcquisition
                         )
@@ -65,7 +69,7 @@ class AcquisitionFragment : RainbowCakeFragment<AcquisitionViewState, Acquisitio
         }
     }
 
-    private fun onAcquisition() {
-        //TODO
+    private fun onAcquisition(item: StoredItem) {
+        viewModel.onAcquisition(item)
     }
 }

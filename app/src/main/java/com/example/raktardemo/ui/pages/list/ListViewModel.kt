@@ -1,7 +1,6 @@
 package com.example.raktardemo.ui.pages.list
 
 import co.zsmb.rainbowcake.base.RainbowCakeViewModel
-import com.example.raktardemo.domain.DatabaseInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -23,9 +22,12 @@ class ListViewModel @Inject constructor(
     }*/
 
     fun setList() = execute  {
+        val storages = listPresenter.getStorages()
+
         listPresenter.getItems().collect {
             viewState = ListContent(
                 list = it,
+                storages = storages,
                 isLoading = false
             )
         }
