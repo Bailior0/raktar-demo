@@ -229,11 +229,11 @@ fun Items(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
             .clickable(onClick = {
-                val acqStorages = storages
+                /*var acqStorages = storages
                 for(acq in item.itemAcquisitions)
-                    acqStorages.filter { it.id == acq.currentStorage }
+                    acqStorages = acqStorages.filter { it.id == acq.currentStorage }*/
 
-                onClicked(item, acqStorages)
+                onClicked(item, storages)
             })
             .height(IntrinsicSize.Min)
             .padding(all = 1.dp)
