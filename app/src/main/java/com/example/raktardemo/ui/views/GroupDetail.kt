@@ -26,7 +26,7 @@ import kotlin.math.min
 fun GroupDetail(
     groups: List<StoredItem>,
     storages: List<Storage>,
-    onClicked: (StoredItem, List<Storage>) -> Unit,
+    onClicked: (StoredItem, List<Storage>, List<Storage>) -> Unit,
     onReleaseClicked: (ArrayList<StoredItem>, String) -> Unit,
     onReserveClicked: (ArrayList<StoredItem>, String) -> Unit
 ) {
@@ -120,7 +120,7 @@ fun Groups(
     itemAcquisitionId: String,
     group: List<StoredItem>,
     storages: List<Storage>,
-    onClicked: (StoredItem, List<Storage>) -> Unit,
+    onClicked: (StoredItem, List<Storage>, List<Storage>) -> Unit,
     onReleaseClicked: (ArrayList<StoredItem>, String) -> Unit,
     onReserveClicked: (ArrayList<StoredItem>, String) -> Unit,
 ) {
@@ -226,17 +226,21 @@ fun Groups(
 fun Items(
     item: StoredItem,
     storages: List<Storage>,
-    onClicked: (StoredItem, List<Storage>) -> Unit
+    onClicked: (StoredItem, List<Storage>, List<Storage>) -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
             .clickable(onClick = {
-                /*var acqStorages = storages
-                for(acq in item.itemAcquisitions)
-                    acqStorages = acqStorages.filter { it.id == acq.currentStorage }*/
+                val acqs = mutableListOf<String>()
 
-                onClicked(item, storages)
+                for(acq in item.itemAcquisitions) {
+                    acqs.add(acq.currentStorage)
+                }
+
+                val acqStorages = storages.filter{ acqs.contains(it.id) }
+
+                onClicked(item, storages, acqStorages)
             })
             .height(IntrinsicSize.Min)
             .padding(all = 1.dp)

@@ -14,6 +14,9 @@ import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.extensions.applyArgs
 import co.zsmb.rainbowcake.navigation.navigator
+import com.example.raktardemo.data.enums.PackageState
+import com.example.raktardemo.data.enums.PackageType
+import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.Moving
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
@@ -26,17 +29,24 @@ class MovingFragment : RainbowCakeFragment<MovingViewState, MovingViewModel>() {
 
     companion object {
         private const val EXTRA_ITEM = "ITEM"
+        private const val EXTRA_STORAGES = "STORAGES"
+        private const val EXTRA_PRESENT_STORAGES = "PRESENT_STORAGES"
 
-
-        fun newInstance(item: StoredItem): MovingFragment {
+        fun newInstance(item: StoredItem, storages: ArrayList<Storage>, presentStorages: ArrayList<Storage>): MovingFragment {
             return MovingFragment().applyArgs {
                 putParcelable(EXTRA_ITEM, item)
+                putParcelableArrayList(EXTRA_STORAGES, storages)
+                putParcelableArrayList(EXTRA_PRESENT_STORAGES, presentStorages)
             }
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        viewModel.setMoving(arguments?.getParcelable(EXTRA_ITEM)!!)
+        viewModel.setMoving(
+            arguments?.getParcelable(EXTRA_ITEM)!!,
+            arguments?.getParcelableArrayList(EXTRA_STORAGES)!!,
+            arguments?.getParcelableArrayList(EXTRA_PRESENT_STORAGES)!!
+        )
 
         return ComposeView(requireContext()).apply {
             setContent {
@@ -56,6 +66,8 @@ class MovingFragment : RainbowCakeFragment<MovingViewState, MovingViewModel>() {
                         is Loading -> FullScreenLoading()
                         is MovingContent -> Moving(
                             product = viewState.item!!,
+                            storages = viewState.storages,
+                            presentStorages = viewState.presentStorages,
                             onIconClick = { navigator?.pop() },
                             onMovingClick = ::onMoving
                         )
@@ -65,7 +77,7 @@ class MovingFragment : RainbowCakeFragment<MovingViewState, MovingViewModel>() {
         }
     }
 
-    private fun onMoving() {
-        //TODO
+    private fun onMoving(item: StoredItem, quantity: Double, startStorage: Storage, destinationStorage: Storage, packageType: PackageType, packageState: PackageState?) {
+        viewModel.onMoving(item, quantity, startStorage, destinationStorage, packageType, packageState)
     }
 }

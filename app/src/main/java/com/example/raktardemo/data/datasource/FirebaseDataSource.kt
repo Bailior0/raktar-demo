@@ -68,7 +68,6 @@ class FirebaseDataSource @Inject constructor() {
     }
 
     suspend fun updateItem(item: StoredItem) {
-        Log.d("success", "DocumentSnapshot written with ID: ${item.id}.")
         database.collection("storedItems").document(item.id).set(item)
             .addOnSuccessListener { documentReference ->
                 Log.d("success", "DocumentSnapshot written with ID: $documentReference.")

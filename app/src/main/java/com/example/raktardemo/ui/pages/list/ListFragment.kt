@@ -52,8 +52,8 @@ class ListFragment : RainbowCakeFragment<ListViewState, ListViewModel>() {
         }
     }
 
-    private fun onItemSelected(item: StoredItem, storages: List<Storage>) {
-        navigator?.add(ItemDetailFragment.newInstance(item, storages as ArrayList<Storage>))
+    private fun onItemSelected(item: StoredItem, storages: List<Storage>, presentStorages: List<Storage>) {
+        navigator?.add(ItemDetailFragment.newInstance(item, storages as ArrayList<Storage>, presentStorages as ArrayList<Storage>))
     }
 
     private fun onReleaseSelected(items: ArrayList<StoredItem>, acquisitionId: String) {

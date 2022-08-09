@@ -1,5 +1,6 @@
 package com.example.raktardemo.ui.views
 
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -9,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -22,6 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.R
+import com.example.raktardemo.data.enums.PackageState
+import com.example.raktardemo.data.enums.PackageType
+import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.helpers.ComboBox
 import com.example.raktardemo.ui.views.helpers.SegmentedControlQuantitySwitch
@@ -30,8 +35,10 @@ import com.example.raktardemo.ui.views.helpers.SegmentedControlTwoWaySwitch
 @Composable
 fun Moving(
     product: StoredItem,
+    storages: List<Storage>,
+    presentStorages: List<Storage>,
     onIconClick: () -> Unit = {},
-    onMovingClick: () -> Unit
+    onMovingClick: (StoredItem, Double, Storage, Storage, PackageType, PackageState?) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -58,6 +65,8 @@ fun Moving(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
+                val context = LocalContext.current
+
                 val (
                     itemLabel,
                     item,
@@ -75,15 +84,19 @@ fun Moving(
 
                 var quantitySwitchState by remember { mutableStateOf(false) }
 
-                val warehouseList = listOf("Raktár1", "Raktár2", "Raktár3")
-                var curentWarehouseExpanded by remember { mutableStateOf(false) }
-                var curentWarehouseSelectedIndex by remember { mutableStateOf(0) }
+                val presentStorageList = mutableListOf<String>()
+                for(presentStorage in presentStorages)
+                    presentStorageList.add(presentStorage.name)
 
-                var destinationWarehouseExpanded by remember { mutableStateOf(false) }
-                var destinationWarehouseSelectedIndex by remember { mutableStateOf(1) }
+                var presentStorageExpanded by remember { mutableStateOf(false) }
+                var presentStorageSelectedIndex by remember { mutableStateOf(0) }
 
-                var movable = 4
-                var unit = "db"
+                val allStorageList = mutableListOf<String>()
+                for(allStorage in storages)
+                    allStorageList.add(allStorage.name)
+
+                var allStorageExpanded by remember { mutableStateOf(false) }
+                var allStorageSelectedIndex by remember { mutableStateOf(0) }
 
                 var packageSwitchState by remember { mutableStateOf(false) }
 
@@ -130,11 +143,11 @@ fun Moving(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("$movable")
+                            append(product.freeQuantity.toString())
                         }
 
                         withStyle(style = SpanStyle(color = Color.Gray)) {
-                            append("$unit")
+                            append(" " + product.item.quantityUnit.translation)
                         }
                     },
                     maxLines = 2,
@@ -200,19 +213,31 @@ fun Moving(
                 }
 
                 ConstraintLayout(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(5.dp, 25.dp, 5.dp, 0.dp)
-                        .constrainAs(currentWarehouse) {
-                            top.linkTo(switch.bottom)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        }
+                    modifier = when(quantitySwitchState) {
+                        true -> Modifier
+                                .fillMaxWidth()
+                                .padding(5.dp, 25.dp, 5.dp, 0.dp)
+                                .constrainAs(currentWarehouse) {
+                                    top.linkTo(quantity.bottom)
+                                    start.linkTo(parent.start)
+                                    end.linkTo(parent.end)
+                                }
+                        false -> Modifier
+                                .fillMaxWidth()
+                                .padding(5.dp, 25.dp, 5.dp, 0.dp)
+                                .constrainAs(currentWarehouse) {
+                                    top.linkTo(switch.bottom)
+                                    start.linkTo(parent.start)
+                                    end.linkTo(parent.end)
+                                }
+                    }
+
+
                 ) {
                     val (text, comboBox) = createRefs()
 
                     Text(
-                        text = "Raktár választása: ",
+                        text = "Kiinduló raktár választása: ",
                         color = Color.Gray,
                         modifier = Modifier
                             .constrainAs(text) {
@@ -231,14 +256,11 @@ fun Moving(
                             }
                     ) {
                         ComboBox(
-                            warehouseList,
-                            curentWarehouseSelectedIndex,
-                            {
-                                if (destinationWarehouseSelectedIndex != it )
-                                    curentWarehouseSelectedIndex = it
-                            },
-                            curentWarehouseExpanded,
-                            { curentWarehouseExpanded = it },
+                            presentStorageList,
+                            presentStorageSelectedIndex,
+                            { presentStorageSelectedIndex = it},
+                            presentStorageExpanded,
+                            { presentStorageExpanded = it },
                             60.dp
                         )
                     }
@@ -257,7 +279,7 @@ fun Moving(
                     val (text, comboBox) = createRefs()
 
                     Text(
-                        text = "Raktár választása: ",
+                        text = "Célraktár választása: ",
                         color = Color.Gray,
                         modifier = Modifier
                             .constrainAs(text) {
@@ -276,14 +298,11 @@ fun Moving(
                             }
                     ) {
                         ComboBox(
-                            warehouseList,
-                            destinationWarehouseSelectedIndex,
-                            {
-                                if (it != curentWarehouseSelectedIndex)
-                                    destinationWarehouseSelectedIndex = it
-                            },
-                            destinationWarehouseExpanded,
-                            { destinationWarehouseExpanded = it },
+                            allStorageList,
+                            allStorageSelectedIndex,
+                            { allStorageSelectedIndex = it},
+                            allStorageExpanded,
+                            { allStorageExpanded = it },
                             60.dp
                         )
                     }
@@ -299,8 +318,30 @@ fun Moving(
                         )
                     },
                     onClick = {
-                        //TODO
-                        onMovingClick()
+                        if( quantityInput == "" || quantityInput.toDouble() > product.freeQuantity && quantityInput.toDouble() > 0.0) {
+                            Toast.makeText(context, "Nem megfelelő a mennyiség értéke!", Toast.LENGTH_SHORT).show()
+                        }
+                        else if(storages[allStorageSelectedIndex] == presentStorages[presentStorageSelectedIndex]) {
+                            Toast.makeText(context, "A kezdő és célraktár nem egyezhetnek meg!", Toast.LENGTH_SHORT).show()
+                        }
+                        else
+                            onMovingClick(
+                                product,
+                                quantityInput.toDouble(),
+                                presentStorages[presentStorageSelectedIndex],
+                                storages[allStorageSelectedIndex],
+                                when(quantitySwitchState) {
+                                    true -> PackageType.Piece
+                                    false -> PackageType.Package
+                                },
+                                when(quantitySwitchState) {
+                                    true -> when(packageSwitchState) {
+                                        true -> PackageState.Opened
+                                        false -> PackageState.Full
+                                    }
+                                    false -> null
+                                }
+                            )
                     },
                     modifier = Modifier
                         .scale(2f)

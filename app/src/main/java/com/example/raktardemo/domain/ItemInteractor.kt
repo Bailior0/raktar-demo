@@ -1,7 +1,8 @@
 package com.example.raktardemo.domain
 
-import android.util.Log
 import com.example.raktardemo.data.datasource.FirebaseDataSource
+import com.example.raktardemo.data.enums.PackageState
+import com.example.raktardemo.data.enums.PackageType
 import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
 import kotlinx.coroutines.flow.Flow
@@ -25,5 +26,9 @@ class DatabaseInteractor @Inject constructor(
 
     suspend fun onItemUpdated(item: StoredItem) {
         firebaseDataSource.updateItem(item)
+    }
+
+    suspend fun onMoving(item: StoredItem, quantity: Double, startStorage: Storage, destinationStorage: Storage, packageType: PackageType, packageState: PackageState?) {
+
     }
 }

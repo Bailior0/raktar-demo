@@ -1,5 +1,6 @@
 package com.example.raktardemo.ui.views
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,7 +25,7 @@ import com.example.raktardemo.ui.views.theme.Shapes
 fun List(
     items: List<StoredItem>,
     storages: List<Storage>,
-    onClicked: (StoredItem, List<Storage>) -> Unit,
+    onClicked: (StoredItem, List<Storage>, List<Storage>) -> Unit,
     onReleaseClicked: (ArrayList<StoredItem>, String) -> Unit,
     onReserveClicked: (ArrayList<StoredItem>, String) -> Unit
 ) {
@@ -227,17 +228,21 @@ fun List(
 fun ListItem(
     item: StoredItem,
     storages: List<Storage>,
-    onClicked: (StoredItem, List<Storage>) -> Unit
+    onClicked: (StoredItem, List<Storage>, List<Storage>) -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
             .clickable(onClick = {
-                /*var acqStorages = storages
-                for(acq in item.itemAcquisitions)
-                    acqStorages = acqStorages.filter { it.id == acq.currentStorage }*/
+                val acqs = mutableListOf<String>()
 
-                onClicked(item, storages)
+                for(acq in item.itemAcquisitions) {
+                    acqs.add(acq.currentStorage)
+                }
+
+                val acqStorages = storages.filter{ acqs.contains(it.id) }
+
+                onClicked(item, storages, acqStorages)
             })
             .height(IntrinsicSize.Min)
             .padding(all = 1.dp)

@@ -6,7 +6,7 @@ import com.example.raktardemo.data.model.StoredItem
 
 class ItemDetailViewModel : RainbowCakeViewModel<ItemDetailViewState>(Loading) {
 
-    fun setDetail(item: StoredItem, storages: ArrayList<Storage>) {
-        viewState = ItemDetailLoaded(item, storages, false)
+    fun setDetail(item: StoredItem, storages: ArrayList<Storage>, presentStorages: ArrayList<Storage>) {
+        viewState = ItemDetailLoaded(item, storages, presentStorages, false)
     }
 }

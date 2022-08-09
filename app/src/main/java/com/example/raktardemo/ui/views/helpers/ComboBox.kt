@@ -13,8 +13,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import com.example.raktardemo.R
-import com.example.raktardemo.data.enums.QuantityUnit
-import com.example.raktardemo.data.model.Storage
 
 @Composable
 fun ComboBox(
@@ -28,6 +26,7 @@ fun ComboBox(
 
     Button(
         content = {
+            if(list.isNotEmpty())
             Row() {
                 Text(
                     text = list[selectedIndex],
