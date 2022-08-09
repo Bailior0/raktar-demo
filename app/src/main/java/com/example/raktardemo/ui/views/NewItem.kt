@@ -47,7 +47,9 @@ fun NewItem(
     var quantitySwitchState by remember { mutableStateOf(false) }
     var openableSwitchState by remember { mutableStateOf(false) }
 
-    val unitList = QuantityUnit.values().toList()
+    val unitList = mutableListOf<String>()
+    for(qUnit in QuantityUnit.values().toList())
+        unitList.add(qUnit.translation)
 
     var unitSelectedIndex by remember { mutableStateOf(0) }
     var unitExpanded by remember { mutableStateOf(false) }
@@ -60,7 +62,10 @@ fun NewItem(
     var ownerSwitchState by remember { mutableStateOf(false) }
     var datePickerState by remember { mutableStateOf(false) }
 
-    val warehouseList = storages
+    val warehouseList = mutableListOf<String>()
+    for(warehouse in storages)
+        warehouseList.add(warehouse.name)
+
     var warehouseExpanded by remember { mutableStateOf(false) }
     var warehouseSelectedIndex by remember { mutableStateOf(0) }
 
@@ -584,7 +589,7 @@ fun NewItem(
                                     false -> PackageType.Package
                                     true -> PackageType.Piece
                                 },
-                                quantityUnit = unitList[unitSelectedIndex],
+                                quantityUnit = QuantityUnit.values().toList()[unitSelectedIndex],
                                 defaultPackageQuantity = when(quantityInput != "" && quantityInput.toDouble() > 0.0){
                                     true -> quantityInput.toDouble()
                                     false -> 0.0
@@ -616,7 +621,7 @@ fun NewItem(
                                         true -> defaultPriceInput.toDouble()/packageSizeInput.toDouble()
                                         false -> 0.0
                                     },
-                                    currentStorage = warehouseList[warehouseSelectedIndex].id,
+                                    currentStorage = storages[warehouseSelectedIndex].id,
                                     ownedBy = when(ownerSwitchState) {
                                         false -> Ownership.Own
                                         true -> Ownership.Foreign

@@ -18,65 +18,24 @@ import com.example.raktardemo.data.model.Storage
 
 @Composable
 fun ComboBox(
-    list: List<Any>,
+    list: List<String>,
     selectedIndex: Int,
     onIndexChanged: (Int) -> Unit,
     isExpanded: Boolean,
     onExpandedChanged: (Boolean) -> Unit,
     textWidth: Dp
 ) {
-    var stringList = emptyList<String>()
-    var storageList = emptyList<Storage>()
-    var enumList = emptyList<QuantityUnit>()
 
     Button(
         content = {
             Row() {
-                if(list.isNotEmpty())
-                when (list[0]) {
-                    is String -> {
-                        stringList = list as List<String>
-
-                        Text(
-                            text = stringList[selectedIndex],
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier
-                                .width(textWidth)
-                        )
-                    }
-                    is Storage -> {
-                        storageList = list as List<Storage>
-
-                        Text(
-                            text = storageList[selectedIndex].name,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier
-                                .width(textWidth)
-                        )
-                    }
-                    is QuantityUnit -> {
-                        enumList = list as List<QuantityUnit>
-
-                        Text(
-                            text = enumList[selectedIndex].translation,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier
-                                .width(textWidth)
-                        )
-                    }
-                    else -> {
-                        Text(
-                            text = "Hiba",
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier
-                                .width(textWidth)
-                        )
-                    }
-                }
+                Text(
+                    text = list[selectedIndex],
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .width(textWidth)
+                )
 
                 Image(
                     painter = painterResource(
@@ -93,46 +52,14 @@ fun ComboBox(
         expanded = isExpanded,
         onDismissRequest = { onExpandedChanged(false) },
     ) {
-        if(list.isNotEmpty())
-        when (list[0]) {
-            is String -> {
-                stringList.forEachIndexed { index, s ->
-                    DropdownMenuItem(
-                        onClick = {
-                            onIndexChanged(index)
-                            onExpandedChanged(false)
-                        }
-                    ) {
-                        Text(text = s)
-                    }
+        list.forEachIndexed { index, s ->
+            DropdownMenuItem(
+                onClick = {
+                    onIndexChanged(index)
+                    onExpandedChanged(false)
                 }
-            }
-            is Storage -> {
-                storageList.forEachIndexed { index, s ->
-                    DropdownMenuItem(
-                        onClick = {
-                            onIndexChanged(index)
-                            onExpandedChanged(false)
-                        }
-                    ) {
-                        Text(text = s.name)
-                    }
-                }
-            }
-            is QuantityUnit -> {
-                enumList.forEachIndexed { index, s ->
-                    DropdownMenuItem(
-                        onClick = {
-                            onIndexChanged(index)
-                            onExpandedChanged(false)
-                        }
-                    ) {
-                        Text(text = s.translation)
-                    }
-                }
-            }
-            else -> {
-                //TODO?
+            ) {
+                Text(text = s)
             }
         }
     }

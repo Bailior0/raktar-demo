@@ -25,7 +25,6 @@ import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.helpers.ComboBox
 import com.example.raktardemo.ui.views.helpers.DatePicker
-import com.example.raktardemo.ui.views.helpers.SegmentedControlQuantitySwitch
 import com.example.raktardemo.ui.views.helpers.SegmentedControlTwoWaySwitch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -73,7 +72,6 @@ fun Acquisition(
                     itemLabel,
                     item,
                     warehouse,
-                    quantitySwitch,
                     quantity,
                     price,
                     date,
@@ -86,11 +84,13 @@ fun Acquisition(
                 var priceInput by remember { mutableStateOf("") }
 
                 var ownerSwitchState by remember { mutableStateOf(false) }
-                var quantitySwitchState by remember { mutableStateOf(false) }
 
                 var datePickerState by remember { mutableStateOf(false) }
 
-                val warehouseList = storages
+                val warehouseList = mutableListOf<String>()
+                for(storage in storages)
+                    warehouseList.add(storage.name)
+
                 var warehouseExpanded by remember { mutableStateOf(false) }
                 var warehouseSelectedIndex by remember { mutableStateOf(0) }
 
@@ -300,7 +300,7 @@ fun Acquisition(
                                     true -> priceInput.toDouble()/quantityInput.toDouble()
                                     false -> 0.0
                                 },
-                                currentStorage = warehouseList[warehouseSelectedIndex].id,
+                                currentStorage = storages[warehouseSelectedIndex].id,
                                 ownedBy = when(ownerSwitchState) {
                                     false -> Ownership.Own
                                     true -> Ownership.Foreign
