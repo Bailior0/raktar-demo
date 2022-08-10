@@ -575,8 +575,52 @@ fun NewItem(
                     )
                 },
                 onClick = {
+                    val packageType = when(quantitySwitchState) {
+                        false -> PackageType.Package
+                        true -> PackageType.Piece
+                    }
+                    val quantity = when(quantityInput != "" && quantityInput.toDouble() > 0.0){
+                        true -> quantityInput.toDouble()
+                        false -> 0.0
+                    }
+                    val price = when(defaultPriceInput != "" && defaultPriceInput.toDouble() > 0.0){
+                        true -> defaultPriceInput.toDouble()
+                        false -> 0.0
+                    }
+                    val minQuantity = when(minQuantityInput != "" && minQuantityInput.toDouble() > 0.0){
+                        true -> minQuantityInput.toDouble()
+                        false -> null
+                    }
+                    val packageSize = when(packageSizeInput != "" && packageSizeInput.toDouble() > 0.0){
+                        true -> packageSizeInput.toDouble()
+                        false -> 1.0
+                    }
+
+                    val totalQuantity = when(packageType == PackageType.Package){
+                        true -> (quantity * packageSize)
+                        false -> quantity
+                    }
+                    val currentQuantity = when(!openableSwitchState){
+                        true -> totalQuantity
+                        false -> quantity
+                    }
+
+                    val pricePerUnit = when(price != 0.0 && packageSize != 0.0){
+                        true -> price/currentQuantity/packageSize
+                        false -> 0.0
+                    }
+
+                    val packageCounts = mutableListOf<Double>()
+                    if(packageType == PackageType.Package) {
+                        for(i in 0..quantity.toInt()) {
+                            packageCounts.add(packageSize)
+                        }
+                    } else {
+                        packageCounts.add(quantity)
+                    }
+
                     onAddClicked(
-                        //TODO
+                        //TODO price
                         StoredItem(
                             item = Item(
                                 name = nameInput,
@@ -585,47 +629,27 @@ fun NewItem(
                                 ),
                                 manufacturer = manufacturerInput,
                                 serialNumber = serialInput,
-                                type = when(quantitySwitchState) {
-                                    false -> PackageType.Package
-                                    true -> PackageType.Piece
-                                },
+                                type = packageType,
                                 quantityUnit = QuantityUnit.values().toList()[unitSelectedIndex],
-                                defaultPackageQuantity = when(quantityInput != "" && quantityInput.toDouble() > 0.0){
-                                    true -> quantityInput.toDouble()
-                                    false -> 0.0
-                                },
+                                defaultPackageQuantity = packageSize,
                                 openable = !openableSwitchState,
-                                defaultPurchasePrice = when(defaultPriceInput != "" && defaultPriceInput.toDouble() > 0.0){
-                                    true -> defaultPriceInput.toDouble()
-                                    false -> 0.0
-                                },
-                                minimumStoredQuantity = when(minQuantityInput != "" && minQuantityInput.toDouble() > 0.0){
-                                    true -> minQuantityInput.toDouble()
-                                    false -> 0.0
-                                },
+                                defaultPurchasePrice = 1.0,
+                                minimumStoredQuantity = minQuantity,
                             ),
                             itemAcquisitions = mutableListOf(
                                 ItemAcquisition(
                                     acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date()),
                                     acquisitionWorker = "",
                                     expiryDate = dateInput,
-                                    quantity = when(quantityInput != "" && quantityInput.toDouble() > 0.0){
-                                        true -> quantityInput.toDouble()
-                                        false -> 0.0
-                                    },
-                                    acquisitionPrice = when(defaultPriceInput != "" && defaultPriceInput.toDouble() > 0.0){
-                                        true -> defaultPriceInput.toDouble()
-                                        false -> 0.0
-                                    },
-                                    pricePerUnit = when(defaultPriceInput != "" && defaultPriceInput.toDouble() > 0.0 && packageSizeInput != "" && packageSizeInput.toDouble() > 0.0){
-                                        true -> defaultPriceInput.toDouble()/packageSizeInput.toDouble()
-                                        false -> 0.0
-                                    },
+                                    quantity = quantity,
+                                    acquisitionPrice = price,
+                                    pricePerUnit = pricePerUnit,
                                     currentStorage = storages[warehouseSelectedIndex].id,
                                     ownedBy = when(ownerSwitchState) {
                                         false -> Ownership.Own
                                         true -> Ownership.Foreign
-                                    }
+                                    },
+                                    packageCounts = packageCounts
                                 )
                             )
                         )

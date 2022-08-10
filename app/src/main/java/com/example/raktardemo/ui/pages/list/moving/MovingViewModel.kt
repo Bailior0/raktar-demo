@@ -18,7 +18,7 @@ class MovingViewModel @Inject constructor(
         viewState = MovingContent(item, storages, presentStorages, false)
     }
 
-    fun onMoving(item: StoredItem, quantity: Double, startStorage: Storage, destinationStorage: Storage, packageType: PackageType, packageState: PackageState?) = execute {
-        movingPresenter.onMoving(item, quantity, startStorage,destinationStorage, packageType, packageState)
+    fun onMoving(item: StoredItem, quantity: Double, startStorage: Storage, destinationStorage: Storage, packageState: PackageState?) = execute {
+        movingPresenter.onMoving(item, quantity, startStorage,destinationStorage, packageState)
     }
 }

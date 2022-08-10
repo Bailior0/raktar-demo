@@ -29,7 +29,6 @@ import com.example.raktardemo.data.enums.PackageType
 import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.helpers.ComboBox
-import com.example.raktardemo.ui.views.helpers.SegmentedControlQuantitySwitch
 import com.example.raktardemo.ui.views.helpers.SegmentedControlTwoWaySwitch
 
 @Composable
@@ -38,7 +37,7 @@ fun Moving(
     storages: List<Storage>,
     presentStorages: List<Storage>,
     onIconClick: () -> Unit = {},
-    onMovingClick: (StoredItem, Double, Storage, Storage, PackageType, PackageState?) -> Unit
+    onMovingClick: (StoredItem, Double, Storage, Storage, PackageState?) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -81,8 +80,6 @@ fun Moving(
                 ) = createRefs()
 
                 var quantityInput by remember { mutableStateOf("") }
-
-                var quantitySwitchState by remember { mutableStateOf(false) }
 
                 val presentStorageList = mutableListOf<String>()
                 for(presentStorage in presentStorages)
@@ -132,9 +129,8 @@ fun Moving(
                             top.linkTo(item.bottom)
                             start.linkTo(parent.start)
                         }
-                ) {
-                    SegmentedControlQuantitySwitch(quantitySwitchState) { quantitySwitchState = it }
-                }
+                )
+
 
                 Text(
                     buildAnnotatedString {
@@ -183,7 +179,7 @@ fun Moving(
                         }
                 )
 
-                if (!quantitySwitchState) {
+                if (product.item.type == PackageType.Package  && product.item.openable) {
                     Text(
                         text = "Csomag állapota",
                         color = Color.Gray,
@@ -213,12 +209,12 @@ fun Moving(
                 }
 
                 ConstraintLayout(
-                    modifier = when(quantitySwitchState) {
+                    modifier = when(product.item.type == PackageType.Package  && product.item.openable) {
                         true -> Modifier
                                 .fillMaxWidth()
                                 .padding(5.dp, 25.dp, 5.dp, 0.dp)
                                 .constrainAs(currentWarehouse) {
-                                    top.linkTo(quantity.bottom)
+                                    top.linkTo(switch.bottom)
                                     start.linkTo(parent.start)
                                     end.linkTo(parent.end)
                                 }
@@ -226,7 +222,7 @@ fun Moving(
                                 .fillMaxWidth()
                                 .padding(5.dp, 25.dp, 5.dp, 0.dp)
                                 .constrainAs(currentWarehouse) {
-                                    top.linkTo(switch.bottom)
+                                    top.linkTo(quantity.bottom)
                                     start.linkTo(parent.start)
                                     end.linkTo(parent.end)
                                 }
@@ -319,10 +315,12 @@ fun Moving(
                     },
                     onClick = {
                         if( quantityInput == "" || quantityInput.toDouble() > product.freeQuantity && quantityInput.toDouble() > 0.0) {
-                            Toast.makeText(context, "Nem megfelelő a mennyiség értéke!", Toast.LENGTH_SHORT).show()
+                            //TODO
+                            //Toast.makeText(context, "Nem megfelelő a mennyiség értéke!", Toast.LENGTH_SHORT).show()
                         }
                         else if(storages[allStorageSelectedIndex] == presentStorages[presentStorageSelectedIndex]) {
-                            Toast.makeText(context, "A kezdő és célraktár nem egyezhetnek meg!", Toast.LENGTH_SHORT).show()
+                            //TODO
+                            //Toast.makeText(context, "A kezdő és célraktár nem egyezhetnek meg!", Toast.LENGTH_SHORT).show()
                         }
                         else
                             onMovingClick(
@@ -330,11 +328,7 @@ fun Moving(
                                 quantityInput.toDouble(),
                                 presentStorages[presentStorageSelectedIndex],
                                 storages[allStorageSelectedIndex],
-                                when(quantitySwitchState) {
-                                    true -> PackageType.Piece
-                                    false -> PackageType.Package
-                                },
-                                when(quantitySwitchState) {
+                                when(product.item.type == PackageType.Package  && product.item.openable) {
                                     true -> when(packageSwitchState) {
                                         true -> PackageState.Opened
                                         false -> PackageState.Full

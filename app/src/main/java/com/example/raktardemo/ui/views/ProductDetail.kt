@@ -4,7 +4,6 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -100,7 +99,11 @@ fun ProductDetail(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("TODO")
+                            append(product.freeQuantity.toString())
+                        }
+
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append(" " + product.item.quantityUnit.translation)
                         }
                     },
                     textAlign = TextAlign.End,

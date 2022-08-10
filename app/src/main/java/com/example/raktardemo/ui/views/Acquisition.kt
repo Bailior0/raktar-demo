@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.R
 import com.example.raktardemo.data.enums.Ownership
+import com.example.raktardemo.data.enums.PackageType
 import com.example.raktardemo.data.model.ItemAcquisition
 import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
@@ -283,28 +284,58 @@ fun Acquisition(
                     //TODO
                     onClick = {
                         val acquisitions = product.itemAcquisitions as MutableList<ItemAcquisition>
+
+                        val acqQuantity = when(quantityInput != "" && quantityInput.toDouble() > 0.0){
+                            true -> quantityInput.toDouble()
+                            false -> 0.0
+                        }
+                        val acquisitionPrice = when(priceInput != "" && priceInput.toDouble() > 0.0){
+                            true -> priceInput.toDouble()
+                            false -> 0.0
+                        }
+                        val itemPrice = when(priceInput != "" && priceInput.toDouble() > 0.0 && quantityInput != "" && quantityInput.toDouble() > 0.0){
+                            true -> priceInput.toDouble()/quantityInput.toDouble()
+                            false -> 0.0
+                        }
+                        val ownedBy = when(ownerSwitchState) {
+                            false -> Ownership.Own
+                            true -> Ownership.Foreign
+                        }
+
+                        val totalQuantity = when(product.item.type == PackageType.Package){
+                            true -> (acqQuantity * product.item.defaultPackageQuantity)
+                            false -> acqQuantity
+                        }
+                        val currentQuantity = when(product.item.openable){
+                            true -> totalQuantity
+                            false -> acqQuantity
+                        }
+
+                        val pricePerUnit = when(itemPrice != 0.0 && product.item.defaultPackageQuantity != 0.0){
+                            true -> itemPrice/currentQuantity/product.item.defaultPackageQuantity
+                            false -> 0.0
+                        }
+
+                        val packageCounts = mutableListOf<Double>()
+                        if(product.item.type == PackageType.Package) {
+                            for(i in 0..acqQuantity.toInt()) {
+                                packageCounts.add(product.item.defaultPackageQuantity)
+                            }
+                        } else {
+                            packageCounts.add(acqQuantity)
+                        }
+
                         acquisitions.add(
                             ItemAcquisition(
                                 acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date()),
                                 acquisitionWorker = "",
                                 expiryDate = dateInput,
-                                quantity = when(quantityInput != "" && quantityInput.toDouble() > 0.0){
-                                    true -> quantityInput.toDouble()
-                                    false -> 0.0
-                                },
-                                acquisitionPrice = when(priceInput != "" && priceInput.toDouble() > 0.0){
-                                    true -> priceInput.toDouble()
-                                    false -> 0.0
-                                },
-                                pricePerUnit = when(priceInput != "" && priceInput.toDouble() > 0.0 && quantityInput != "" && quantityInput.toDouble() > 0.0){
-                                    true -> priceInput.toDouble()/quantityInput.toDouble()
-                                    false -> 0.0
-                                },
+                                quantity = acqQuantity,
+                                acquisitionPrice = acquisitionPrice,
+                                pricePerUnit = pricePerUnit,
                                 currentStorage = storages[warehouseSelectedIndex].id,
-                                ownedBy = when(ownerSwitchState) {
-                                    false -> Ownership.Own
-                                    true -> Ownership.Foreign
-                                }
+                                ownedBy = ownedBy,
+                                packageCounts = packageCounts
                             )
                         )
                         product.itemAcquisitions = acquisitions

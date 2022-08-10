@@ -77,7 +77,7 @@ class MovingFragment : RainbowCakeFragment<MovingViewState, MovingViewModel>() {
         }
     }
 
-    private fun onMoving(item: StoredItem, quantity: Double, startStorage: Storage, destinationStorage: Storage, packageType: PackageType, packageState: PackageState?) {
-        viewModel.onMoving(item, quantity, startStorage, destinationStorage, packageType, packageState)
+    private fun onMoving(item: StoredItem, quantity: Double, startStorage: Storage, destinationStorage: Storage, packageState: PackageState?) {
+        viewModel.onMoving(item, quantity, startStorage, destinationStorage, packageState)
     }
 }
