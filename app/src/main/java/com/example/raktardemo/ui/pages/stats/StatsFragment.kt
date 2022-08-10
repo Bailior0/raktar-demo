@@ -37,7 +37,10 @@ class StatsFragment : RainbowCakeFragment<StatsViewState, StatsViewModel>() {
             when (viewState) {
                 is Loading -> FullScreenLoading()
                 is StatsContent -> {
-                    Statistics()
+                    Statistics(
+                        items = viewState.items,
+                        storages = viewState.storages
+                    )
                 }
             }.exhaustive
         }

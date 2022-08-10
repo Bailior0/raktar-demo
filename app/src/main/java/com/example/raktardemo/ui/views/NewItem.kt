@@ -38,10 +38,7 @@ fun NewItem(
     var serialInput by remember { mutableStateOf("") }
     var defaultPriceInput by remember { mutableStateOf("") }
 
-
-
     var quantityInput by remember { mutableStateOf("") }
-    //var unitOfQuantityInput by remember { mutableStateOf("") }
     var packageSizeInput by remember { mutableStateOf("") }
 
     var quantitySwitchState by remember { mutableStateOf(false) }
@@ -53,8 +50,6 @@ fun NewItem(
 
     var unitSelectedIndex by remember { mutableStateOf(0) }
     var unitExpanded by remember { mutableStateOf(false) }
-
-
 
     var dateInput by remember { mutableStateOf("") }
     var minQuantityInput by remember { mutableStateOf("") }
