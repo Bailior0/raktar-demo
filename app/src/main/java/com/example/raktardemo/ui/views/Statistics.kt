@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.R
 import com.example.raktardemo.data.model.Item
+import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.helpers.ComboBox
 import com.example.raktardemo.ui.views.helpers.DatePicker
@@ -32,7 +33,10 @@ import kotlinx.coroutines.launch
 
 @ExperimentalPagerApi
 @Composable
-fun Statistics() {
+fun Statistics(
+    items: List<StoredItem>,
+    storages: List<Storage>
+) {
     val scope = rememberCoroutineScope()
 
     val tabTitles = listOf("Mozgások", "Grafikon", "Értesítések")
@@ -76,7 +80,7 @@ fun Statistics() {
         ) { page ->
             when (page) {
                 0 -> {
-                    Traffic()
+                    Traffic(items, storages)
                 }
                 1 -> {
                     Graphs()
@@ -89,9 +93,11 @@ fun Statistics() {
     }
 }
 
-
 @Composable
-fun Traffic() {
+fun Traffic(
+    items: List<StoredItem>,
+    storages: List<Storage>
+) {
     val context = LocalContext.current
 
     Column(
@@ -116,11 +122,21 @@ fun Traffic() {
             var actionExpanded by remember { mutableStateOf(false) }
             var actionSelectedIndex by remember { mutableStateOf(0) }
 
-            val storageList = listOf("Raktár1", "Raktár2", "Raktár3", "Raktár4")
+            val storageList = mutableListOf<String>()
+
+            for (warehouse in storages)
+                storageList.add(warehouse.name)
+
             var storageExpanded by remember { mutableStateOf(false) }
             var storageSelectedIndex by remember { mutableStateOf(0) }
 
-            val groupList = listOf("Kábel", "Csavar")
+            val groupList = mutableListOf<String>()
+
+            for (item in items) {
+                if (!(item.item.category.name.equals("")))
+                    groupList.add(item.item.category.name)
+            }
+
             var groupExpanded by remember { mutableStateOf(false) }
             var groupSelectedIndex by remember { mutableStateOf(0) }
 
@@ -129,6 +145,9 @@ fun Traffic() {
 
             var datePickerState2 by remember { mutableStateOf(false) }
             var dateInput2 by remember { mutableStateOf("") }
+
+            //TODO
+            var itemList = items.filter { it.item.category.name.equals(groupList[groupSelectedIndex]) }
 
             ConstraintLayout(
                 modifier = Modifier
