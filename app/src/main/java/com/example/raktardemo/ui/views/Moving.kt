@@ -97,6 +97,17 @@ fun Moving(
 
                 var packageSwitchState by remember { mutableStateOf(false) }
 
+                var freeQuantity by remember { mutableStateOf(0) }
+
+                var cnt2 = 0.0
+                for(acqItem in product.itemAcquisitions) {
+                    if(acqItem.currentStorage == presentStorages[presentStorageSelectedIndex].id)
+                        for(count in acqItem.packageCounts) {
+                            cnt2 += count
+                        }
+                }
+                freeQuantity = cnt2.toInt()
+
                 Text(
                     text = "Termék: ",
                     color = Color.Gray,
@@ -139,7 +150,7 @@ fun Moving(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append(product.freeQuantity.toString())
+                            append(freeQuantity.toString())
                         }
 
                         withStyle(style = SpanStyle(color = Color.Gray)) {
@@ -314,7 +325,7 @@ fun Moving(
                         )
                     },
                     onClick = {
-                        if( quantityInput == "" || quantityInput.toDouble() > product.freeQuantity && quantityInput.toDouble() > 0.0) {
+                        if( quantityInput == "" || quantityInput.toDouble() > freeQuantity || quantityInput.toDouble() <= 0.0) {
                             //TODO
                             //Toast.makeText(context, "Nem megfelelő a mennyiség értéke!", Toast.LENGTH_SHORT).show()
                         }

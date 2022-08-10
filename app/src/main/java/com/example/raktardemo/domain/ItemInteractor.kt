@@ -197,7 +197,7 @@ class DatabaseInteractor @Inject constructor(
 
             val newAcquisition: ItemAcquisition = acq.copy()
             val oldAcquisition: ItemAcquisition = acq.copy()
-            var newQuantity: Double = 0.0
+            var newQuantity = 0.0
             var oldQuantity: Double = acq.quantity
 
             if(localQuantity != 0.0 && acq.currentStorage == startStorage.id) {
