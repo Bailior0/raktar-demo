@@ -74,7 +74,7 @@ class DatabaseInteractor @Inject constructor(
             val oldAcqPackages: MutableList<Double> = acq.packageCounts as MutableList<Double>
 
             if(acq.currentStorage == startStorage.id) {
-                for(packages in acq.packageCounts.reversed()) {
+                for(packages in acq.packageCounts.sorted()) {
 
                     if(packages == localQuantity) {
                         oldAcqPackages.remove(packages)
@@ -139,7 +139,7 @@ class DatabaseInteractor @Inject constructor(
             val oldAcqPackages: MutableList<Double> = acq.packageCounts as MutableList<Double>
 
             if(localQuantity != 0.0 && acq.currentStorage == startStorage.id) {
-                for(packages in acq.packageCounts.reversed()) {
+                for(packages in acq.packageCounts.sorted()) {
 
                     if(packages == localQuantity) {
                         oldAcqPackages.remove(packages)
@@ -258,7 +258,8 @@ class DatabaseInteractor @Inject constructor(
     }
 
     private suspend fun reserveAcquisition(reservation: Reservation, acqId: String, group: List<StoredItem>) {
-        for(item in group) {
+        val localGroup = group.toSet().toList()
+        for(item in localGroup) {
             val newReservation = reservation.copy()
             val itemReservations = item.reservations as MutableList<Reservation>
 
@@ -282,10 +283,98 @@ class DatabaseInteractor @Inject constructor(
     }
 
     private suspend fun reserveOpenablePackage(reservation: Reservation, item: StoredItem) {
+        var localQuantity = reservation.reservationQuantity * reservation.repeatAmount
+        val localItem: StoredItem = item.copy()
+        val itemReservations = item.reservations as MutableList<Reservation>
+        itemReservations.add(reservation)
 
+        for(acq in localItem.itemAcquisitions) {
+            val newReserved = acq.reserved as MutableList<Double>
+            val newPackages = acq.packageCounts as MutableList<Double>
+
+            for(packages in acq.packageCounts.sorted()) {
+
+                if(packages == localQuantity) {
+                    newPackages.remove(packages)
+                    newReserved.add(packages)
+                    localQuantity = 0.0
+                    break
+                }
+
+                else if(packages < localQuantity) {
+                    newPackages.remove(packages)
+                    newReserved.add(packages)
+                    localQuantity -= packages
+                    continue
+                }
+
+                else if(packages > localQuantity) {
+                    val newPackage = packages - localQuantity
+                    newPackages.remove(packages)
+                    newPackages.add(newPackage)
+                    newReserved.add(localQuantity)
+                    localQuantity = 0.0
+                    break
+                }
+            }
+
+            acq.packageCounts = newPackages
+            acq.quantity = acq.packageCounts.size.toDouble()
+            acq.acquisitionPrice = acq.quantity * acq.pricePerUnit
+
+            acq.reserved = newReserved
+
+            if(localQuantity == 0.0)
+                break
+        }
+
+        onItemUpdated(item)
     }
 
     private suspend fun reservePiece(reservation: Reservation, item: StoredItem) {
+        var localQuantity = reservation.reservationQuantity * reservation.repeatAmount
+        val localItem: StoredItem = item.copy()
+        val itemReservations = item.reservations as MutableList<Reservation>
+        itemReservations.add(reservation)
 
+        for(acq in localItem.itemAcquisitions) {
+            val newReserved = acq.reserved as MutableList<Double>
+            val newPackages = acq.packageCounts as MutableList<Double>
+
+            for(packages in acq.packageCounts.sorted()) {
+
+                if(packages == localQuantity) {
+                    newPackages.remove(packages)
+                    newReserved.add(packages)
+                    localQuantity = 0.0
+                    break
+                }
+
+                else if(packages < localQuantity) {
+                    newPackages.remove(packages)
+                    newReserved.add(packages)
+                    localQuantity -= packages
+                    continue
+                }
+
+                else if(packages > localQuantity) {
+                    newPackages.remove(packages)
+                    newReserved.add(packages)
+                    localQuantity = 0.0
+                    break
+                }
+            }
+
+            acq.packageCounts = newPackages
+            acq.quantity = acq.packageCounts.size.toDouble()
+            acq.acquisitionPrice = acq.quantity * acq.pricePerUnit
+
+            acq.reserved = newReserved
+
+            if(localQuantity == 0.0)
+                break
+        }
+
+        onItemUpdated(item)
     }
 }

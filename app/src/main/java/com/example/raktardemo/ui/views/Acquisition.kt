@@ -317,7 +317,7 @@ fun Acquisition(
 
                         val packageCounts = mutableListOf<Double>()
                         if(product.item.type == PackageType.Package) {
-                            for(i in 0..acqQuantity.toInt()) {
+                            for(i in 0 until acqQuantity.toInt()) {
                                 packageCounts.add(product.item.defaultPackageQuantity)
                             }
                         } else {

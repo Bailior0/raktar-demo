@@ -607,7 +607,7 @@ fun NewItem(
 
                     val packageCounts = mutableListOf<Double>()
                     if(packageType == PackageType.Package) {
-                        for(i in 0..quantity.toInt()) {
+                        for(i in 0 until quantity.toInt()) {
                             packageCounts.add(packageSize)
                         }
                     } else {
