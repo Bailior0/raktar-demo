@@ -1,8 +1,11 @@
 package com.example.raktardemo.ui.views
 
+import android.text.format.DateUtils
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -30,6 +33,11 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.*
+import java.util.Calendar.DAY_OF_MONTH
+import java.util.Calendar.getInstance
 
 @ExperimentalPagerApi
 @Composable
@@ -122,10 +130,13 @@ fun Traffic(
             var actionExpanded by remember { mutableStateOf(false) }
             var actionSelectedIndex by remember { mutableStateOf(0) }
 
-            val storageList = mutableListOf<String>()
+            val storageNameList = mutableListOf<String>()
+            val storageIdList = mutableListOf<String>()
 
-            for (warehouse in storages)
-                storageList.add(warehouse.name)
+            for (storage in storages) {
+                storageNameList.add(storage.name)
+                storageIdList.add(storage.id)
+            }
 
             var storageExpanded by remember { mutableStateOf(false) }
             var storageSelectedIndex by remember { mutableStateOf(0) }
@@ -146,8 +157,17 @@ fun Traffic(
             var datePickerState2 by remember { mutableStateOf(false) }
             var dateInput2 by remember { mutableStateOf("") }
 
-            //TODO
-            var itemList = items.filter { it.item.category.name.equals(groupList[groupSelectedIndex]) }
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+            var dateInputDate1: Date
+            var dateInputDate2: Date
+            val shiftedDate1: Date
+            val shiftedDate2: Date
+
+            var acquisitionDate: Date
+            var reservationDate: Date
+            var releaseDate: Date
+
+            var calendar = Calendar.getInstance()
 
             ConstraintLayout(
                 modifier = Modifier
@@ -263,7 +283,7 @@ fun Traffic(
                         }
                 ) {
                     ComboBox(
-                        list = storageList,
+                        list = storageNameList,
                         selectedIndex = storageSelectedIndex,
                         onIndexChanged = { storageSelectedIndex = it },
                         isExpanded = storageExpanded,
@@ -291,6 +311,58 @@ fun Traffic(
                 }
             }
 
+            var itemList = items.filter {
+                it.item.category.name.equals(groupList[groupSelectedIndex])
+            }
+
+            var contains = false
+            var itemList2 = mutableListOf<StoredItem>()
+
+            for (item in itemList) {
+                for (acq in item.itemAcquisitions) {
+                    for (item2 in itemList2){
+                        for (acq2 in item2.itemAcquisitions){
+                            if (acq2.id.equals(acq.id))
+                                contains = true
+                        }
+                    }
+
+                    if (acq.currentStorage.equals(storageIdList[storageSelectedIndex]) && !contains) {
+                        itemList2.add(item)
+                    }
+
+                    contains = false
+                }
+            }
+
+            if (!(dateInput1.equals(""))) {
+                dateInputDate1 = dateFormat.parse(dateInput1) as Date
+                calendar.time = dateInputDate1
+                calendar.add(DAY_OF_MONTH, -1)
+                shiftedDate1 = calendar.time
+            } else {
+                shiftedDate1 = dateFormat.parse(
+                    "${calendar.get(Calendar.YEAR)}-" +
+                            "${calendar.get(Calendar.MONTH) + 1}-" +
+                            "${calendar.get(Calendar.DAY_OF_MONTH) - 1}"
+                ) as Date
+            }
+
+            calendar = getInstance()
+
+            if (!(dateInput2.equals(""))) {
+                dateInputDate2 = dateFormat.parse(dateInput2) as Date
+                calendar.time = dateInputDate2
+                calendar.add(DAY_OF_MONTH, 1)
+                shiftedDate2 = calendar.time
+            } else {
+                shiftedDate2 = dateFormat.parse(
+                    "${calendar.get(Calendar.YEAR)}-" +
+                            "${calendar.get(Calendar.MONTH) + 1}-" +
+                            "${calendar.get(Calendar.DAY_OF_MONTH) + 1}"
+                ) as Date
+            }
+
             LazyColumn(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -300,44 +372,108 @@ fun Traffic(
                         top.linkTo(comboBoxRow.bottom)
                     }
             ) {
-                item {
-                    ListMaker("rg6-fehér", "Raktár2", "<100 méter")
-                    ListMaker("fdsafdsa", "Raktár1", "<150 méter")
-                    ListMaker("ghhgfgg", "Raktár1", "<100 méter")
-                    ListMaker("n cbcnbv", "Raktár1", "<100 méter")
-                    ListMaker("zzuikjhh", "Raktár1", "<100 méter")
-                    ListMaker("dfsagfdshgf", "Raktár2", "<200 méter")
-                    ListMaker("élklkj", "Raktár1", "<1000 méter")
-                    ListMaker("bevételezve", "Raktár1", "<300 méter")
-                    ListMaker("bevételezve", "Raktár2", "<400 méter")
-                    ListMaker("rg6-fehér", "Raktár2", "<100 méter")
-                    ListMaker("fdsafdsa", "Raktár1", "<150 méter")
-                    ListMaker("ghhgfgg", "Raktár1", "<100 méter")
-                    ListMaker("n cbcnbv", "Raktár1", "<100 méter")
-                    ListMaker("zzuikjhh", "Raktár1", "<100 méter")
-                    ListMaker("dfsagfdshgf", "Raktár2", "<200 méter")
-                    ListMaker("élklkj", "Raktár1", "<1000 méter")
-                    ListMaker("bevételezve", "Raktár1", "<300 méter")
-                    ListMaker("bevételezve", "Raktár2", "<400 méter")
-                    ListMaker("rg6-fehér", "Raktár2", "<100 méter")
-                    ListMaker("fdsafdsa", "Raktár1", "<150 méter")
-                    ListMaker("ghhgfgg", "Raktár1", "<100 méter")
-                    ListMaker("n cbcnbv", "Raktár1", "<100 méter")
-                    ListMaker("zzuikjhh", "Raktár1", "<100 méter")
-                    ListMaker("dfsagfdshgf", "Raktár2", "<200 méter")
-                    ListMaker("élklkj", "Raktár1", "<1000 méter")
-                    ListMaker("bevételezve", "Raktár1", "<300 méter")
-                    ListMaker("bevételezve", "Raktár2", "<400 méter")
-                    ListMaker("rg6-fehér", "Raktár2", "<100 méter")
-                    ListMaker("fdsafdsa", "Raktár1", "<150 méter")
-                    ListMaker("ghhgfgg", "Raktár1", "<100 méter")
-                    ListMaker("n cbcnbv", "Raktár1", "<100 méter")
-                    ListMaker("zzuikjhh", "Raktár1", "<100 méter")
-                    ListMaker("dfsagfdshgf", "Raktár2", "<200 méter")
-                    ListMaker("élklkj", "Raktár1", "<1000 méter")
-                    ListMaker("bevételezve", "Raktár1", "<300 méter")
-                    ListMaker("bevételezve", "Raktár2", "<400 méter")
+                itemsIndexed(itemList2) { _, item ->
+                    when (actionSelectedIndex) {
+                        0 -> {
+                            for (acq in item.itemAcquisitions) {
+                                if (!(acq.acquisitionDate.equals("")))
+                                    acquisitionDate = dateFormat.parse(acq.acquisitionDate) as Date
+                                else
+                                    acquisitionDate = dateFormat.parse("1969-06-09") as Date
+
+                                if (
+                                    acquisitionDate.after(shiftedDate1) &&
+                                    acquisitionDate.before(shiftedDate2) &&
+                                    acq.currentStorage.equals(storageIdList[storageSelectedIndex])
+                                ) {
+                                    ListMaker(
+                                        text1 = item.item.name,
+                                        text2 = acq.quantity.toString(),
+                                        text3 = acq.acquisitionDate
+                                    )
+                                }
+                            }
+                        }
+                        1 -> {
+                            for (res in item.reservations) {
+                                for (acq in item.itemAcquisitions) {
+                                    if (!(res.reservationDate.equals("")))
+                                        reservationDate =
+                                            dateFormat.parse(res.reservationDate) as Date
+                                    else
+                                        reservationDate = dateFormat.parse("1969-06-09") as Date
+
+                                    if (
+                                        reservationDate.after(shiftedDate1) &&
+                                        reservationDate.before(shiftedDate2) &&
+                                        acq.currentStorage.equals(storageIdList[storageSelectedIndex])
+                                    ) {
+                                        ListMaker(
+                                            text1 = item.item.name,
+                                            text2 = res.reservationQuantity.toString(),
+                                            text3 = res.reservationDate
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        2 -> {
+                            for (rel in item.releases) {
+                                ListMaker(
+                                    text1 = item.item.name,
+                                    text2 = rel.quantity.toString(),
+                                    text3 = rel.quality.translation
+                                )
+                            }
+                        }
+                        else -> {
+                            ListMaker(
+                                text1 = "Hiba",
+                                text2 = "",
+                                text3 = ""
+                            )
+                        }
+                    }
                 }
+
+                /*item {
+                    ListMaker("rg6-fehér", "Raktár2", "<100 méter")
+                    ListMaker("fdsafdsa", "Raktár1", "<150 méter")
+                    ListMaker("ghhgfgg", "Raktár1", "<100 méter")
+                    ListMaker("n cbcnbv", "Raktár1", "<100 méter")
+                    ListMaker("zzuikjhh", "Raktár1", "<100 méter")
+                    ListMaker("dfsagfdshgf", "Raktár2", "<200 méter")
+                    ListMaker("élklkj", "Raktár1", "<1000 méter")
+                    ListMaker("bevételezve", "Raktár1", "<300 méter")
+                    ListMaker("bevételezve", "Raktár2", "<400 méter")
+                    ListMaker("rg6-fehér", "Raktár2", "<100 méter")
+                    ListMaker("fdsafdsa", "Raktár1", "<150 méter")
+                    ListMaker("ghhgfgg", "Raktár1", "<100 méter")
+                    ListMaker("n cbcnbv", "Raktár1", "<100 méter")
+                    ListMaker("zzuikjhh", "Raktár1", "<100 méter")
+                    ListMaker("dfsagfdshgf", "Raktár2", "<200 méter")
+                    ListMaker("élklkj", "Raktár1", "<1000 méter")
+                    ListMaker("bevételezve", "Raktár1", "<300 méter")
+                    ListMaker("bevételezve", "Raktár2", "<400 méter")
+                    ListMaker("rg6-fehér", "Raktár2", "<100 méter")
+                    ListMaker("fdsafdsa", "Raktár1", "<150 méter")
+                    ListMaker("ghhgfgg", "Raktár1", "<100 méter")
+                    ListMaker("n cbcnbv", "Raktár1", "<100 méter")
+                    ListMaker("zzuikjhh", "Raktár1", "<100 méter")
+                    ListMaker("dfsagfdshgf", "Raktár2", "<200 méter")
+                    ListMaker("élklkj", "Raktár1", "<1000 méter")
+                    ListMaker("bevételezve", "Raktár1", "<300 méter")
+                    ListMaker("bevételezve", "Raktár2", "<400 méter")
+                    ListMaker("rg6-fehér", "Raktár2", "<100 méter")
+                    ListMaker("fdsafdsa", "Raktár1", "<150 méter")
+                    ListMaker("ghhgfgg", "Raktár1", "<100 méter")
+                    ListMaker("n cbcnbv", "Raktár1", "<100 méter")
+                    ListMaker("zzuikjhh", "Raktár1", "<100 méter")
+                    ListMaker("dfsagfdshgf", "Raktár2", "<200 méter")
+                    ListMaker("élklkj", "Raktár1", "<1000 méter")
+                    ListMaker("bevételezve", "Raktár1", "<300 méter")
+                    ListMaker("bevételezve", "Raktár2", "<400 méter")
+                }*/
             }
         }
     }
