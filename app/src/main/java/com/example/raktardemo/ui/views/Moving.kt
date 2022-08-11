@@ -39,6 +39,8 @@ fun Moving(
     onIconClick: () -> Unit = {},
     onMovingClick: (StoredItem, Double, Storage, Storage, PackageState?) -> Unit
 ) {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -64,8 +66,6 @@ fun Moving(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                val context = LocalContext.current
-
                 val (
                     itemLabel,
                     item,
@@ -96,6 +96,17 @@ fun Moving(
                 var allStorageSelectedIndex by remember { mutableStateOf(0) }
 
                 var packageSwitchState by remember { mutableStateOf(false) }
+
+                var freeQuantity by remember { mutableStateOf(0) }
+
+                var cnt2 = 0.0
+                for(acqItem in product.itemAcquisitions) {
+                    if(acqItem.currentStorage == presentStorages[presentStorageSelectedIndex].id)
+                        for(count in acqItem.packageCounts) {
+                            cnt2 += count
+                        }
+                }
+                freeQuantity = cnt2.toInt()
 
                 Text(
                     text = "Termék: ",
@@ -139,7 +150,7 @@ fun Moving(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append(product.freeQuantity.toString())
+                            append(freeQuantity.toString())
                         }
 
                         withStyle(style = SpanStyle(color = Color.Gray)) {
@@ -314,13 +325,11 @@ fun Moving(
                         )
                     },
                     onClick = {
-                        if( quantityInput == "" || quantityInput.toDouble() > product.freeQuantity && quantityInput.toDouble() > 0.0) {
-                            //TODO
-                            //Toast.makeText(context, "Nem megfelelő a mennyiség értéke!", Toast.LENGTH_SHORT).show()
+                        if( quantityInput == "" || quantityInput.toDouble() > freeQuantity || quantityInput.toDouble() <= 0.0) {
+                            Toast.makeText(context, "Nem megfelelő a mennyiség értéke!", Toast.LENGTH_SHORT).show()
                         }
                         else if(storages[allStorageSelectedIndex] == presentStorages[presentStorageSelectedIndex]) {
-                            //TODO
-                            //Toast.makeText(context, "A kezdő és célraktár nem egyezhetnek meg!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "A kezdő és célraktár nem egyezhetnek meg!", Toast.LENGTH_SHORT).show()
                         }
                         else
                             onMovingClick(

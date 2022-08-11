@@ -29,29 +29,25 @@ import com.example.raktardemo.R
 import com.example.raktardemo.data.model.Reservation
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.helpers.DatePicker
+import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
 fun Reservation(
     product: StoredItem?,
-    group: List<StoredItem?>,
+    group: List<StoredItem>,
     acqId: String?,
     onIconClick: () -> Unit = {},
-    onReservationClick: (Reservation) -> Unit
+    onReservationClick: (Reservation, StoredItem?, String?, List<StoredItem>) -> Unit
 ) {
     val context = LocalContext.current
 
-    //val itemInput by remember { mutableStateOf("Termék") }
     var quantityInput by remember { mutableStateOf("") }
     var multiplierInput by remember { mutableStateOf("") }
     var reservationGoalInput by remember { mutableStateOf("") }
-    var dateInput by remember { mutableStateOf("") }
-    //var acquisitionInput by remember { mutableStateOf("Beszerzés") }
+    var dateInput by remember { mutableStateOf(SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())) }
 
     var datePickerState by remember { mutableStateOf(false) }
-
-    val available = 124
-    val unit = "db"
 
     Column(
         modifier = Modifier
@@ -140,37 +136,47 @@ fun Reservation(
                     )
                 }
 
-                Text(
-                    buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = Color.Gray)) {
-                            append("Foglalható Mennyiség: ")
-                        }
+                if(product != null)
+                    Text(
+                        buildAnnotatedString {
+                            withStyle(style = SpanStyle(color = Color.Gray)) {
+                                append("Foglalható Mennyiség: ")
+                            }
 
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("$available ")
-                        }
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(product.freeQuantity.toString())
+                            }
 
-                        withStyle(style = SpanStyle(color = Color.Gray)) {
-                            append("$unit")
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(5.dp, 25.dp, 0.dp, 0.dp)
-                        .constrainAs(availableQuantity) {
-                            top.linkTo(item.bottom)
-                            start.linkTo(parent.start)
-                        }
-                )
+                            withStyle(style = SpanStyle(color = Color.Gray)) {
+                                append(" " + product.item.quantityUnit.toString())
+                            }
+                        },
+                        modifier = Modifier
+                            .padding(5.dp, 25.dp, 0.dp, 0.dp)
+                            .constrainAs(availableQuantity) {
+                                top.linkTo(item.bottom)
+                                start.linkTo(parent.start)
+                            }
+                    )
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(0.dp, 2.dp, 0.dp, 0.dp)
-                        .constrainAs(quantityToReserve) {
-                            top.linkTo(availableQuantity.bottom)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        }
+                    modifier = when(product != null){
+                        true -> Modifier
+                                .padding(0.dp, 2.dp, 0.dp, 0.dp)
+                                .constrainAs(quantityToReserve) {
+                                    top.linkTo(availableQuantity.bottom)
+                                    start.linkTo(parent.start)
+                                    end.linkTo(parent.end)
+                                }
+                        false -> Modifier
+                                .padding(0.dp, 2.dp, 0.dp, 0.dp)
+                                .constrainAs(quantityToReserve) {
+                                    top.linkTo(item.bottom)
+                                    start.linkTo(parent.start)
+                                    end.linkTo(parent.end)
+                                }
+                    }
                 ) {
                     OutlinedTextField(
                         value = quantityInput,
@@ -244,7 +250,7 @@ fun Reservation(
                     val (text, dateButton) = createRefs()
 
                     Text(
-                        text = "Szavatosság: ",
+                        text = "Foglalási céldátum: ",
                         color = Color.Gray,
                         modifier = Modifier
                             .constrainAs(text) {
@@ -283,16 +289,30 @@ fun Reservation(
                         )
                     },
                     onClick = {
+                        val quantity = when(quantityInput != "" && quantityInput.toDouble() > 0.0){
+                            true -> quantityInput.toDouble()
+                            false -> 0.0
+                        }
+
+                        val multiplier = when(multiplierInput != "" && multiplierInput.toInt() > 0){
+                            true -> multiplierInput.toInt()
+                            false -> 1
+                        }
+
+
                         onReservationClick(
                             //TODO
                             Reservation(
                                 reservationGoal = reservationGoalInput,
-                                reservationDate = "",
-                                reservationGoalDate = "",
-                                reservationQuantity = 0.0,
+                                reservationDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date()),
+                                reservationGoalDate = dateInput,
+                                reservationQuantity = quantity,
                                 cancelled = false,
-                                repeatAmount = 0
-                            )
+                                repeatAmount = multiplier
+                            ),
+                            product,
+                            acqId,
+                            group
                         )
                     },
                     modifier = Modifier

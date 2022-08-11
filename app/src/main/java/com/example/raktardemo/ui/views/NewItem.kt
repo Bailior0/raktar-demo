@@ -51,7 +51,7 @@ fun NewItem(
     var unitSelectedIndex by remember { mutableStateOf(0) }
     var unitExpanded by remember { mutableStateOf(false) }
 
-    var dateInput by remember { mutableStateOf("") }
+    var dateInput by remember { mutableStateOf(SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())) }
     var minQuantityInput by remember { mutableStateOf("") }
 
     var ownerSwitchState by remember { mutableStateOf(false) }

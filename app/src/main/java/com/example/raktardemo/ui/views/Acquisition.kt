@@ -81,7 +81,7 @@ fun Acquisition(
                 ) = createRefs()
 
                 var quantityInput by remember { mutableStateOf("") }
-                var dateInput by remember { mutableStateOf("") }
+                var dateInput by remember { mutableStateOf(SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())) }
                 var priceInput by remember { mutableStateOf("") }
 
                 var ownerSwitchState by remember { mutableStateOf(false) }
@@ -281,7 +281,6 @@ fun Acquisition(
                                 .padding(25.dp, 0.dp)
                         )
                     },
-                    //TODO
                     onClick = {
                         val acquisitions = product.itemAcquisitions as MutableList<ItemAcquisition>
 
