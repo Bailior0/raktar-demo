@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class MovingPresenter @Inject constructor(
     private val databaseInteractor: DatabaseInteractor
-)   {
+) {
 
     suspend fun onMoving(item: StoredItem, quantity: Double, startStorage: Storage, destinationStorage: Storage, packageState: PackageState?): Unit = withIOContext {
         databaseInteractor.onMoving(item, quantity, startStorage, destinationStorage, packageState)

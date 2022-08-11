@@ -1,10 +1,15 @@
 package com.example.raktardemo.ui.pages.list.reservation
 
 import co.zsmb.rainbowcake.base.RainbowCakeViewModel
+import com.example.raktardemo.data.model.Reservation
 import com.example.raktardemo.data.model.StoredItem
-import com.example.raktardemo.ui.pages.list.release.ReleaseGroupContent
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class ReservationViewModel : RainbowCakeViewModel<ReservationViewState>(Loading) {
+@HiltViewModel
+class ReservationViewModel @Inject constructor(
+    private val reservationPresenter: ReservationPresenter
+) : RainbowCakeViewModel<ReservationViewState>(Loading) {
 
     fun setReservation(item: StoredItem) {
         viewState = ReservationContent(item, false)
@@ -12,5 +17,9 @@ class ReservationViewModel : RainbowCakeViewModel<ReservationViewState>(Loading)
 
     fun setReservationGroup(group: List<StoredItem>, acqId: String?) {
         viewState = ReservationGroupContent(group, acqId, false)
+    }
+
+    fun onReservation(reservation: Reservation, item: StoredItem?, acqId: String?, group: List<StoredItem>) = execute {
+        reservationPresenter.onReservation(reservation, item, acqId, group)
     }
 }

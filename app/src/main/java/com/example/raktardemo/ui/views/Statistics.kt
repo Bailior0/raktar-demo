@@ -30,6 +30,8 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 @ExperimentalPagerApi
 @Composable
@@ -141,10 +143,13 @@ fun Traffic(
             var groupSelectedIndex by remember { mutableStateOf(0) }
 
             var datePickerState1 by remember { mutableStateOf(false) }
-            var dateInput1 by remember { mutableStateOf("") }
+            var dateInput1 by remember { mutableStateOf(
+                SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(
+                    Date()
+                )) }
 
             var datePickerState2 by remember { mutableStateOf(false) }
-            var dateInput2 by remember { mutableStateOf("") }
+            var dateInput2 by remember { mutableStateOf(SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())) }
 
             //TODO
             var itemList = items.filter { it.item.category.name.equals(groupList[groupSelectedIndex]) }

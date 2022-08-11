@@ -5,6 +5,7 @@ import com.example.raktardemo.data.datasource.FirebaseDataSource
 import com.example.raktardemo.data.enums.PackageState
 import com.example.raktardemo.data.enums.PackageType
 import com.example.raktardemo.data.model.ItemAcquisition
+import com.example.raktardemo.data.model.Reservation
 import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
 import kotlinx.coroutines.flow.Flow
@@ -242,5 +243,49 @@ class DatabaseInteractor @Inject constructor(
         localItem.itemAcquisitions = acqs
 
         onItemUpdated(localItem)
+    }
+
+    suspend fun onReservation(reservation: Reservation, item: StoredItem?, acqId: String?, group: List<StoredItem>) {
+        if(item == null) {
+            reserveAcquisition(reservation, acqId!!, group)
+        }
+        else if(item.item.type == PackageType.Package && item.item.openable) {
+            reserveOpenablePackage(reservation, item)
+        }
+        else {
+            reservePiece(reservation, item)
+        }
+    }
+
+    private suspend fun reserveAcquisition(reservation: Reservation, acqId: String, group: List<StoredItem>) {
+        for(item in group) {
+            val newReservation = reservation.copy()
+            val itemReservations = item.reservations as MutableList<Reservation>
+
+            for(acq in item.itemAcquisitions) {
+                if(acq.id == acqId) {
+                    for(reserve in acq.packageCounts)
+                        newReservation.reservationQuantity += reserve
+
+                    val reserved = acq.reserved as MutableList<Double>
+                    reserved.addAll(acq.packageCounts)
+                    acq.packageCounts = emptyList()
+                    acq.reserved = reserved
+                }
+            }
+
+            newReservation.repeatAmount = 1
+            itemReservations.add(newReservation)
+
+            onItemUpdated(item)
+        }
+    }
+
+    private suspend fun reserveOpenablePackage(reservation: Reservation, item: StoredItem) {
+
+    }
+
+    private suspend fun reservePiece(reservation: Reservation, item: StoredItem) {
+
     }
 }

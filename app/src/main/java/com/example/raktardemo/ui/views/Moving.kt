@@ -39,6 +39,8 @@ fun Moving(
     onIconClick: () -> Unit = {},
     onMovingClick: (StoredItem, Double, Storage, Storage, PackageState?) -> Unit
 ) {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -64,8 +66,6 @@ fun Moving(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                val context = LocalContext.current
-
                 val (
                     itemLabel,
                     item,
@@ -326,12 +326,10 @@ fun Moving(
                     },
                     onClick = {
                         if( quantityInput == "" || quantityInput.toDouble() > freeQuantity || quantityInput.toDouble() <= 0.0) {
-                            //TODO
-                            //Toast.makeText(context, "Nem megfelelő a mennyiség értéke!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Nem megfelelő a mennyiség értéke!", Toast.LENGTH_SHORT).show()
                         }
                         else if(storages[allStorageSelectedIndex] == presentStorages[presentStorageSelectedIndex]) {
-                            //TODO
-                            //Toast.makeText(context, "A kezdő és célraktár nem egyezhetnek meg!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "A kezdő és célraktár nem egyezhetnek meg!", Toast.LENGTH_SHORT).show()
                         }
                         else
                             onMovingClick(
