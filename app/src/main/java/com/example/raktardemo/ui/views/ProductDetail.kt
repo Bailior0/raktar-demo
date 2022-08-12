@@ -343,9 +343,20 @@ fun ProductDetail(
             ) {
                 val itemOperations: MutableList<Triple<String, String, String>> = mutableListOf()
                 for(reservation in product.reservations)
-                    itemOperations.add(Triple("foglalva", reservation.reservationQuantity.toString() + " " + product.item.quantityUnit.translation, reservation.reservationDate))
-                for(acquisition in product.itemAcquisitions)
-                    itemOperations.add(Triple("beszerezve", acquisition.quantity.toString() + " " + product.item.quantityUnit.translation, acquisition.acquisitionDate))
+                    itemOperations.add(Triple("foglalva", (reservation.reservationQuantity + reservation.repeatAmount).toString() + " " + product.item.quantityUnit.translation, reservation.reservationDate))
+                for(release in product.releases)
+                    itemOperations.add(Triple("kivezetve", release.quantity.toString() + " " + product.item.quantityUnit.translation, release.releaseDate))
+                for(acquisition in product.itemAcquisitions) {
+                    var acqCount = 0.0
+                    for(packages in acquisition.packageCounts)
+                        acqCount += packages
+                    for(reserve in acquisition.reserved)
+                        acqCount += reserve
+                    for(release in acquisition.released)
+                        acqCount += release
+
+                    itemOperations.add(Triple("beszerezve", acqCount.toString() + " " + product.item.quantityUnit.translation, acquisition.acquisitionDate))
+                }
 
                 itemOperations.sortBy { it.third }
 

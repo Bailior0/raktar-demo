@@ -1,13 +1,9 @@
 package com.example.raktardemo.domain
 
-import android.util.Log
 import com.example.raktardemo.data.datasource.FirebaseDataSource
 import com.example.raktardemo.data.enums.PackageState
 import com.example.raktardemo.data.enums.PackageType
-import com.example.raktardemo.data.model.ItemAcquisition
-import com.example.raktardemo.data.model.Reservation
-import com.example.raktardemo.data.model.Storage
-import com.example.raktardemo.data.model.StoredItem
+import com.example.raktardemo.data.model.*
 import kotlinx.coroutines.flow.Flow
 import java.text.SimpleDateFormat
 import java.util.*
@@ -370,6 +366,138 @@ class DatabaseInteractor @Inject constructor(
             acq.acquisitionPrice = acq.quantity * acq.pricePerUnit
 
             acq.reserved = newReserved
+
+            if(localQuantity == 0.0)
+                break
+        }
+
+        onItemUpdated(item)
+    }
+
+    suspend fun onRelease(release: Release, item: StoredItem?, acqId: String?, group: List<StoredItem>) {
+        if(item == null) {
+            releaseAcquisition(release, acqId!!, group)
+        }
+        else if(release.packageState == PackageState.Opened || item.item.type == PackageType.Piece) {
+            releaseOpenablePackage(release, item)
+        }
+        else {
+            releaseUnOpenablePackage(release, item)
+        }
+    }
+
+    private suspend fun releaseAcquisition(release: Release, acqId: String, group: List<StoredItem>) {
+        val localGroup = group.toSet().toList()
+        for(item in localGroup) {
+            val newRelease = release.copy()
+            val itemReleases = item.releases as MutableList<Release>
+
+            for(acq in item.itemAcquisitions) {
+                if(acq.id == acqId) {
+                    for(leave in acq.packageCounts)
+                        newRelease.quantity += leave
+
+                    val released = acq.released as MutableList<Double>
+                    released.addAll(acq.packageCounts)
+                    acq.packageCounts = emptyList()
+                    acq.released = released
+                }
+            }
+
+            itemReleases.add(newRelease)
+
+            onItemUpdated(item)
+        }
+    }
+
+    private suspend fun releaseUnOpenablePackage(release: Release, item: StoredItem) {
+        var localQuantity = release.quantity
+        val localItem: StoredItem = item.copy()
+        val itemReleases = item.releases as MutableList<Release>
+        itemReleases.add(release)
+
+        for(acq in localItem.itemAcquisitions) {
+            val newRelease = acq.released as MutableList<Double>
+            val newPackages = acq.packageCounts as MutableList<Double>
+
+            for(packages in acq.packageCounts.sorted()) {
+
+                if(packages == localQuantity) {
+                    newPackages.remove(packages)
+                    newRelease.add(packages)
+                    localQuantity = 0.0
+                    break
+                }
+
+                else if(packages < localQuantity) {
+                    newPackages.remove(packages)
+                    newRelease.add(packages)
+                    localQuantity -= packages
+                    continue
+                }
+
+                else if(packages > localQuantity) {
+                    newPackages.remove(packages)
+                    newRelease.add(packages)
+                    localQuantity = 0.0
+                    break
+                }
+            }
+
+            acq.packageCounts = newPackages
+            acq.quantity = acq.packageCounts.size.toDouble()
+            acq.acquisitionPrice = acq.quantity * acq.pricePerUnit
+
+            acq.released = newRelease
+
+            if(localQuantity == 0.0)
+                break
+        }
+
+        onItemUpdated(item)
+    }
+
+    private suspend fun releaseOpenablePackage(release: Release, item: StoredItem) {
+        var localQuantity = release.quantity
+        val localItem: StoredItem = item.copy()
+        val itemReleases = item.releases as MutableList<Release>
+        itemReleases.add(release)
+
+        for(acq in localItem.itemAcquisitions) {
+            val newRelease = acq.released as MutableList<Double>
+            val newPackages = acq.packageCounts as MutableList<Double>
+
+            for(packages in acq.packageCounts.sorted()) {
+
+                if(packages == localQuantity) {
+                    newPackages.remove(packages)
+                    newRelease.add(packages)
+                    localQuantity = 0.0
+                    break
+                }
+
+                else if(packages < localQuantity) {
+                    newPackages.remove(packages)
+                    newRelease.add(packages)
+                    localQuantity -= packages
+                    continue
+                }
+
+                else if(packages > localQuantity) {
+                    val newPackage = packages - localQuantity
+                    newPackages.remove(packages)
+                    newPackages.add(newPackage)
+                    newRelease.add(localQuantity)
+                    localQuantity = 0.0
+                    break
+                }
+            }
+
+            acq.packageCounts = newPackages
+            acq.quantity = acq.packageCounts.size.toDouble()
+            acq.acquisitionPrice = acq.quantity * acq.pricePerUnit
+
+            acq.released = newRelease
 
             if(localQuantity == 0.0)
                 break

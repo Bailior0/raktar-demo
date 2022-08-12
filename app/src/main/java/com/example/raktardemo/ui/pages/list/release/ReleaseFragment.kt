@@ -91,6 +91,6 @@ class ReleaseFragment : RainbowCakeFragment<ReleaseViewState, ReleaseViewModel>(
     }
 
     private fun onRelease(release: Release, item: StoredItem?, acqId: String?, group: List<StoredItem>) {
-        //TODO
+        viewModel.onRelease(release, item, acqId, group)
     }
 }
