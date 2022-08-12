@@ -318,21 +318,25 @@ fun Traffic(
             var contains = false
             var itemList2 = mutableListOf<StoredItem>()
 
-            for (item in itemList) {
-                for (acq in item.itemAcquisitions) {
-                    for (item2 in itemList2){
-                        for (acq2 in item2.itemAcquisitions){
-                            if (acq2.id.equals(acq.id))
-                                contains = true
+            if (actionSelectedIndex == 0) {
+                for (item in itemList) {
+                    for (acq in item.itemAcquisitions) {
+                        for (item2 in itemList2) {
+                            for (acq2 in item2.itemAcquisitions) {
+                                if (acq2.id.equals(acq.id))
+                                    contains = true
+                            }
                         }
-                    }
 
-                    if (acq.currentStorage.equals(storageIdList[storageSelectedIndex]) && !contains) {
-                        itemList2.add(item)
-                    }
+                        if (acq.currentStorage.equals(storageIdList[storageSelectedIndex]) && !contains) {
+                            itemList2.add(item)
+                        }
 
-                    contains = false
+                        contains = false
+                    }
                 }
+            } else {
+                itemList2 = itemList.toMutableList()
             }
 
             if (!(dateInput1.equals(""))) {
@@ -395,35 +399,44 @@ fun Traffic(
                             }
                         }
                         1 -> {
+                            //TODO storageComboBox?
                             for (res in item.reservations) {
-                                for (acq in item.itemAcquisitions) {
-                                    if (!(res.reservationDate.equals("")))
-                                        reservationDate =
-                                            dateFormat.parse(res.reservationDate) as Date
-                                    else
-                                        reservationDate = dateFormat.parse("1969-06-09") as Date
+                                if (!(res.reservationDate.equals("")))
+                                    reservationDate =
+                                        dateFormat.parse(res.reservationDate) as Date
+                                else
+                                    reservationDate = dateFormat.parse("1969-06-09") as Date
 
-                                    if (
-                                        reservationDate.after(shiftedDate1) &&
-                                        reservationDate.before(shiftedDate2) &&
-                                        acq.currentStorage.equals(storageIdList[storageSelectedIndex])
-                                    ) {
-                                        ListMaker(
-                                            text1 = item.item.name,
-                                            text2 = res.reservationQuantity.toString(),
-                                            text3 = res.reservationDate
-                                        )
-                                    }
+                                if (
+                                    reservationDate.after(shiftedDate1) &&
+                                    reservationDate.before(shiftedDate2)
+                                ) {
+                                    ListMaker(
+                                        text1 = item.item.name,
+                                        text2 = res.reservationQuantity.toString(),
+                                        text3 = res.reservationDate
+                                    )
                                 }
                             }
                         }
                         2 -> {
                             for (rel in item.releases) {
-                                ListMaker(
-                                    text1 = item.item.name,
-                                    text2 = rel.quantity.toString(),
-                                    text3 = rel.quality.translation
-                                )
+                                if (!(rel.releaseDate.equals("")))
+                                    releaseDate =
+                                        dateFormat.parse(rel.releaseDate) as Date
+                                else
+                                    releaseDate = dateFormat.parse("1969-06-09") as Date
+
+                                if (
+                                    releaseDate.after(shiftedDate1) &&
+                                    releaseDate.before(shiftedDate2)
+                                ) {
+                                    ListMaker(
+                                        text1 = item.item.name,
+                                        text2 = rel.quantity.toString(),
+                                        text3 = rel.quality.translation
+                                    )
+                                }
                             }
                         }
                         else -> {
