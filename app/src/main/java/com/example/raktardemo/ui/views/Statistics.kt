@@ -94,7 +94,7 @@ fun Statistics(
                     Graphs()
                 }
                 2 -> {
-                    Notifications()
+                    Notifications(items, storages)
                 }
             }
         }
@@ -113,7 +113,6 @@ fun Traffic(
         verticalArrangement = Arrangement.Top,
         modifier = Modifier
             .fillMaxSize()
-            //.verticalScroll(rememberScrollState())
             .padding(12.dp, 25.dp, 12.dp, 60.dp)
     ) {
         ConstraintLayout(
@@ -448,45 +447,6 @@ fun Traffic(
                         }
                     }
                 }
-
-                /*item {
-                    ListMaker("rg6-fehér", "Raktár2", "<100 méter")
-                    ListMaker("fdsafdsa", "Raktár1", "<150 méter")
-                    ListMaker("ghhgfgg", "Raktár1", "<100 méter")
-                    ListMaker("n cbcnbv", "Raktár1", "<100 méter")
-                    ListMaker("zzuikjhh", "Raktár1", "<100 méter")
-                    ListMaker("dfsagfdshgf", "Raktár2", "<200 méter")
-                    ListMaker("élklkj", "Raktár1", "<1000 méter")
-                    ListMaker("bevételezve", "Raktár1", "<300 méter")
-                    ListMaker("bevételezve", "Raktár2", "<400 méter")
-                    ListMaker("rg6-fehér", "Raktár2", "<100 méter")
-                    ListMaker("fdsafdsa", "Raktár1", "<150 méter")
-                    ListMaker("ghhgfgg", "Raktár1", "<100 méter")
-                    ListMaker("n cbcnbv", "Raktár1", "<100 méter")
-                    ListMaker("zzuikjhh", "Raktár1", "<100 méter")
-                    ListMaker("dfsagfdshgf", "Raktár2", "<200 méter")
-                    ListMaker("élklkj", "Raktár1", "<1000 méter")
-                    ListMaker("bevételezve", "Raktár1", "<300 méter")
-                    ListMaker("bevételezve", "Raktár2", "<400 méter")
-                    ListMaker("rg6-fehér", "Raktár2", "<100 méter")
-                    ListMaker("fdsafdsa", "Raktár1", "<150 méter")
-                    ListMaker("ghhgfgg", "Raktár1", "<100 méter")
-                    ListMaker("n cbcnbv", "Raktár1", "<100 méter")
-                    ListMaker("zzuikjhh", "Raktár1", "<100 méter")
-                    ListMaker("dfsagfdshgf", "Raktár2", "<200 méter")
-                    ListMaker("élklkj", "Raktár1", "<1000 méter")
-                    ListMaker("bevételezve", "Raktár1", "<300 méter")
-                    ListMaker("bevételezve", "Raktár2", "<400 méter")
-                    ListMaker("rg6-fehér", "Raktár2", "<100 méter")
-                    ListMaker("fdsafdsa", "Raktár1", "<150 méter")
-                    ListMaker("ghhgfgg", "Raktár1", "<100 méter")
-                    ListMaker("n cbcnbv", "Raktár1", "<100 méter")
-                    ListMaker("zzuikjhh", "Raktár1", "<100 méter")
-                    ListMaker("dfsagfdshgf", "Raktár2", "<200 méter")
-                    ListMaker("élklkj", "Raktár1", "<1000 méter")
-                    ListMaker("bevételezve", "Raktár1", "<300 méter")
-                    ListMaker("bevételezve", "Raktár2", "<400 méter")
-                }*/
             }
         }
     }
@@ -616,7 +576,14 @@ fun Graphs() {
 }
 
 @Composable
-fun Notifications() {
+fun Notifications(
+    items: List<StoredItem>,
+    storages: List<Storage>
+) {
+    val itemList = items.filter {
+        it.currentQuantity < (it.item.minimumStoredQuantity ?: 0.0)
+    }
+
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
@@ -628,49 +595,56 @@ fun Notifications() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp, 25.dp, 12.dp, 65.dp)
-                //.background(MaterialTheme.colors.secondary, RoundedCornerShape(5.dp))
                 .constrainAs(list) {
                     top.linkTo(parent.top)
                 }
         ) {
-            item {
-                ListMaker("rg6-fehér", "Raktár2", "<100 méter")
-                ListMaker("fdsafdsa", "Raktár1", "<150 méter")
-                ListMaker("ghhgfgg", "Raktár1", "<100 méter")
-                ListMaker("n cbcnbv", "Raktár1", "<100 méter")
-                ListMaker("zzuikjhh", "Raktár1", "<100 méter")
-                ListMaker("dfsagfdshgf", "Raktár2", "<200 méter")
-                ListMaker("élklkj", "Raktár1", "<1000 méter")
-                ListMaker("bevételezve", "Raktár1", "<300 méter")
-                ListMaker("bevételezve", "Raktár2", "<400 méter")
-                ListMaker("rg6-fehér", "Raktár2", "<100 méter")
-                ListMaker("fdsafdsa", "Raktár1", "<150 méter")
-                ListMaker("ghhgfgg", "Raktár1", "<100 méter")
-                ListMaker("n cbcnbv", "Raktár1", "<100 méter")
-                ListMaker("zzuikjhh", "Raktár1", "<100 méter")
-                ListMaker("dfsagfdshgf", "Raktár2", "<200 méter")
-                ListMaker("élklkj", "Raktár1", "<1000 méter")
-                ListMaker("bevételezve", "Raktár1", "<300 méter")
-                ListMaker("bevételezve", "Raktár2", "<400 méter")
-                ListMaker("rg6-fehér", "Raktár2", "<100 méter")
-                ListMaker("fdsafdsa", "Raktár1", "<150 méter")
-                ListMaker("ghhgfgg", "Raktár1", "<100 méter")
-                ListMaker("n cbcnbv", "Raktár1", "<100 méter")
-                ListMaker("zzuikjhh", "Raktár1", "<100 méter")
-                ListMaker("dfsagfdshgf", "Raktár2", "<200 méter")
-                ListMaker("élklkj", "Raktár1", "<1000 méter")
-                ListMaker("bevételezve", "Raktár1", "<300 méter")
-                ListMaker("bevételezve", "Raktár2", "<400 méter")
-                ListMaker("rg6-fehér", "Raktár2", "<100 méter")
-                ListMaker("fdsafdsa", "Raktár1", "<150 méter")
-                ListMaker("ghhgfgg", "Raktár1", "<100 méter")
-                ListMaker("n cbcnbv", "Raktár1", "<100 méter")
-                ListMaker("zzuikjhh", "Raktár1", "<100 méter")
-                ListMaker("dfsagfdshgf", "Raktár2", "<200 méter")
-                ListMaker("élklkj", "Raktár1", "<1000 méter")
-                ListMaker("bevételezve", "Raktár1", "<300 méter")
-                ListMaker("bevételezve", "Raktár2", "<400 méter")
+            itemsIndexed(itemList) { _, item ->
+                ListMaker(
+                    text1 = item.item.name,
+                    text2 = item.item.serialNumber,
+                    text3 = "<${item.item.minimumStoredQuantity}"
+                )
             }
+
+            /*item {
+                ListMaker("rg6-fehér", "Raktár2", "<100 méter")
+                ListMaker("fdsafdsa", "Raktár1", "<150 méter")
+                ListMaker("ghhgfgg", "Raktár1", "<100 méter")
+                ListMaker("n cbcnbv", "Raktár1", "<100 méter")
+                ListMaker("zzuikjhh", "Raktár1", "<100 méter")
+                ListMaker("dfsagfdshgf", "Raktár2", "<200 méter")
+                ListMaker("élklkj", "Raktár1", "<1000 méter")
+                ListMaker("bevételezve", "Raktár1", "<300 méter")
+                ListMaker("bevételezve", "Raktár2", "<400 méter")
+                ListMaker("rg6-fehér", "Raktár2", "<100 méter")
+                ListMaker("fdsafdsa", "Raktár1", "<150 méter")
+                ListMaker("ghhgfgg", "Raktár1", "<100 méter")
+                ListMaker("n cbcnbv", "Raktár1", "<100 méter")
+                ListMaker("zzuikjhh", "Raktár1", "<100 méter")
+                ListMaker("dfsagfdshgf", "Raktár2", "<200 méter")
+                ListMaker("élklkj", "Raktár1", "<1000 méter")
+                ListMaker("bevételezve", "Raktár1", "<300 méter")
+                ListMaker("bevételezve", "Raktár2", "<400 méter")
+                ListMaker("rg6-fehér", "Raktár2", "<100 méter")
+                ListMaker("fdsafdsa", "Raktár1", "<150 méter")
+                ListMaker("ghhgfgg", "Raktár1", "<100 méter")
+                ListMaker("n cbcnbv", "Raktár1", "<100 méter")
+                ListMaker("zzuikjhh", "Raktár1", "<100 méter")
+                ListMaker("dfsagfdshgf", "Raktár2", "<200 méter")
+                ListMaker("élklkj", "Raktár1", "<1000 méter")
+                ListMaker("bevételezve", "Raktár1", "<300 méter")
+                ListMaker("bevételezve", "Raktár2", "<400 méter")
+                ListMaker("rg6-fehér", "Raktár2", "<100 méter")
+                ListMaker("fdsafdsa", "Raktár1", "<150 méter")
+                ListMaker("ghhgfgg", "Raktár1", "<100 méter")
+                ListMaker("n cbcnbv", "Raktár1", "<100 méter")
+                ListMaker("zzuikjhh", "Raktár1", "<100 méter")
+                ListMaker("dfsagfdshgf", "Raktár2", "<200 méter")
+                ListMaker("élklkj", "Raktár1", "<1000 méter")
+                ListMaker("bevételezve", "Raktár1", "<300 méter")
+                ListMaker("bevételezve", "Raktár2", "<400 méter")
+            }*/
         }
     }
 }

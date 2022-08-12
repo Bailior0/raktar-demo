@@ -20,4 +20,6 @@ data class Item(
     var openable: Boolean = false, // on piece false by default
     var defaultPurchasePrice: Double? = null,
     var minimumStoredQuantity: Double? = null
+    //var defaultPurchasePrice: Double = 0.0,
+    //var minimumStoredQuantity: Double = 0.0
 ): Parcelable

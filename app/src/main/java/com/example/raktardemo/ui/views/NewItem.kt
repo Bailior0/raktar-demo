@@ -584,7 +584,7 @@ fun NewItem(
                     }
                     val minQuantity = when(minQuantityInput != "" && minQuantityInput.toDouble() > 0.0){
                         true -> minQuantityInput.toDouble()
-                        false -> null
+                        false -> 0.0
                     }
                     val packageSize = when(packageSizeInput != "" && packageSizeInput.toDouble() > 0.0){
                         true -> packageSizeInput.toDouble()
