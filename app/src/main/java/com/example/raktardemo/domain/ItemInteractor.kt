@@ -249,11 +249,11 @@ class DatabaseInteractor @Inject constructor(
         if(item == null) {
             reserveAcquisition(reservation, acqId!!, group)
         }
-        else if(item.item.type == PackageType.Package && item.item.openable) {
-            reserveOpenablePackage(reservation, item)
+        else if(item.item.type == PackageType.Package && !item.item.openable) {
+            reserveUnOpenablePackage(reservation, item)
         }
         else {
-            reservePiece(reservation, item)
+            reserveOpenablePackage(reservation, item)
         }
     }
 
@@ -331,7 +331,7 @@ class DatabaseInteractor @Inject constructor(
         onItemUpdated(item)
     }
 
-    private suspend fun reservePiece(reservation: Reservation, item: StoredItem) {
+    private suspend fun reserveUnOpenablePackage(reservation: Reservation, item: StoredItem) {
         var localQuantity = reservation.reservationQuantity * reservation.repeatAmount
         val localItem: StoredItem = item.copy()
         val itemReservations = item.reservations as MutableList<Reservation>

@@ -150,7 +150,7 @@ fun Reservation(
                             }
 
                             withStyle(style = SpanStyle(color = Color.Gray)) {
-                                append(" " + product.item.quantityUnit.toString())
+                                append(" " + product.item.quantityUnit.translation)
                             }
                         },
                         modifier = Modifier

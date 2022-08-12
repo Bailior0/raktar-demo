@@ -12,7 +12,7 @@ data class ReleaseContent (
 ) : ReleaseViewState()
 
 data class ReleaseGroupContent (
-    var group: List<StoredItem?> = emptyList(),
+    var group: List<StoredItem> = emptyList(),
     var acqId: String? = null,
     var isLoading: Boolean = true
 ) : ReleaseViewState()

@@ -14,6 +14,7 @@ import co.zsmb.rainbowcake.extensions.exhaustive
 import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.extensions.applyArgs
 import co.zsmb.rainbowcake.navigation.navigator
+import com.example.raktardemo.data.model.Release
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.Release
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
@@ -89,7 +90,7 @@ class ReleaseFragment : RainbowCakeFragment<ReleaseViewState, ReleaseViewModel>(
         }
     }
 
-    private fun onRelease() {
+    private fun onRelease(release: Release, item: StoredItem?, acqId: String?, group: List<StoredItem>) {
         //TODO
     }
 }
