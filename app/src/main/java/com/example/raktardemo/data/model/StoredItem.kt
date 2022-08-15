@@ -14,6 +14,7 @@ data class StoredItem (
     var itemAcquisitions: List<ItemAcquisition> = emptyList(),
     var reservations: List<Reservation> = emptyList(),
     var releases: List<Release> = emptyList(),
+    var movings: List<Moving> = emptyList(),
     var currentQuantity: Double = 0.0,
     var freeQuantity: Double = 0.0
 

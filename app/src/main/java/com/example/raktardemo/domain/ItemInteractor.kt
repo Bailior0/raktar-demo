@@ -60,7 +60,9 @@ class DatabaseInteractor @Inject constructor(
     private suspend fun moveOpenedPackage(item: StoredItem, quantity: Double, startStorage: Storage, destinationStorage: Storage) {
         var localQuantity = quantity
         val localItem: StoredItem = item
+
         val acqs = mutableListOf<ItemAcquisition>()
+        val moves = localItem.movings as MutableList<Moving>
 
         for(acq in localItem.itemAcquisitions) {
 
@@ -102,13 +104,11 @@ class DatabaseInteractor @Inject constructor(
                 newAcquisition.quantity = newAcquisition.packageCounts.size.toDouble()
                 newAcquisition.acquisitionPrice = newAcquisition.quantity * newAcquisition.pricePerUnit
 
-                if(oldAcqPackages.isNotEmpty()) {
-                    oldAcquisition.packageCounts = oldAcqPackages
-                    oldAcquisition.quantity = oldAcquisition.packageCounts.size.toDouble()
-                    oldAcquisition.acquisitionPrice = oldAcquisition.quantity * oldAcquisition.pricePerUnit
+                oldAcquisition.packageCounts = oldAcqPackages
+                oldAcquisition.quantity = oldAcquisition.packageCounts.size.toDouble()
+                oldAcquisition.acquisitionPrice = oldAcquisition.quantity * oldAcquisition.pricePerUnit
 
-                    acqs.add(oldAcquisition)
-                }
+                acqs.add(oldAcquisition)
 
                 acqs.add(newAcquisition)
             }
@@ -119,13 +119,26 @@ class DatabaseInteractor @Inject constructor(
 
         localItem.itemAcquisitions = acqs
 
+        moves.add(
+            Moving(
+                quantity = quantity,
+                movingDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date()),
+                sourceStorage = startStorage.id,
+                destinationStorage = destinationStorage.id
+            )
+        )
+
+        localItem.movings = moves
+
         onItemUpdated(localItem)
     }
 
     private suspend fun moveFullPackage(item: StoredItem, quantity: Double, startStorage: Storage, destinationStorage: Storage) {
         var localQuantity = quantity
         val localItem: StoredItem = item
+
         val acqs = mutableListOf<ItemAcquisition>()
+        val moves = localItem.movings as MutableList<Moving>
 
         for(acq in localItem.itemAcquisitions) {
 
@@ -165,13 +178,13 @@ class DatabaseInteractor @Inject constructor(
                 newAcquisition.quantity = newAcquisition.packageCounts.size.toDouble()
                 newAcquisition.acquisitionPrice = newAcquisition.quantity * newAcquisition.pricePerUnit
 
-                if(oldAcqPackages.isNotEmpty()) {
+                //if(oldAcqPackages.isNotEmpty()) {
                     oldAcquisition.packageCounts = oldAcqPackages
                     oldAcquisition.quantity = oldAcquisition.packageCounts.size.toDouble()
                     oldAcquisition.acquisitionPrice = oldAcquisition.quantity * oldAcquisition.pricePerUnit
 
                     acqs.add(oldAcquisition)
-                }
+                //}
 
                 acqs.add(newAcquisition)
             }
@@ -182,13 +195,26 @@ class DatabaseInteractor @Inject constructor(
 
         localItem.itemAcquisitions = acqs
 
+        moves.add(
+            Moving(
+                quantity = quantity,
+                movingDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date()),
+                sourceStorage = startStorage.id,
+                destinationStorage = destinationStorage.id
+            )
+        )
+
+        localItem.movings = moves
+
         onItemUpdated(localItem)
     }
 
     private suspend fun moveItemPiece(item: StoredItem, quantity: Double, startStorage: Storage, destinationStorage: Storage) {
         var localQuantity = quantity
         val localItem: StoredItem = item
+
         val acqs = mutableListOf<ItemAcquisition>()
+        val moves = localItem.movings as MutableList<Moving>
 
         for(acq in localItem.itemAcquisitions) {
 
@@ -222,13 +248,12 @@ class DatabaseInteractor @Inject constructor(
                 newAcquisition.acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())
                 newAcquisition.acquisitionPrice = newAcquisition.quantity * newAcquisition.pricePerUnit
 
-                if(oldQuantity != 0.0) {
-                    oldAcquisition.quantity = oldQuantity
-                    oldAcquisition.packageCounts = mutableListOf(oldQuantity)
-                    oldAcquisition.acquisitionPrice = oldAcquisition.quantity * oldAcquisition.pricePerUnit
+                oldAcquisition.quantity = oldQuantity
+                oldAcquisition.packageCounts = mutableListOf(oldQuantity)
+                oldAcquisition.acquisitionPrice = oldAcquisition.quantity * oldAcquisition.pricePerUnit
 
-                    acqs.add(oldAcquisition)
-                }
+                acqs.add(oldAcquisition)
+
                 acqs.add(newAcquisition)
             }
             else {
@@ -237,6 +262,17 @@ class DatabaseInteractor @Inject constructor(
         }
 
         localItem.itemAcquisitions = acqs
+
+        moves.add(
+            Moving(
+                quantity = quantity,
+                movingDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date()),
+                sourceStorage = startStorage.id,
+                destinationStorage = destinationStorage.id
+            )
+        )
+
+        localItem.movings = moves
 
         onItemUpdated(localItem)
     }
@@ -272,6 +308,7 @@ class DatabaseInteractor @Inject constructor(
             }
 
             newReservation.repeatAmount = 1
+            newReservation.acqId = acqId
             itemReservations.add(newReservation)
 
             onItemUpdated(item)
@@ -404,6 +441,7 @@ class DatabaseInteractor @Inject constructor(
                 }
             }
 
+            newRelease.acqId = acqId
             itemReleases.add(newRelease)
 
             onItemUpdated(item)

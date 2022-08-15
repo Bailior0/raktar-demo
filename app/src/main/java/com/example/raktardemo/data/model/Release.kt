@@ -9,7 +9,7 @@ import java.util.*
 @Parcelize
 data class Release(
     var id: String = UUID.randomUUID().toString(),
-    var acqId: String = UUID.randomUUID().toString() ,
+    var acqId: String = UUID.randomUUID().toString(),
     var releaseDate: String = "",
     var quantity: Double = 0.0,
     var quality: Quality = Quality.Good,
