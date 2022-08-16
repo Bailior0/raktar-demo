@@ -99,14 +99,26 @@ fun Moving(
 
                 var freeQuantity by remember { mutableStateOf(0) }
 
-                var cnt2 = 0.0
+                var cnt = 0.0
                 for(acqItem in product.itemAcquisitions) {
-                    if(acqItem.currentStorage == presentStorages[presentStorageSelectedIndex].id)
-                        for(count in acqItem.packageCounts) {
-                            cnt2 += count
+                    if(acqItem.currentStorage == presentStorages[presentStorageSelectedIndex].id) {
+                        if(!packageSwitchState) {
+                            for(count in acqItem.packageCounts) {
+                                if(count == product.item.defaultPackageQuantity) {
+                                    cnt += count
+                                }
+                            }
                         }
+                        else {
+                            for(count in acqItem.packageCounts) {
+                                if(count != product.item.defaultPackageQuantity) {
+                                    cnt += count
+                                }
+                            }
+                        }
+                    }
                 }
-                freeQuantity = cnt2.toInt()
+                freeQuantity = cnt.toInt()
 
                 Text(
                     text = "Termék: ",
