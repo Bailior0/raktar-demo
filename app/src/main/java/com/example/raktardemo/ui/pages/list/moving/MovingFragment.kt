@@ -15,7 +15,7 @@ import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.extensions.applyArgs
 import co.zsmb.rainbowcake.navigation.navigator
 import com.example.raktardemo.data.enums.PackageState
-import com.example.raktardemo.data.enums.PackageType
+import com.example.raktardemo.data.model.Moving
 import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.Moving
@@ -77,7 +77,8 @@ class MovingFragment : RainbowCakeFragment<MovingViewState, MovingViewModel>() {
         }
     }
 
-    private fun onMoving(item: StoredItem, quantity: Double, startStorage: Storage, destinationStorage: Storage, packageState: PackageState?) {
-        viewModel.onMoving(item, quantity, startStorage, destinationStorage, packageState)
+    private fun onMoving(item: StoredItem, chosenOpenedPackages: List<Pair<String, Double>>, moving: Moving, packageState: PackageState?) {
+        viewModel.onMoving(item, chosenOpenedPackages, moving, packageState)
+        navigator?.pop()
     }
 }

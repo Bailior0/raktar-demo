@@ -92,5 +92,6 @@ class ReservationFragment : RainbowCakeFragment<ReservationViewState, Reservatio
 
     private fun onReservation(reservation: Reservation, item: StoredItem?, acqId: String?, group: List<StoredItem>) {
         viewModel.onReservation(reservation, item, acqId, group)
+        navigator?.pop()
     }
 }

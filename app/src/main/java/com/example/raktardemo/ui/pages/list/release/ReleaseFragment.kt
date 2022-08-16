@@ -92,5 +92,6 @@ class ReleaseFragment : RainbowCakeFragment<ReleaseViewState, ReleaseViewModel>(
 
     private fun onRelease(release: Release, item: StoredItem?, acqId: String?, group: List<StoredItem>) {
         viewModel.onRelease(release, item, acqId, group)
+        navigator?.pop()
     }
 }
