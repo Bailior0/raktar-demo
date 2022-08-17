@@ -34,7 +34,7 @@ fun GroupDetail(
 
     for(grp in groups)
         for(acq in grp.itemAcquisitions)
-            acqItems.add(Pair(acq.id, grp))
+            acqItems.add(Pair(acq.groupingId, grp))
 
     val itemGroups = acqItems.groupBy{it.first}
 

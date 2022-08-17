@@ -240,9 +240,6 @@ class DatabaseInteractor @Inject constructor(
         else if(item != null && release.packageState == PackageState.Full && item.item.type == PackageType.Package){
             releaseFullPackage(release, item)
         }
-        /*else if(item != null && item.item.type == PackageType.Piece) {
-            releaseItemPiece(release, item)
-        }*/
     }
 
     private suspend fun releaseAcquisition(release: Release, acqId: String, group: List<StoredItem>) {
@@ -251,8 +248,10 @@ class DatabaseInteractor @Inject constructor(
             val newRelease = release.copy()
             val itemReleases = item.releases as MutableList<Release>
 
+            Log.i("dolog", acqId)
+
             for(acq in item.itemAcquisitions) {
-                if(acq.id == acqId) {
+                if(acq.groupingId == acqId) {
                     for(leave in acq.packageCounts)
                         newRelease.quantity += leave
 
@@ -400,7 +399,7 @@ class DatabaseInteractor @Inject constructor(
             val itemReservations = item.reservations as MutableList<Reservation>
 
             for(acq in item.itemAcquisitions) {
-                if(acq.id == acqId) {
+                if(acq.groupingId == acqId) {
                     for(reserve in acq.packageCounts)
                         newReservation.reservationQuantity += reserve
 
