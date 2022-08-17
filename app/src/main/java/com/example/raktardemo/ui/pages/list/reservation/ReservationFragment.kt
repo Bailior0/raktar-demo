@@ -15,6 +15,7 @@ import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.extensions.applyArgs
 import co.zsmb.rainbowcake.navigation.navigator
 import com.example.raktardemo.data.model.Reservation
+import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.Reservation
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
@@ -27,32 +28,28 @@ class ReservationFragment : RainbowCakeFragment<ReservationViewState, Reservatio
 
     companion object {
         private const val EXTRA_ITEM = "ITEM"
+        private const val EXTRA_STORAGES = "STORAGES"
         private const val EXTRA_GROUP = "GROUP"
         private const val EXTRA_ACQID = "ACQID"
 
-        fun newInstance(item: StoredItem): ReservationFragment {
+        fun newInstance(item: StoredItem, storages: ArrayList<Storage>): ReservationFragment {
             return ReservationFragment().applyArgs {
                 putParcelable(EXTRA_ITEM, item)
-            }
-        }
-
-        fun newInstance(items: ArrayList<StoredItem>, acqId: String): ReservationFragment {
-            return ReservationFragment().applyArgs {
-                putParcelableArrayList(EXTRA_GROUP, items)
-                putString(EXTRA_ACQID, acqId)
+                putParcelableArrayList(EXTRA_STORAGES, storages)
             }
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         val item = arguments?.getParcelable<StoredItem>(EXTRA_ITEM)
-        val group = arguments?.getParcelableArrayList<StoredItem>(EXTRA_GROUP)
-        val acqId = arguments?.getString(EXTRA_ACQID)
+        val storages: ArrayList<Storage> = arguments?.getParcelableArrayList(EXTRA_STORAGES)!!
 
         if(item != null)
-            viewModel.setReservation(item)
-        else if(group != null)
-            viewModel.setReservationGroup(group, acqId)
+            viewModel.setReservation(item, storages)
 
         return ComposeView(requireContext()).apply {
             setContent {
@@ -73,16 +70,10 @@ class ReservationFragment : RainbowCakeFragment<ReservationViewState, Reservatio
                         is ReservationContent -> Reservation(
                             product = viewState.item!!,
                             group = emptyList(),
+                            storages = viewState.storages,
                             acqId = null,
                             onIconClick = { navigator?.pop() },
-                            onReservationClick = ::onReservation
-                        )
-                        is ReservationGroupContent -> Reservation(
-                            product = null,
-                            group = viewState.group,
-                            acqId = viewState.acqId,
-                            onIconClick = { navigator?.pop() },
-                            onReservationClick = ::onReservation
+                            onReservationClick = ::onReservation,
                         )
                     }.exhaustive
                 }
@@ -90,7 +81,12 @@ class ReservationFragment : RainbowCakeFragment<ReservationViewState, Reservatio
         }
     }
 
-    private fun onReservation(reservation: Reservation, item: StoredItem?, acqId: String?, group: List<StoredItem>) {
+    private fun onReservation(
+        reservation: Reservation,
+        item: StoredItem?,
+        acqId: String?,
+        group: List<StoredItem>
+    ) {
         viewModel.onReservation(reservation, item, acqId, group)
     }
 }

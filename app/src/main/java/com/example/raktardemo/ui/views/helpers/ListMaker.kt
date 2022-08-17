@@ -1,6 +1,5 @@
 package com.example.raktardemo.ui.views.helpers
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
@@ -8,18 +7,25 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.example.raktardemo.ui.views.theme.RaktarAppJustUi1Theme
-import com.example.raktardemo.ui.views.theme.Shapes
 
 @Composable
-fun ListMaker(text1: String, text2: String, text3: String) {
+fun ListMaker(
+    text1: String,
+    text2: String,
+    text3: String,
+    id: String = "",
+    onClicked: (String) -> Unit = {},
+    onClose: () -> Unit = {}
+) {
     return ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable( onClick = {
+                onClicked(id)
+                onClose()
+            })
     ) {
         val (first, second, third, divider) = createRefs()
 
