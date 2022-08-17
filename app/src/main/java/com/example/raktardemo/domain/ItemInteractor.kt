@@ -88,8 +88,7 @@ class DatabaseInteractor @Inject constructor(
                     newAcquisition.packageCounts = newAcqPackages
                     newAcquisition.currentStorage = moving.destinationStorage
                     newAcquisition.acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())
-                    newAcquisition.quantity = newAcquisition.packageCounts.size.toDouble()
-                    newAcquisition.acquisitionPrice = newAcquisition.quantity * newAcquisition.pricePerUnit
+                    newAcquisition.acquisitionPrice = newAcquisition.packageCounts.size.toDouble() * newAcquisition.pricePerUnit
                     newAcquisition.released = emptyList()
                     newAcquisition.reserved = emptyList()
 
@@ -98,8 +97,7 @@ class DatabaseInteractor @Inject constructor(
 
 
                 oldAcquisition.packageCounts = oldAcqPackages
-                oldAcquisition.quantity = oldAcquisition.packageCounts.size.toDouble()
-                oldAcquisition.acquisitionPrice = oldAcquisition.quantity * oldAcquisition.pricePerUnit
+                oldAcquisition.acquisitionPrice = oldAcquisition.packageCounts.size.toDouble() * oldAcquisition.pricePerUnit
 
                 acqs.add(oldAcquisition)
             }
@@ -145,8 +143,7 @@ class DatabaseInteractor @Inject constructor(
                         newAcquisition.packageCounts = newAcqPackages
                         newAcquisition.currentStorage = moving.destinationStorage
                         newAcquisition.acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())
-                        newAcquisition.quantity = newAcquisition.packageCounts.size.toDouble()
-                        newAcquisition.acquisitionPrice = newAcquisition.quantity * newAcquisition.pricePerUnit
+                        newAcquisition.acquisitionPrice = newAcquisition.packageCounts.size.toDouble() * newAcquisition.pricePerUnit
                         newAcquisition.released = emptyList()
                         newAcquisition.reserved = emptyList()
 
@@ -155,8 +152,7 @@ class DatabaseInteractor @Inject constructor(
                 }
 
                 oldAcquisition.packageCounts = oldAcqPackages
-                oldAcquisition.quantity = oldAcquisition.packageCounts.size.toDouble()
-                oldAcquisition.acquisitionPrice = oldAcquisition.quantity * oldAcquisition.pricePerUnit
+                oldAcquisition.acquisitionPrice = oldAcquisition.packageCounts.size.toDouble() * oldAcquisition.pricePerUnit
 
                 acqs.add(oldAcquisition)
             }
@@ -205,11 +201,10 @@ class DatabaseInteractor @Inject constructor(
                     }
 
                     if(newQuantity != 0.0) {
-                        newAcquisition.quantity = newQuantity
                         newAcquisition.packageCounts = mutableListOf(newQuantity)
                         newAcquisition.currentStorage = moving.destinationStorage
                         newAcquisition.acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())
-                        newAcquisition.acquisitionPrice = newAcquisition.quantity * newAcquisition.pricePerUnit
+                        newAcquisition.acquisitionPrice = newQuantity * newAcquisition.pricePerUnit
                         newAcquisition.released = emptyList()
                         newAcquisition.reserved = emptyList()
 
@@ -222,7 +217,6 @@ class DatabaseInteractor @Inject constructor(
                     oldAcquisition.packageCounts = emptyList()
                 else
                     oldAcquisition.packageCounts = mutableListOf(oldQuantity)
-                oldAcquisition.acquisitionPrice = oldAcquisition.quantity * oldAcquisition.pricePerUnit
 
                 acqs.add(oldAcquisition)
             }
@@ -231,6 +225,160 @@ class DatabaseInteractor @Inject constructor(
         localItem.itemAcquisitions = acqs
 
         onItemUpdated(localItem)
+    }
+
+    suspend fun onRelease(release: Release, item: StoredItem?, chosenOpenedPackages: List<Pair<String, Double>>, acqId: String?, group: List<StoredItem>) {
+        if(acqId != null) {
+            releaseAcquisition(release, acqId, group)
+        }
+        else if(item != null && release.packageState == PackageState.Opened && item.item.type == PackageType.Package && chosenOpenedPackages.isNotEmpty()) {
+            releaseOpenedPackage(release, item, chosenOpenedPackages)
+        }
+        else if(item != null && ((release.packageState == PackageState.Opened && item.item.type == PackageType.Package && chosenOpenedPackages.isEmpty()) || item.item.type == PackageType.Piece)) {
+            releaseOpenableItems(release, item)
+        }
+        else if(item != null && release.packageState == PackageState.Full && item.item.type == PackageType.Package){
+            releaseFullPackage(release, item)
+        }
+        /*else if(item != null && item.item.type == PackageType.Piece) {
+            releaseItemPiece(release, item)
+        }*/
+    }
+
+    private suspend fun releaseAcquisition(release: Release, acqId: String, group: List<StoredItem>) {
+        val localGroup = group.toSet().toList()
+        for(item in localGroup) {
+            val newRelease = release.copy()
+            val itemReleases = item.releases as MutableList<Release>
+
+            for(acq in item.itemAcquisitions) {
+                if(acq.id == acqId) {
+                    for(leave in acq.packageCounts)
+                        newRelease.quantity += leave
+
+                    val released = acq.released as MutableList<Double>
+                    released.addAll(acq.packageCounts)
+                    acq.packageCounts = emptyList()
+                    acq.released = released
+                }
+            }
+
+            newRelease.acqId = acqId
+            itemReleases.add(newRelease)
+
+            onItemUpdated(item)
+        }
+    }
+
+    private suspend fun releaseOpenedPackage(release: Release, item: StoredItem, chosenOpenedPackages: List<Pair<String, Double>>) {
+        val localItem: StoredItem = item.copy()
+        val itemReleases = item.releases as MutableList<Release>
+        itemReleases.add(release)
+
+        for(acq in localItem.itemAcquisitions) {
+
+            val newRelease = acq.released as MutableList<Double>
+            val newPackages = acq.packageCounts as MutableList<Double>
+
+            for(packages in acq.packageCounts.sorted()) {
+                for(chosenPackage in chosenOpenedPackages) {
+                    if (acq.id == chosenPackage.first && packages == chosenPackage.second) {
+                        newPackages.remove(packages)
+                        newRelease.add(packages)
+                    }
+                }
+            }
+
+            acq.packageCounts = newPackages
+            acq.acquisitionPrice = acq.packageCounts.size.toDouble() * acq.pricePerUnit
+
+            acq.released = newRelease
+        }
+
+        onItemUpdated(localItem)
+    }
+
+    private suspend fun releaseFullPackage(release: Release, item: StoredItem) {
+        var localQuantity = release.quantity/item.item.defaultPackageQuantity
+        val localItem: StoredItem = item.copy()
+        val itemReleases = item.releases as MutableList<Release>
+        itemReleases.add(release)
+
+        for(acq in localItem.itemAcquisitions) {
+
+            val newRelease = acq.released as MutableList<Double>
+            val newPackages = acq.packageCounts as MutableList<Double>
+
+            if(localQuantity != 0.0) {
+                for(packages in acq.packageCounts.sorted()) {
+
+                    if(packages == item.item.defaultPackageQuantity) {
+                        newPackages.remove(packages)
+                        newRelease.add(packages)
+                        localQuantity--
+                    }
+
+                    if(localQuantity == 0.0)
+                        break
+                }
+            }
+
+            acq.packageCounts = newPackages
+            acq.acquisitionPrice = acq.packageCounts.size.toDouble() * acq.pricePerUnit
+
+            acq.released = newRelease
+        }
+
+        onItemUpdated(item)
+    }
+
+    private suspend fun releaseOpenableItems(release: Release, item: StoredItem) {
+        var localQuantity = release.quantity
+        val localItem: StoredItem = item.copy()
+        val itemReleases = item.releases as MutableList<Release>
+        itemReleases.add(release)
+
+        for(acq in localItem.itemAcquisitions) {
+            val newRelease = acq.released as MutableList<Double>
+            val newPackages = acq.packageCounts as MutableList<Double>
+
+            for(packages in acq.packageCounts.sorted()) {
+
+                if(packages == localQuantity) {
+                    newPackages.remove(packages)
+                    newRelease.add(packages)
+                    localQuantity = 0.0
+                    break
+                }
+
+                else if(packages < localQuantity) {
+                    newPackages.remove(packages)
+                    newRelease.add(packages)
+                    localQuantity -= packages
+                    continue
+                }
+
+                else if(packages > localQuantity) {
+                    val newPackage = packages - localQuantity
+                    newPackages.remove(packages)
+                    newPackages.add(newPackage)
+                    newRelease.add(localQuantity)
+                    localQuantity = 0.0
+                    break
+                }
+            }
+
+            acq.packageCounts = newPackages
+            acq.quantity = acq.packageCounts.size.toDouble()
+            acq.acquisitionPrice = acq.quantity * acq.pricePerUnit
+
+            acq.released = newRelease
+
+            if(localQuantity == 0.0)
+                break
+        }
+
+        onItemUpdated(item)
     }
 
     suspend fun onReservation(reservation: Reservation, item: StoredItem?, acqId: String?, group: List<StoredItem>) {
@@ -308,8 +456,7 @@ class DatabaseInteractor @Inject constructor(
             }
 
             acq.packageCounts = newPackages
-            acq.quantity = acq.packageCounts.size.toDouble()
-            acq.acquisitionPrice = acq.quantity * acq.pricePerUnit
+            acq.acquisitionPrice = acq.packageCounts.size.toDouble() * acq.pricePerUnit
 
             acq.reserved = newReserved
 
@@ -317,7 +464,7 @@ class DatabaseInteractor @Inject constructor(
                 break
         }
 
-        onItemUpdated(item)
+        //onItemUpdated(item)
     }
 
     private suspend fun reserveUnOpenablePackage(reservation: Reservation, item: StoredItem) {
@@ -355,8 +502,7 @@ class DatabaseInteractor @Inject constructor(
             }
 
             acq.packageCounts = newPackages
-            acq.quantity = acq.packageCounts.size.toDouble()
-            acq.acquisitionPrice = acq.quantity * acq.pricePerUnit
+            acq.acquisitionPrice = acq.packageCounts.size.toDouble() * acq.pricePerUnit
 
             acq.reserved = newReserved
 
@@ -364,139 +510,6 @@ class DatabaseInteractor @Inject constructor(
                 break
         }
 
-        onItemUpdated(item)
-    }
-
-    suspend fun onRelease(release: Release, item: StoredItem?, acqId: String?, group: List<StoredItem>) {
-        if(item == null) {
-            releaseAcquisition(release, acqId!!, group)
-        }
-        else if(release.packageState == PackageState.Opened || item.item.type == PackageType.Piece) {
-            releaseOpenablePackage(release, item)
-        }
-        else {
-            releaseUnOpenablePackage(release, item)
-        }
-    }
-
-    private suspend fun releaseAcquisition(release: Release, acqId: String, group: List<StoredItem>) {
-        val localGroup = group.toSet().toList()
-        for(item in localGroup) {
-            val newRelease = release.copy()
-            val itemReleases = item.releases as MutableList<Release>
-
-            for(acq in item.itemAcquisitions) {
-                if(acq.id == acqId) {
-                    for(leave in acq.packageCounts)
-                        newRelease.quantity += leave
-
-                    val released = acq.released as MutableList<Double>
-                    released.addAll(acq.packageCounts)
-                    acq.packageCounts = emptyList()
-                    acq.released = released
-                }
-            }
-
-            newRelease.acqId = acqId
-            itemReleases.add(newRelease)
-
-            onItemUpdated(item)
-        }
-    }
-
-    private suspend fun releaseUnOpenablePackage(release: Release, item: StoredItem) {
-        var localQuantity = release.quantity
-        val localItem: StoredItem = item.copy()
-        val itemReleases = item.releases as MutableList<Release>
-        itemReleases.add(release)
-
-        for(acq in localItem.itemAcquisitions) {
-            val newRelease = acq.released as MutableList<Double>
-            val newPackages = acq.packageCounts as MutableList<Double>
-
-            for(packages in acq.packageCounts.sorted()) {
-
-                if(packages == localQuantity) {
-                    newPackages.remove(packages)
-                    newRelease.add(packages)
-                    localQuantity = 0.0
-                    break
-                }
-
-                else if(packages < localQuantity) {
-                    newPackages.remove(packages)
-                    newRelease.add(packages)
-                    localQuantity -= packages
-                    continue
-                }
-
-                else if(packages > localQuantity) {
-                    newPackages.remove(packages)
-                    newRelease.add(packages)
-                    localQuantity = 0.0
-                    break
-                }
-            }
-
-            acq.packageCounts = newPackages
-            acq.quantity = acq.packageCounts.size.toDouble()
-            acq.acquisitionPrice = acq.quantity * acq.pricePerUnit
-
-            acq.released = newRelease
-
-            if(localQuantity == 0.0)
-                break
-        }
-
-        onItemUpdated(item)
-    }
-
-    private suspend fun releaseOpenablePackage(release: Release, item: StoredItem) {
-        var localQuantity = release.quantity
-        val localItem: StoredItem = item.copy()
-        val itemReleases = item.releases as MutableList<Release>
-        itemReleases.add(release)
-
-        for(acq in localItem.itemAcquisitions) {
-            val newRelease = acq.released as MutableList<Double>
-            val newPackages = acq.packageCounts as MutableList<Double>
-
-            for(packages in acq.packageCounts.sorted()) {
-
-                if(packages == localQuantity) {
-                    newPackages.remove(packages)
-                    newRelease.add(packages)
-                    localQuantity = 0.0
-                    break
-                }
-
-                else if(packages < localQuantity) {
-                    newPackages.remove(packages)
-                    newRelease.add(packages)
-                    localQuantity -= packages
-                    continue
-                }
-
-                else if(packages > localQuantity) {
-                    val newPackage = packages - localQuantity
-                    newPackages.remove(packages)
-                    newPackages.add(newPackage)
-                    newRelease.add(localQuantity)
-                    localQuantity = 0.0
-                    break
-                }
-            }
-
-            acq.packageCounts = newPackages
-            acq.quantity = acq.packageCounts.size.toDouble()
-            acq.acquisitionPrice = acq.quantity * acq.pricePerUnit
-
-            acq.released = newRelease
-
-            if(localQuantity == 0.0)
-                break
-        }
-
-        onItemUpdated(item)
+        //onItemUpdated(item)
     }
 }

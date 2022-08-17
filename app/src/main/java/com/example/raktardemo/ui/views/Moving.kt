@@ -227,8 +227,7 @@ fun Moving(
                             content = {
                                 Text(
                                     text = "Csomagok",
-                                    fontWeight = FontWeight.Bold,
-                                    //fontSize = 20.sp
+                                    fontWeight = FontWeight.Bold
                                 )
                                 Image(
                                     painter = painterResource(
@@ -412,6 +411,9 @@ fun Moving(
 
                             if( !packageSwitchState && (quantityInput == "" || quantityInput.toDouble() * product.item.defaultPackageQuantity > freeQuantity || quantityInput.toDouble() <= 0.0)) {
                                 Toast.makeText(context, "Nem megfelelő a mennyiség értéke!", Toast.LENGTH_SHORT).show()
+                            }
+                            else if(packageSwitchState && chosenOpenedPackages.toList().isEmpty()) {
+                                Toast.makeText(context, "Nincsenek csomagok választva!", Toast.LENGTH_SHORT).show()
                             }
                             else if(storages[allStorageSelectedIndex] == presentStorages[presentStorageSelectedIndex]) {
                                 Toast.makeText(context, "A kezdő és célraktár nem egyezhetnek meg!", Toast.LENGTH_SHORT).show()

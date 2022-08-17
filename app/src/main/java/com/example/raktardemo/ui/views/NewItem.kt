@@ -639,7 +639,10 @@ fun NewItem(
                                     quantity = quantity,
                                     acquisitionPrice = price,
                                     pricePerUnit = pricePerUnit,
-                                    currentStorage = storages[warehouseSelectedIndex].id,
+                                    currentStorage = when(storages.isNotEmpty()) {
+                                        true -> storages[warehouseSelectedIndex].id
+                                        false -> ""
+                                    },
                                     ownedBy = when(ownerSwitchState) {
                                         false -> Ownership.Own
                                         true -> Ownership.Foreign
