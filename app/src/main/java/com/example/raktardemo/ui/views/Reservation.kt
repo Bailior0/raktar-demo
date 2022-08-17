@@ -52,21 +52,23 @@ fun Reservation(
     var quantityInput by remember { mutableStateOf("") }
     var multiplierInput by remember { mutableStateOf("") }
     var reservationGoalInput by remember { mutableStateOf("") }
+
+    var datePickerState by remember { mutableStateOf(false) }
     var dateInput by remember {
         mutableStateOf(SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date()))
     }
-    var sourceSwitchState by remember { mutableStateOf(false) }
 
-    var datePickerState by remember { mutableStateOf(false) }
+    var sourceSwitchState by remember { mutableStateOf(false) }
 
     var storageExpanded by remember { mutableStateOf(false) }
     var storageSelectedIndex by remember { mutableStateOf(0) }
-
     val storageList = mutableListOf<String>()
     for (storage in storages)
         storageList.add(storage.name)
 
-    var selectedAcquisitionId by remember { mutableStateOf("Beszerzés választása") }
+    var selectedAcquisitionId by remember { mutableStateOf("") }
+    var selectedAcquisitionDate by remember { mutableStateOf("Választ") }
+
     var showPicker by remember { mutableStateOf(false) }
 
     Column(
@@ -290,23 +292,34 @@ fun Reservation(
                                 60.dp
                             )
                         }
-
                     } else {
+                        Text(
+                            text = "Beszerzés választása: ",
+                            color = Color.Gray,
+                            modifier = Modifier
+                                .padding(0.dp, 0.dp, 5.dp, 0.dp)
+                                .constrainAs(text) {
+                                    top.linkTo(parent.top)
+                                    bottom.linkTo(parent.bottom)
+                                    start.linkTo(parent.start)
+                                }
+                        )
+
                         Button(
-                            onClick = { showPicker = true },
+                            onClick = {
+                                showPicker = true
+                            },
                             modifier = Modifier
                                 .constrainAs(comboBox) {
                                     top.linkTo(parent.top)
                                     bottom.linkTo(parent.bottom)
-                                    start.linkTo(parent.start)
                                     end.linkTo(parent.end)
                                 }
                         ) {
                             Text(
-                                text = selectedAcquisitionId,
+                                text = selectedAcquisitionDate,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier
-                                    .padding(25.dp, 0.dp)
                             )
                         }
                     }
@@ -414,7 +427,8 @@ fun Reservation(
                     AcquisitionPicker(
                         acquisitions = product.itemAcquisitions,
                         storages = storages,
-                        onValueChange = { selectedAcquisitionId = it },
+                        onIdChange = { selectedAcquisitionId = it },
+                        onDateChange = { selectedAcquisitionDate = it },
                         onClose = { showPicker = false }
                     )
                 }

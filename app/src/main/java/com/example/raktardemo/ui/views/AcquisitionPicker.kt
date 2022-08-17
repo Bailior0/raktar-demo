@@ -20,7 +20,8 @@ import com.example.raktardemo.ui.views.helpers.ListMaker
 fun AcquisitionPicker(
     acquisitions: List<ItemAcquisition>,
     storages: List<Storage>,
-    onValueChange: (String) -> Unit,
+    onIdChange: (String) -> Unit,
+    onDateChange: (String) -> Unit,
     onClose: () -> Unit
 ) {
     for (acquisition in acquisitions) {
@@ -44,7 +45,9 @@ fun AcquisitionPicker(
                 text2 = acquisition.currentStorage,
                 text3 = acquisition.quantity.toString(),
                 id = acquisition.id,
-                onValueChange,
+                date = acquisition.acquisitionDate,
+                onIdChange,
+                onDateChange,
                 onClose
             )
         }

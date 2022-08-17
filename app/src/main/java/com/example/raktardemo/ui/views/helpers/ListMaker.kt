@@ -16,14 +16,17 @@ fun ListMaker(
     text2: String,
     text3: String,
     id: String = "",
-    onClicked: (String) -> Unit = {},
+    date: String = "",
+    onClickedId: (String) -> Unit = {},
+    onClickedDate: (String) -> Unit = {},
     onClose: () -> Unit = {}
 ) {
     return ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
             .clickable( onClick = {
-                onClicked(id)
+                onClickedId(id)
+                onClickedDate(date)
                 onClose()
             })
     ) {
