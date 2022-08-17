@@ -7,6 +7,7 @@ import java.util.*
 @Parcelize
 data class Reservation(
     var id: String = UUID.randomUUID().toString(),
+    var acqId: String = UUID.randomUUID().toString(),
     var reservationGoal: String = "",
     var reservationDate: String = "",
     var reservationGoalDate: String = "",

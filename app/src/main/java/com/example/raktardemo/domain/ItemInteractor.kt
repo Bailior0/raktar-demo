@@ -1,5 +1,6 @@
 package com.example.raktardemo.domain
 
+import android.util.Log
 import com.example.raktardemo.data.datasource.FirebaseDataSource
 import com.example.raktardemo.data.enums.PackageState
 import com.example.raktardemo.data.enums.PackageType
@@ -45,22 +46,26 @@ class DatabaseInteractor @Inject constructor(
         return firebaseDataSource.getStorages()
     }
 
-    suspend fun onMoving(item: StoredItem, quantity: Double, startStorage: Storage, destinationStorage: Storage, packageState: PackageState?) {
+    suspend fun onMoving(item: StoredItem, chosenOpenedPackages: List<Pair<String, Double>>, moving: Moving, packageState: PackageState?) {
         if(item.item.type == PackageType.Package && packageState == PackageState.Opened) {
-            moveOpenedPackage(item, quantity, startStorage, destinationStorage)
+            moveOpenedPackage(item, chosenOpenedPackages, moving)
         }
         else if(item.item.type == PackageType.Package && packageState == PackageState.Full) {
-            moveFullPackage(item, quantity, startStorage, destinationStorage)
+            moveFullPackage(item, moving)
         }
         else {
-            moveItemPiece(item, quantity, startStorage, destinationStorage)
+            moveItemPiece(item, moving)
         }
     }
 
-    private suspend fun moveOpenedPackage(item: StoredItem, quantity: Double, startStorage: Storage, destinationStorage: Storage) {
-        var localQuantity = quantity
-        val localItem: StoredItem = item
+    private suspend fun moveOpenedPackage(item: StoredItem, chosenOpenedPackages: List<Pair<String, Double>>, moving: Moving) {
+        val localItem: StoredItem = item.copy()
+
         val acqs = mutableListOf<ItemAcquisition>()
+
+        val moves = item.movings as MutableList<Moving>
+        moves.add(moving)
+        localItem.movings = moves
 
         for(acq in localItem.itemAcquisitions) {
 
@@ -69,113 +74,33 @@ class DatabaseInteractor @Inject constructor(
             val newAcqPackages = mutableListOf<Double>()
             val oldAcqPackages: MutableList<Double> = acq.packageCounts as MutableList<Double>
 
-            if(acq.currentStorage == startStorage.id) {
+            if(acq.currentStorage == moving.sourceStorage) {
                 for(packages in acq.packageCounts.sorted()) {
-
-                    if(packages == localQuantity) {
-                        oldAcqPackages.remove(packages)
-                        newAcqPackages.add(packages)
-                        localQuantity = 0.0
-                        break
-                    }
-
-                    else if(packages < localQuantity) {
-                        oldAcqPackages.remove(packages)
-                        newAcqPackages.add(packages)
-                        localQuantity -= packages
-                        continue
-                    }
-
-                    else if(packages > localQuantity) {
-                        val newPackage = packages - localQuantity
-                        oldAcqPackages.remove(packages)
-                        oldAcqPackages.add(newPackage)
-                        newAcqPackages.add(localQuantity)
-                        localQuantity = 0.0
-                        break
+                    for(chosenPackage in chosenOpenedPackages) {
+                        if (acq.id == chosenPackage.first && packages == chosenPackage.second) {
+                            oldAcqPackages.remove(packages)
+                            newAcqPackages.add(packages)
+                        }
                     }
                 }
 
-                newAcquisition.packageCounts = newAcqPackages
-                newAcquisition.currentStorage = destinationStorage.id
-                newAcquisition.acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())
-                newAcquisition.quantity = newAcquisition.packageCounts.size.toDouble()
-                newAcquisition.acquisitionPrice = newAcquisition.quantity * newAcquisition.pricePerUnit
+                if(newAcqPackages.isNotEmpty()) {
+                    newAcquisition.packageCounts = newAcqPackages
+                    newAcquisition.currentStorage = moving.destinationStorage
+                    newAcquisition.acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())
+                    newAcquisition.quantity = newAcquisition.packageCounts.size.toDouble()
+                    newAcquisition.acquisitionPrice = newAcquisition.quantity * newAcquisition.pricePerUnit
+                    newAcquisition.released = emptyList()
+                    newAcquisition.reserved = emptyList()
 
-                if(oldAcqPackages.isNotEmpty()) {
-                    oldAcquisition.packageCounts = oldAcqPackages
-                    oldAcquisition.quantity = oldAcquisition.packageCounts.size.toDouble()
-                    oldAcquisition.acquisitionPrice = oldAcquisition.quantity * oldAcquisition.pricePerUnit
-
-                    acqs.add(oldAcquisition)
+                    acqs.add(newAcquisition)
                 }
 
-                acqs.add(newAcquisition)
-            }
 
-            if(localQuantity == 0.0)
-                break
-        }
+                oldAcquisition.packageCounts = oldAcqPackages
+                oldAcquisition.quantity = oldAcquisition.packageCounts.size.toDouble()
+                oldAcquisition.acquisitionPrice = oldAcquisition.quantity * oldAcquisition.pricePerUnit
 
-        localItem.itemAcquisitions = acqs
-
-        onItemUpdated(localItem)
-    }
-
-    private suspend fun moveFullPackage(item: StoredItem, quantity: Double, startStorage: Storage, destinationStorage: Storage) {
-        var localQuantity = quantity
-        val localItem: StoredItem = item
-        val acqs = mutableListOf<ItemAcquisition>()
-
-        for(acq in localItem.itemAcquisitions) {
-
-            val newAcquisition: ItemAcquisition = acq.copy()
-            val oldAcquisition: ItemAcquisition = acq.copy()
-            val newAcqPackages = mutableListOf<Double>()
-            val oldAcqPackages: MutableList<Double> = acq.packageCounts as MutableList<Double>
-
-            if(localQuantity != 0.0 && acq.currentStorage == startStorage.id) {
-                for(packages in acq.packageCounts.sorted()) {
-
-                    if(packages == localQuantity) {
-                        oldAcqPackages.remove(packages)
-                        newAcqPackages.add(packages)
-                        localQuantity = 0.0
-                        break
-                    }
-
-                    else if(packages < localQuantity) {
-                        oldAcqPackages.remove(packages)
-                        newAcqPackages.add(packages)
-                        localQuantity -= packages
-                        continue
-                    }
-
-                    else if(packages > localQuantity) {
-                        oldAcqPackages.remove(packages)
-                        newAcqPackages.add(packages)
-                        localQuantity = 0.0
-                        break
-                    }
-                }
-
-                newAcquisition.packageCounts = newAcqPackages
-                newAcquisition.currentStorage = destinationStorage.id
-                newAcquisition.acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())
-                newAcquisition.quantity = newAcquisition.packageCounts.size.toDouble()
-                newAcquisition.acquisitionPrice = newAcquisition.quantity * newAcquisition.pricePerUnit
-
-                if(oldAcqPackages.isNotEmpty()) {
-                    oldAcquisition.packageCounts = oldAcqPackages
-                    oldAcquisition.quantity = oldAcquisition.packageCounts.size.toDouble()
-                    oldAcquisition.acquisitionPrice = oldAcquisition.quantity * oldAcquisition.pricePerUnit
-
-                    acqs.add(oldAcquisition)
-                }
-
-                acqs.add(newAcquisition)
-            }
-            else {
                 acqs.add(oldAcquisition)
             }
         }
@@ -185,10 +110,72 @@ class DatabaseInteractor @Inject constructor(
         onItemUpdated(localItem)
     }
 
-    private suspend fun moveItemPiece(item: StoredItem, quantity: Double, startStorage: Storage, destinationStorage: Storage) {
-        var localQuantity = quantity
-        val localItem: StoredItem = item
+    private suspend fun moveFullPackage(item: StoredItem, moving: Moving) {
+        var localQuantity = moving.quantity/item.item.defaultPackageQuantity
+        val localItem: StoredItem = item.copy()
+
         val acqs = mutableListOf<ItemAcquisition>()
+
+        val moves = item.movings as MutableList<Moving>
+        moves.add(moving)
+        localItem.movings = moves
+
+        for(acq in localItem.itemAcquisitions) {
+
+            val newAcquisition: ItemAcquisition = acq.copy()
+            val oldAcquisition: ItemAcquisition = acq.copy()
+            val newAcqPackages = mutableListOf<Double>()
+            val oldAcqPackages: MutableList<Double> = acq.packageCounts as MutableList<Double>
+
+            if(acq.currentStorage == moving.sourceStorage) {
+                if(localQuantity != 0.0) {
+                    for(packages in acq.packageCounts.sorted()) {
+
+                        if(packages == item.item.defaultPackageQuantity) {
+                            oldAcqPackages.remove(packages)
+                            newAcqPackages.add(packages)
+                            localQuantity--
+                        }
+
+                        if(localQuantity == 0.0)
+                            break
+                    }
+
+                    if(newAcqPackages.isNotEmpty()) {
+                        newAcquisition.packageCounts = newAcqPackages
+                        newAcquisition.currentStorage = moving.destinationStorage
+                        newAcquisition.acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())
+                        newAcquisition.quantity = newAcquisition.packageCounts.size.toDouble()
+                        newAcquisition.acquisitionPrice = newAcquisition.quantity * newAcquisition.pricePerUnit
+                        newAcquisition.released = emptyList()
+                        newAcquisition.reserved = emptyList()
+
+                        acqs.add(newAcquisition)
+                    }
+                }
+
+                oldAcquisition.packageCounts = oldAcqPackages
+                oldAcquisition.quantity = oldAcquisition.packageCounts.size.toDouble()
+                oldAcquisition.acquisitionPrice = oldAcquisition.quantity * oldAcquisition.pricePerUnit
+
+                acqs.add(oldAcquisition)
+            }
+        }
+
+        localItem.itemAcquisitions = acqs
+
+        onItemUpdated(localItem)
+    }
+
+    private suspend fun moveItemPiece(item: StoredItem, moving: Moving) {
+        var localQuantity = moving.quantity
+        val localItem: StoredItem = item.copy()
+
+        val acqs = mutableListOf<ItemAcquisition>()
+
+        val moves = item.movings as MutableList<Moving>
+        moves.add(moving)
+        localItem.movings = moves
 
         for(acq in localItem.itemAcquisitions) {
 
@@ -197,41 +184,46 @@ class DatabaseInteractor @Inject constructor(
             var newQuantity = 0.0
             var oldQuantity: Double = acq.quantity
 
-            if(localQuantity != 0.0 && acq.currentStorage == startStorage.id) {
-                if(acq.quantity == localQuantity) {
-                    oldQuantity = 0.0
-                    newQuantity += localQuantity
-                    localQuantity = 0.0
+            if(acq.currentStorage == moving.sourceStorage) {
+                if(localQuantity != 0.0) {
+                    if(acq.quantity == localQuantity) {
+                        oldQuantity = 0.0
+                        newQuantity += localQuantity
+                        localQuantity = 0.0
+                    }
+
+                    else if(acq.quantity < localQuantity) {
+                        localQuantity -= oldQuantity
+                        newQuantity += oldQuantity
+                        oldQuantity = 0.0
+                    }
+
+                    else if(acq.quantity > localQuantity) {
+                        oldQuantity -= localQuantity
+                        newQuantity += localQuantity
+                        localQuantity = 0.0
+                    }
+
+                    if(newQuantity != 0.0) {
+                        newAcquisition.quantity = newQuantity
+                        newAcquisition.packageCounts = mutableListOf(newQuantity)
+                        newAcquisition.currentStorage = moving.destinationStorage
+                        newAcquisition.acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())
+                        newAcquisition.acquisitionPrice = newAcquisition.quantity * newAcquisition.pricePerUnit
+                        newAcquisition.released = emptyList()
+                        newAcquisition.reserved = emptyList()
+
+                        acqs.add(newAcquisition)
+                    }
                 }
 
-                else if(acq.quantity < localQuantity) {
-                    localQuantity -= oldQuantity
-                    oldQuantity = 0.0
-                    newQuantity += localQuantity
-                }
-
-                else if(acq.quantity > localQuantity) {
-                    oldQuantity -= localQuantity
-                    newQuantity += localQuantity
-                    localQuantity = 0.0
-                }
-
-                newAcquisition.quantity = newQuantity
-                newAcquisition.packageCounts = mutableListOf(newQuantity)
-                newAcquisition.currentStorage = destinationStorage.id
-                newAcquisition.acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())
-                newAcquisition.acquisitionPrice = newAcquisition.quantity * newAcquisition.pricePerUnit
-
-                if(oldQuantity != 0.0) {
-                    oldAcquisition.quantity = oldQuantity
+                oldAcquisition.quantity = oldQuantity
+                if(oldQuantity == 0.0)
+                    oldAcquisition.packageCounts = emptyList()
+                else
                     oldAcquisition.packageCounts = mutableListOf(oldQuantity)
-                    oldAcquisition.acquisitionPrice = oldAcquisition.quantity * oldAcquisition.pricePerUnit
+                oldAcquisition.acquisitionPrice = oldAcquisition.quantity * oldAcquisition.pricePerUnit
 
-                    acqs.add(oldAcquisition)
-                }
-                acqs.add(newAcquisition)
-            }
-            else {
                 acqs.add(oldAcquisition)
             }
         }
@@ -272,6 +264,7 @@ class DatabaseInteractor @Inject constructor(
             }
 
             newReservation.repeatAmount = 1
+            newReservation.acqId = acqId
             itemReservations.add(newReservation)
 
             onItemUpdated(item)
@@ -404,6 +397,7 @@ class DatabaseInteractor @Inject constructor(
                 }
             }
 
+            newRelease.acqId = acqId
             itemReleases.add(newRelease)
 
             onItemUpdated(item)

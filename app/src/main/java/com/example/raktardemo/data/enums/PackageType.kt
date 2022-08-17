@@ -6,5 +6,5 @@ enum class PackageType(val translation: String) {
     @PropertyName("package")
     Package("csomag"),
     @PropertyName("piece")
-    Piece("darab")
+    Piece("egység")
 }

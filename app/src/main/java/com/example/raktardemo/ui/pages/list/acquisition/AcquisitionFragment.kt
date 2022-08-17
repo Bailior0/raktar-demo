@@ -16,7 +16,6 @@ import co.zsmb.rainbowcake.navigation.extensions.applyArgs
 import co.zsmb.rainbowcake.navigation.navigator
 import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
-import com.example.raktardemo.ui.pages.list.detail.ItemDetailFragment
 import com.example.raktardemo.ui.views.Acquisition
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
 import com.example.raktardemo.ui.views.theme.RaktarAppJustUi1Theme
@@ -71,5 +70,6 @@ class AcquisitionFragment : RainbowCakeFragment<AcquisitionViewState, Acquisitio
 
     private fun onAcquisition(item: StoredItem) {
         viewModel.onAcquisition(item)
+        navigator?.pop()
     }
 }

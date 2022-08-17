@@ -3,6 +3,7 @@ package com.example.raktardemo.ui.pages.list.moving
 import co.zsmb.rainbowcake.base.RainbowCakeViewModel
 import com.example.raktardemo.data.enums.PackageState
 import com.example.raktardemo.data.enums.PackageType
+import com.example.raktardemo.data.model.Moving
 import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.pages.importitem.ImportPresenter
@@ -18,7 +19,7 @@ class MovingViewModel @Inject constructor(
         viewState = MovingContent(item, storages, presentStorages, false)
     }
 
-    fun onMoving(item: StoredItem, quantity: Double, startStorage: Storage, destinationStorage: Storage, packageState: PackageState?) = execute {
-        movingPresenter.onMoving(item, quantity, startStorage,destinationStorage, packageState)
+    fun onMoving(item: StoredItem, chosenOpenedPackages: List<Pair<String, Double>>, moving: Moving, packageState: PackageState?) = execute {
+        movingPresenter.onMoving(item, chosenOpenedPackages, moving, packageState)
     }
 }
