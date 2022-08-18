@@ -299,26 +299,6 @@ fun NewItem(
                         }
                 )
 
-                /*OutlinedTextField(
-                    value = unitOfQuantityInput,
-                    onValueChange = { unitOfQuantityInput = it },
-                    singleLine = true,
-                    placeholder = {
-                        Text(
-                            text = "Mennyiség egysége",
-                            color = Color.Gray
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(0.dp, 2.dp)
-                        .constrainAs(unitOfQuantity) {
-                            top.linkTo(quantity.bottom)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        }
-                )*/
-
                 ConstraintLayout(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -420,8 +400,6 @@ fun NewItem(
                     ownerSwitch,
                     minQuantity,
                 ) = createRefs()
-
-
 
                 Text(
                     text = "Raktározás",
@@ -702,11 +680,3 @@ fun NewItem(
         }
     }
 }
-
-/*@Preview
-@Composable
-fun NewItemPreview() {
-    RaktarAppJustUi1Theme {
-        NewItem()
-    }
-}*/

@@ -179,39 +179,3 @@ fun StorageDetail(
         }
     }
 }
-
-/*@Preview
-@Composable
-fun StoragePreview() {
-    RaktarAppJustUi1Theme {
-        val storage = Storage(
-            name = "Raktár1",
-            address = "1117 Budapest\nGábor Dénes u. 4\nInfopark C épület",
-            size = 1234.0,
-            description = "Szeretnénk felhívni a figyelmet, hogy a határidőkre a lehető legnagyobb körültekintéssel figyeljenek oda, mert határidőn túli pályázatot nem tudunk elfogadni!",
-            workers = mutableListOf()
-        )
-        val worker1 = Worker(
-            name = "Raktáros Réka",
-            email = "raktaros.reka@raktar.hu",
-            phoneNumber = "+36 10 111-1111",
-            storages = mutableListOf(storage)
-        )
-        val worker2 = Worker(
-            name = "Raktáros Léna",
-            email = "raktaros.reka@raktar.hu",
-            phoneNumber = "+36 10 111-1111",
-            storages = mutableListOf(storage)
-        )
-        val worker3 = Worker(
-            name = "Raktáros Béla",
-            email = "raktaros.reka@raktar.hu",
-            phoneNumber = "+36 10 111-1111",
-            storages = mutableListOf(storage)
-        )
-
-        storage.workers = mutableListOf(worker1, worker2, worker3, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2, worker2)
-
-        StorageDetail(storage)
-    }
-}*/

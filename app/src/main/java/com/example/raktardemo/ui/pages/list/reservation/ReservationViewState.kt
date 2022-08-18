@@ -1,6 +1,5 @@
 package com.example.raktardemo.ui.pages.list.reservation
 
-import com.example.raktardemo.data.model.Reservation
 import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
 

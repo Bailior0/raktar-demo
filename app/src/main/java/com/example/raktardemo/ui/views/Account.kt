@@ -24,7 +24,6 @@ import com.example.raktardemo.R
 import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.Worker
 import com.example.raktardemo.ui.views.theme.Shapes
-import com.example.raktardemo.ui.views.theme.Teal200
 
 @Composable
 fun Account(
@@ -210,37 +209,3 @@ fun StorageItem(
         }
     }
 }
-
-/*@Preview
-@Composable
-fun AccountPreview() {
-    RaktarAppJustUi1Theme {
-        val worker = Worker(
-            id = "alma",
-            name = "Raktáros Réka",
-            email = "raktaros.reka@raktar.hu",
-            phoneNumber = "+36 10 111-1111"
-        )
-        val storage1 = Storage(
-            name = "Raktár1",
-            address = "1117 Budapest",
-            size = 1234.0,
-            description = "Raktár leírása"
-        )
-        val storage2 = Storage(
-            name = "Raktár2",
-            address = "1117 Budapest",
-            size = 1234.0,
-            description = "Raktár leírása"
-        )
-        val storage3 = Storage(
-            name = "Raktár3",
-            address = "1117 Budapest",
-            size = 1234.0,
-            description = "Raktár leírása"
-        )
-        worker.storages = mutableListOf(storage1, storage2, storage3, storage2, storage2, storage2, storage2, storage2, storage2, storage2, storage2, storage2, storage2, storage2, storage2, storage3, storage3, storage3, storage3, storage3, storage3, storage3, storage3, storage3)
-
-        Account(worker, {}, {})
-    }
-}*/

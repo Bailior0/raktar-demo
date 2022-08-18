@@ -1,6 +1,5 @@
 package com.example.raktardemo.ui.pages.list
 
-import androidx.lifecycle.LiveData
 import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
 

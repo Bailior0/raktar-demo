@@ -7,11 +7,8 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.raktardemo.R
 import com.example.raktardemo.data.model.ItemAcquisition
 import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.ui.views.helpers.ListMaker
@@ -48,6 +45,7 @@ fun AcquisitionPicker(
                 text3 = acquisition.quantity.toString(),
                 id = acquisition.id,
                 date = acquisition.acquisitionDate,
+                padding = 15.dp,
                 onIdChange,
                 onDateChange,
                 onClose

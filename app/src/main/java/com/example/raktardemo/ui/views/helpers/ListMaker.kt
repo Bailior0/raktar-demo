@@ -7,6 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 
@@ -17,6 +18,7 @@ fun ListMaker(
     text3: String,
     id: String = "",
     date: String = "",
+    padding: Dp = 0.dp,
     onClickedId: (String) -> Unit = {},
     onClickedDate: (String) -> Unit = {},
     onClose: () -> Unit = {}
@@ -29,6 +31,7 @@ fun ListMaker(
                 onClickedDate(date)
                 onClose()
             })
+            .padding(vertical = padding)
     ) {
         val (first, second, third, divider) = createRefs()
 

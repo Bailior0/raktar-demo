@@ -1,6 +1,5 @@
 package com.example.raktardemo.ui.views
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -590,11 +589,3 @@ fun Reservation(
         }
     }
 }
-
-/*@Preview
-@Composable
-fun ReservationPreview() {
-    RaktarAppJustUi1Theme {
-        Reservation()
-    }
-}*/

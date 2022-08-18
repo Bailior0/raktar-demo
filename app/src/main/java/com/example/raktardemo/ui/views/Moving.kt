@@ -514,11 +514,3 @@ fun Moving(
         }
     }
 }
-
-/*@Preview
-@Composable
-fun MovingPreview() {
-    RaktarAppJustUi1Theme {
-        Moving()
-    }
-}*/

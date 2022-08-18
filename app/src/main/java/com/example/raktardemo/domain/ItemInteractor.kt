@@ -88,6 +88,7 @@ class DatabaseInteractor @Inject constructor(
                 }
 
                 if(newAcqPackages.isNotEmpty()) {
+                    newAcquisition.id = UUID.randomUUID().toString()
                     newAcquisition.packageCounts = newAcqPackages
                     newAcquisition.currentStorage = moving.destinationStorage
                     newAcquisition.acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())
@@ -143,6 +144,7 @@ class DatabaseInteractor @Inject constructor(
                     }
 
                     if(newAcqPackages.isNotEmpty()) {
+                        newAcquisition.id = UUID.randomUUID().toString()
                         newAcquisition.packageCounts = newAcqPackages
                         newAcquisition.currentStorage = moving.destinationStorage
                         newAcquisition.acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())
@@ -204,6 +206,7 @@ class DatabaseInteractor @Inject constructor(
                     }
 
                     if(newQuantity != 0.0) {
+                        newAcquisition.id = UUID.randomUUID().toString()
                         newAcquisition.packageCounts = mutableListOf(newQuantity)
                         newAcquisition.currentStorage = moving.destinationStorage
                         newAcquisition.acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())

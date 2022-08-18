@@ -106,7 +106,6 @@ fun List(
                     ) {
                         menuItemList.forEachIndexed { index, s ->
                             DropdownMenuItem(
-                                //modifier = Modifier.height(30.dp),
                                 onClick = {
                                     selectedMenuItem = index
                                     showMenu = false
@@ -114,7 +113,6 @@ fun List(
                             ) {
                                 Text(text = s)
                             }
-                            //Divider(color = Color.LightGray, thickness = 1.dp)
                         }
                         DropdownMenuItem(
                             onClick = {}
@@ -261,30 +259,3 @@ fun ListItem(
         }
     }
 }
-
-/*@Preview
-@Composable
-fun ListPreview() {
-    RaktarAppJustUi1Theme {
-        val elem1 = Item(
-            name = "elem1",
-            category = "kábel",
-            quantityUnit = "m",
-            quantity = 0.0
-        )
-        val elem2 = Item(
-            name = "elem2",
-            category = "kábel",
-            quantityUnit = "m",
-            quantity = 0.0
-        )
-        val elem3 = Item(
-            name = "elem3",
-            category = "kábel",
-            quantityUnit = "m",
-            quantity = 0.0
-        )
-
-        List(mutableListOf(elem1, elem2, elem3, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2, elem2))
-    }
-}*/

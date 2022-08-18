@@ -17,7 +17,4 @@ class AccountViewModel @Inject constructor(
             isLoading = false
         )
     }
-    /*fun setImport() = execute {
-        viewState = AccountContent(storages = databaseInteractor.getStorages(), isLoading = false)
-    }*/
 }

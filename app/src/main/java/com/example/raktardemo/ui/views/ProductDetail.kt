@@ -58,7 +58,6 @@ fun ProductDetail(
                     .fillMaxWidth()
             ) {
                 val (
-                    storage,
                     storedAmount,
                     buttonRow,
                     manufacturer,
@@ -77,24 +76,6 @@ fun ProductDetail(
                 Text(
                     buildAnnotatedString {
                         withStyle(style = SpanStyle(color = Color.Gray)) {
-                            append("Raktár\n")
-                        }
-
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("TODO")
-                        }
-                    },
-                    modifier = Modifier
-                        .width(((LocalConfiguration.current.screenWidthDp / 2) - 20).dp)
-                        .constrainAs(storage) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                        }
-                )
-
-                Text(
-                    buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = Color.Gray)) {
                             append("Raktáron\n")
                         }
 
@@ -108,10 +89,9 @@ fun ProductDetail(
                     },
                     textAlign = TextAlign.End,
                     modifier = Modifier
-                        .width(((LocalConfiguration.current.screenWidthDp / 2) - 20).dp)
                         .constrainAs(storedAmount) {
                             top.linkTo(parent.top)
-                            end.linkTo(parent.end)
+                            start.linkTo(parent.start)
                         }
                 )
 
@@ -275,11 +255,15 @@ fun ProductDetail(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("TODO")
+                            append(product.item.defaultPurchasePrice.toString())
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("TODO")
+                            append(" / ")
+                        }
+
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append(product.item.quantityUnit.translation)
                         }
                     },
                     modifier = Modifier
@@ -323,7 +307,7 @@ fun ProductDetail(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("TODO")
+                            append(product.item.defaultPackageQuantity.toString())
                         }
                     },
                     modifier = Modifier
@@ -414,11 +398,3 @@ fun CircularButton(buttonColor: Color, icon: Int, label: String, onClick: () -> 
         )
     }
 }
-
-/*@Preview
-@Composable
-fun ProductDetailPreview() {
-    RaktarAppJustUi1Theme {
-        ProductDetail()
-    }
-}*/

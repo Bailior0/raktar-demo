@@ -10,7 +10,6 @@ data class StoredItem (
     @DocumentId
     var id: String = "",
     var item: Item = Item(),
-//    TODO: felhasznált itemeket a bevétekben külön tömbbe rakni, hogy legyen nyoma, de ne kelljen külön osztály?
     var itemAcquisitions: List<ItemAcquisition> = emptyList(),
     var reservations: List<Reservation> = emptyList(),
     var releases: List<Release> = emptyList(),

@@ -140,9 +140,3 @@ fun FragmentContainer(
         update = {}
     )
 }
-
-/*@Preview(showBackground = true)
-@Composable
-fun BottomNavigationPreview() {
-    MainScreenView(listFragment)
-}*/

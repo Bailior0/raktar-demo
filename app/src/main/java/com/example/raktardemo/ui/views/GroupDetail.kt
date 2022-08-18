@@ -20,7 +20,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.theme.Shapes
-import kotlin.math.min
+import kotlin.math.max
 
 @Composable
 fun GroupDetail(
@@ -98,8 +98,7 @@ fun GroupDetail(
                         bottom.linkTo(parent.bottom)
                         end.linkTo(parent.end)
                     }
-                    //.height(145.dp)
-                    .height(min((145 * array.size * array[0].size /* * array.forEach { (list) -> list.size }*/), 200).dp)
+                    .height(max((array.size * 53), 100).dp)
             ) {
                 itemsIndexed(array) { _, group ->
                     Groups(
@@ -195,14 +194,13 @@ fun Groups(
                 .width(80.dp)
                 .padding(0.dp, 0.dp, 5.dp, 0.dp)
                 .constrainAs(reserveButton) {
-                    //top.linkTo(parent.top)
                     bottom.linkTo(acquisition.bottom)
                     end.linkTo(parent.end)
                 },
             contentPadding = PaddingValues(0.dp)
         )
 
-        LazyColumn(
+        /*LazyColumn(
             modifier = Modifier
                 .padding(0.dp, 2.dp, 0.dp, 15.dp)
                 .constrainAs(list) {
@@ -222,11 +220,11 @@ fun Groups(
                     onClicked = onClicked
                 )
             }
-        }
+        }*/
     }
 }
 
-@Composable
+/*@Composable
 fun Items(
     item: StoredItem,
     storages: List<Storage>,
@@ -259,44 +257,5 @@ fun Items(
                 text = item.item.name, color = Color.Black, fontSize = 18.sp
             )
         }
-    }
-}
-
-/*@Preview
-@Composable
-fun GroupDetailPreview() {
-    RaktarAppJustUi1Theme {
-        val elem1 = Item(
-            name = "elem1",
-            category = "kábel",
-            quantityUnit = "m",
-            quantity = 0.0
-        )
-        val elem2 = Item(
-            name = "elem2",
-            category = "kábel",
-            quantityUnit = "m",
-            quantity = 0.0
-        )
-        val elem3 = Item(
-            name = "elem3",
-            category = "kábel",
-            quantityUnit = "m",
-            quantity = 0.0
-        )
-        val group1 = Group(
-            number = 1111,
-            items = mutableListOf(elem1, elem2, elem3, elem1, elem2)
-        )
-        val group2 = Group(
-            number = 1112,
-            items = mutableListOf(elem1, elem2, elem3)
-        )
-        val group3 = Group(
-            number = 1113,
-            items = mutableListOf(elem1, elem2, elem3)
-        )
-
-        GroupDetail(mutableListOf(group1, group2, group3, group1, group2, group3, group1, group2, group3))
     }
 }*/
