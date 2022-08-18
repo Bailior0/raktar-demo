@@ -40,9 +40,9 @@ import kotlin.collections.ArrayList
 
 @Composable
 fun Reservation(
-    product: StoredItem,
+    product: StoredItem?,
     group: List<StoredItem>,
-    storages: List<Storage>,
+    storages: List<Storage>?,
     acqId: String?,
     onIconClick: () -> Unit = {},
     onReservationClick: (Reservation, StoredItem?, String?, List<StoredItem>) -> Unit,
@@ -63,8 +63,10 @@ fun Reservation(
     var storageExpanded by remember { mutableStateOf(false) }
     var storageSelectedIndex by remember { mutableStateOf(0) }
     val storageList = mutableListOf<String>()
-    for (storage in storages)
-        storageList.add(storage.name)
+    if (storages != null) {
+        for (storage in storages)
+            storageList.add(storage.name)
+    }
 
     var selectedAcquisitionId by remember { mutableStateOf("") }
     var selectedAcquisitionDate by remember { mutableStateOf("Választ") }
@@ -116,102 +118,130 @@ fun Reservation(
                     reservationGoal,
                     reservationGoalDate,
                     button,
-                    AcquisitionPicker
                 ) = createRefs()
 
-                Text(
-                    text = "Termék: ",
-                    color = Color.Gray,
-                    fontSize = 20.sp,
-                    fontStyle = FontStyle.Italic,
-                    modifier = Modifier
-                        .constrainAs(itemLabel) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                        }
-                )
+                if (product == null) {
+                    Text(
+                        text = "Beszerzés: ",
+                        color = Color.Gray,
+                        fontSize = 20.sp,
+                        fontStyle = FontStyle.Italic,
+                        modifier = Modifier
+                            .constrainAs(itemLabel) {
+                                top.linkTo(parent.top)
+                                start.linkTo(parent.start)
+                            }
+                    )
 
-                Text(
-                    text = product.item.name,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.End,
-                    modifier = Modifier
-                        .width(((LocalConfiguration.current.screenWidthDp / 2) + 60).dp)
-                        .constrainAs(item) {
-                            top.linkTo(parent.top)
-                            end.linkTo(parent.end)
-                        }
-                )
+                    Text(
+                        text = acqId ?: "null",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.End,
+                        modifier = Modifier
+                            .width(((LocalConfiguration.current.screenWidthDp / 2) + 50).dp)
+                            .constrainAs(item) {
+                                top.linkTo(parent.top)
+                                end.linkTo(parent.end)
+                            }
+                    )
+                } else {
+                    Text(
+                        text = "Termék: ",
+                        color = Color.Gray,
+                        fontSize = 20.sp,
+                        fontStyle = FontStyle.Italic,
+                        modifier = Modifier
+                            .constrainAs(itemLabel) {
+                                top.linkTo(parent.top)
+                                start.linkTo(parent.start)
+                            }
+                    )
 
-                Text(
-                    buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = Color.Gray)) {
-                            append("Foglalható Mennyiség: ")
-                        }
+                    Text(
+                        text = product.item.name,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.End,
+                        modifier = Modifier
+                            .width(((LocalConfiguration.current.screenWidthDp / 2) + 60).dp)
+                            .constrainAs(item) {
+                                top.linkTo(parent.top)
+                                end.linkTo(parent.end)
+                            }
+                    )
+                }
 
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append(product.freeQuantity.toString())
-                        }
+                if (product != null) {
+                    Text(
+                        buildAnnotatedString {
+                            withStyle(style = SpanStyle(color = Color.Gray)) {
+                                append("Foglalható Mennyiség: ")
+                            }
 
-                        withStyle(style = SpanStyle(color = Color.Gray)) {
-                            append(" " + product.item.quantityUnit.translation)
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(5.dp, 25.dp, 0.dp, 0.dp)
-                        .constrainAs(availableQuantity) {
-                            top.linkTo(item.bottom)
-                            start.linkTo(parent.start)
-                        }
-                )
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(product.freeQuantity.toString())
+                            }
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(0.dp, 2.dp, 0.dp, 0.dp)
-                        .constrainAs(quantityToReserve) {
-                            top.linkTo(availableQuantity.bottom)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        }
-                ) {
-                    OutlinedTextField(
-                        value = quantityInput,
-                        onValueChange = { quantityInput = it },
-                        singleLine = true,
-                        placeholder = {
-                            Text(
-                                text = "Foglalandó mennyiség",
-                                color = Color.Gray
-                            )
+                            withStyle(style = SpanStyle(color = Color.Gray)) {
+                                append(" " + product.item.quantityUnit.translation)
+                            }
                         },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier
-                            .weight(2f)
+                            .padding(5.dp, 25.dp, 0.dp, 0.dp)
+                            .constrainAs(availableQuantity) {
+                                top.linkTo(item.bottom)
+                                start.linkTo(parent.start)
+                            }
                     )
 
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_baseline_clear_24),
-                        contentDescription = null,
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .padding(2.dp, 0.dp)
-                    )
+                            .padding(0.dp, 2.dp, 0.dp, 0.dp)
+                            .constrainAs(quantityToReserve) {
+                                top.linkTo(availableQuantity.bottom)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                            }
+                    ) {
+                        OutlinedTextField(
+                            value = quantityInput,
+                            onValueChange = { quantityInput = it },
+                            singleLine = true,
+                            placeholder = {
+                                Text(
+                                    text = "Foglalandó mennyiség",
+                                    color = Color.Gray
+                                )
+                            },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            modifier = Modifier
+                                .weight(2f)
+                        )
 
-                    OutlinedTextField(
-                        value = multiplierInput,
-                        onValueChange = { multiplierInput = it },
-                        singleLine = true,
-                        placeholder = {
-                            Text(
-                                text = "Ismételve",
-                                color = Color.Gray
-                            )
-                        },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier
-                            .weight(1f)
-                    )
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_baseline_clear_24),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(2.dp, 0.dp)
+                        )
+
+                        OutlinedTextField(
+                            value = multiplierInput,
+                            onValueChange = { multiplierInput = it },
+                            singleLine = true,
+                            placeholder = {
+                                Text(
+                                    text = "Ismételve",
+                                    color = Color.Gray
+                                )
+                            },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            modifier = Modifier
+                                .weight(1f)
+                        )
+                    }
                 }
 
                 OutlinedTextField(
@@ -228,99 +258,104 @@ fun Reservation(
                         .fillMaxWidth()
                         .padding(0.dp, 25.dp, 0.dp, 0.dp)
                         .constrainAs(reservationGoal) {
-                            top.linkTo(quantityToReserve.bottom)
+                            if (product != null)
+                                top.linkTo(quantityToReserve.bottom)
+                            else
+                                top.linkTo(item.bottom)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                         }
                 )
 
-                Box(
-                    modifier = Modifier
-                        .padding(0.dp, 25.dp, 0.dp, 0.dp)
-                        .constrainAs(sourceSwitch) {
-                            top.linkTo(reservationGoal.bottom)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        }
-                ) {
-                    SegmentedControlTwoWaySwitch(
-                        "Raktár",
-                        "Beszerzés",
-                        sourceSwitchState
-                    ) { sourceSwitchState = it }
-                }
+                if (product != null) {
+                    Box(
+                        modifier = Modifier
+                            .padding(0.dp, 25.dp, 0.dp, 0.dp)
+                            .constrainAs(sourceSwitch) {
+                                top.linkTo(reservationGoal.bottom)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                            }
+                    ) {
+                        SegmentedControlTwoWaySwitch(
+                            "Raktár",
+                            "Beszerzés",
+                            sourceSwitchState
+                        ) { sourceSwitchState = it }
+                    }
 
 
-                ConstraintLayout(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(5.dp, 5.dp, 5.dp, 0.dp)
-                        .constrainAs(source) {
-                            top.linkTo(sourceSwitch.bottom)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        }
-                ) {
-                    val (text, comboBox) = createRefs()
+                    ConstraintLayout(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(5.dp, 5.dp, 5.dp, 0.dp)
+                            .constrainAs(source) {
+                                top.linkTo(sourceSwitch.bottom)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                            }
+                    ) {
+                        val (text, comboBox) = createRefs()
 
-                    if (!sourceSwitchState) {
-                        Text(
-                            text = "Raktár választása: ",
-                            color = Color.Gray,
-                            modifier = Modifier
-                                .constrainAs(text) {
-                                    top.linkTo(parent.top)
-                                    bottom.linkTo(parent.bottom)
-                                    start.linkTo(parent.start)
-                                }
-                        )
-
-                        Box(
-                            modifier = Modifier
-                                .constrainAs(comboBox) {
-                                    top.linkTo(parent.top)
-                                    bottom.linkTo(parent.bottom)
-                                    end.linkTo(parent.end)
-                                }
-                        ) {
-                            ComboBox(
-                                storageList,
-                                storageSelectedIndex,
-                                { storageSelectedIndex = it },
-                                storageExpanded,
-                                { storageExpanded = it },
-                                60.dp
-                            )
-                        }
-                    } else {
-                        Text(
-                            text = "Beszerzés választása: ",
-                            color = Color.Gray,
-                            modifier = Modifier
-                                .padding(0.dp, 0.dp, 5.dp, 0.dp)
-                                .constrainAs(text) {
-                                    top.linkTo(parent.top)
-                                    bottom.linkTo(parent.bottom)
-                                    start.linkTo(parent.start)
-                                }
-                        )
-
-                        Button(
-                            onClick = {
-                                showPicker = true
-                            },
-                            modifier = Modifier
-                                .constrainAs(comboBox) {
-                                    top.linkTo(parent.top)
-                                    bottom.linkTo(parent.bottom)
-                                    end.linkTo(parent.end)
-                                }
-                        ) {
+                        if (!sourceSwitchState) {
                             Text(
-                                text = selectedAcquisitionDate,
-                                fontWeight = FontWeight.Bold,
+                                text = "Raktár választása: ",
+                                color = Color.Gray,
                                 modifier = Modifier
+                                    .constrainAs(text) {
+                                        top.linkTo(parent.top)
+                                        bottom.linkTo(parent.bottom)
+                                        start.linkTo(parent.start)
+                                    }
                             )
+
+                            Box(
+                                modifier = Modifier
+                                    .constrainAs(comboBox) {
+                                        top.linkTo(parent.top)
+                                        bottom.linkTo(parent.bottom)
+                                        end.linkTo(parent.end)
+                                    }
+                            ) {
+                                ComboBox(
+                                    storageList,
+                                    storageSelectedIndex,
+                                    { storageSelectedIndex = it },
+                                    storageExpanded,
+                                    { storageExpanded = it },
+                                    60.dp
+                                )
+                            }
+                        } else {
+                            Text(
+                                text = "Beszerzés választása: ",
+                                color = Color.Gray,
+                                modifier = Modifier
+                                    .padding(0.dp, 0.dp, 5.dp, 0.dp)
+                                    .constrainAs(text) {
+                                        top.linkTo(parent.top)
+                                        bottom.linkTo(parent.bottom)
+                                        start.linkTo(parent.start)
+                                    }
+                            )
+
+                            Button(
+                                onClick = {
+                                    showPicker = true
+                                },
+                                modifier = Modifier
+                                    .constrainAs(comboBox) {
+                                        top.linkTo(parent.top)
+                                        bottom.linkTo(parent.bottom)
+                                        end.linkTo(parent.end)
+                                    }
+                            ) {
+                                Text(
+                                    text = selectedAcquisitionDate,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier
+                                )
+                            }
                         }
                     }
                 }
@@ -330,7 +365,10 @@ fun Reservation(
                         .fillMaxWidth()
                         .padding(5.dp, 25.dp, 5.dp, 0.dp)
                         .constrainAs(reservationGoalDate) {
-                            top.linkTo(source.bottom)
+                            if (product != null)
+                                top.linkTo(source.bottom)
+                            else
+                                top.linkTo(reservationGoal.bottom)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                         }
@@ -389,29 +427,31 @@ fun Reservation(
                                 false -> 1
                             }
 
-                        if (quantity * multiplier > product?.freeQuantity!!)
-                            Toast.makeText(
-                                context,
-                                "Nem megfelelő a mennyiség értéke!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        else
-                            onReservationClick(
-                                Reservation(
-                                    reservationGoal = reservationGoalInput,
-                                    reservationDate = SimpleDateFormat(
-                                        "yyyy-MM-dd",
-                                        Locale.ENGLISH
-                                    ).format(Date()),
-                                    reservationGoalDate = dateInput,
-                                    reservationQuantity = quantity,
-                                    cancelled = false,
-                                    repeatAmount = multiplier
-                                ),
-                                product,
-                                acqId,
-                                group
-                            )
+                        if (product != null) {
+                            if (quantity * multiplier > product.freeQuantity)
+                                Toast.makeText(
+                                    context,
+                                    "Nem megfelelő a mennyiség értéke!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            else
+                                onReservationClick(
+                                    Reservation(
+                                        reservationGoal = reservationGoalInput,
+                                        reservationDate = SimpleDateFormat(
+                                            "yyyy-MM-dd",
+                                            Locale.ENGLISH
+                                        ).format(Date()),
+                                        reservationGoalDate = dateInput,
+                                        reservationQuantity = quantity,
+                                        cancelled = false,
+                                        repeatAmount = multiplier
+                                    ),
+                                    product,
+                                    acqId,
+                                    group
+                                )
+                        }
                     },
                     modifier = Modifier
                         .scale(2f)
@@ -423,7 +463,7 @@ fun Reservation(
                         }
                 )
 
-                if (showPicker) {
+                if (showPicker && product != null && storages != null) {
                     AcquisitionPicker(
                         acquisitions = product.itemAcquisitions,
                         storages = storages,

@@ -14,8 +14,8 @@ data class ReservationContent (
     var isLoading: Boolean = true
 ) : ReservationViewState()
 
-/*data class ReservationGroupContent (
+data class ReservationGroupContent (
     var group: List<StoredItem> = emptyList(),
     var acqId: String? = null,
     var isLoading: Boolean = true
-) : ReservationViewState()*/
+) : ReservationViewState()

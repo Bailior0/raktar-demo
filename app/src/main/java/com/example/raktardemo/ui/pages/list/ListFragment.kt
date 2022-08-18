@@ -61,6 +61,6 @@ class ListFragment : RainbowCakeFragment<ListViewState, ListViewModel>() {
     }
 
     private fun onReserveSelected(items: ArrayList<StoredItem>, acquisitionId: String) {
-        //navigator?.add(ReservationFragment.newInstance(items, acquisitionId))
+        navigator?.add(ReservationFragment.newInstance(items, acquisitionId))
     }
 }

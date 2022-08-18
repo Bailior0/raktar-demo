@@ -38,6 +38,14 @@ class ReservationFragment : RainbowCakeFragment<ReservationViewState, Reservatio
                 putParcelableArrayList(EXTRA_STORAGES, storages)
             }
         }
+
+        fun newInstance(items: ArrayList<StoredItem>, acqId: String): ReservationFragment {
+            return ReservationFragment().applyArgs {
+                putParcelableArrayList(EXTRA_GROUP, items)
+                putString(EXTRA_ACQID, acqId)
+
+            }
+        }
     }
 
     override fun onCreateView(
@@ -46,10 +54,16 @@ class ReservationFragment : RainbowCakeFragment<ReservationViewState, Reservatio
         savedInstanceState: Bundle?
     ): View {
         val item = arguments?.getParcelable<StoredItem>(EXTRA_ITEM)
-        val storages: ArrayList<Storage> = arguments?.getParcelableArrayList(EXTRA_STORAGES)!!
+        val group = arguments?.getParcelableArrayList<StoredItem>(EXTRA_GROUP)
+        val acqId = arguments?.getString(EXTRA_ACQID)
+        val storages: ArrayList<Storage> =
+            arguments?.getParcelableArrayList(EXTRA_STORAGES) ?: ArrayList()
 
         if(item != null)
             viewModel.setReservation(item, storages)
+        else if(group != null)
+            viewModel.setReservationGroup(group, acqId)
+
 
         return ComposeView(requireContext()).apply {
             setContent {
@@ -68,12 +82,20 @@ class ReservationFragment : RainbowCakeFragment<ReservationViewState, Reservatio
                     when (viewState) {
                         is Loading -> FullScreenLoading()
                         is ReservationContent -> Reservation(
-                            product = viewState.item!!,
+                            product = viewState.item,
                             group = emptyList(),
                             storages = viewState.storages,
                             acqId = null,
                             onIconClick = { navigator?.pop() },
                             onReservationClick = ::onReservation,
+                        )
+                        is ReservationGroupContent -> Reservation(
+                            product = null,
+                            group = viewState.group,
+                            storages = null,
+                            acqId = viewState.acqId,
+                            onIconClick = { navigator?.pop() },
+                            onReservationClick = ::onReservation
                         )
                     }.exhaustive
                 }

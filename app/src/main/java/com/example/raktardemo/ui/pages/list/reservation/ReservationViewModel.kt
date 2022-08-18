@@ -16,9 +16,9 @@ class ReservationViewModel @Inject constructor(
         viewState = ReservationContent(item, storages, false)
     }
 
-/*    fun setReservationGroup(group: List<StoredItem>, acqId: String?) {
+    fun setReservationGroup(group: List<StoredItem>, acqId: String?) {
         viewState = ReservationGroupContent(group, acqId, false)
-    }*/
+    }
 
     fun onReservation(reservation: Reservation, item: StoredItem?, acqId: String?, group: List<StoredItem>) = execute {
         reservationPresenter.onReservation(reservation, item, acqId, group)
