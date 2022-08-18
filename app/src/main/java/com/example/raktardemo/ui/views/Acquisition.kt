@@ -324,12 +324,19 @@ fun Acquisition(
                             packageCounts.add(acqQuantity)
                         }
 
+                        var groupingId = ""
+                        if(product.item.category.name.length < 3)
+                            groupingId = product.item.category.name + (10000..99999).random().toString()
+                        else
+                            groupingId = product.item.category.name.substring(0, 3) + (10000..99999).random().toString()
+
                         acquisitions.add(
                             ItemAcquisition(
+                                groupingId = groupingId,
                                 acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date()),
                                 acquisitionWorker = "",
                                 expiryDate = dateInput,
-                                quantity = acqQuantity,
+                                quantity = acqQuantity * product.item.defaultPackageQuantity,
                                 acquisitionPrice = acquisitionPrice,
                                 pricePerUnit = pricePerUnit,
                                 currentStorage = storages[warehouseSelectedIndex].id,

@@ -19,7 +19,7 @@ class ReleaseViewModel @Inject constructor(
         viewState = ReleaseGroupContent(group, acqId, false)
     }
 
-    fun onRelease(release: Release, item: StoredItem?, acqId: String?, group: List<StoredItem>) = execute {
-        releasePresenter.onRelease(release, item, acqId, group)
+    fun onRelease(release: Release, item: StoredItem?, chosenOpenedPackages: List<Pair<String, Double>>,  acqId: String?, group: List<StoredItem>) = execute {
+        releasePresenter.onRelease(release, item, chosenOpenedPackages, acqId, group)
     }
 }

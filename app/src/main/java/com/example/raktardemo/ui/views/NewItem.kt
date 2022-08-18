@@ -1,5 +1,6 @@
 package com.example.raktardemo.ui.views
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -614,8 +615,18 @@ fun NewItem(
                         packageCounts.add(quantity)
                     }
 
+                    val defaultPackageQuantity = when(packageType == PackageType.Package) {
+                        true -> packageSize
+                        false -> 1.0
+                    }
+
+                    var groupingId = ""
+                    if(groupInput.length < 3)
+                        groupingId = groupInput + (10000..99999).random().toString()
+                    else
+                        groupingId = groupInput.substring(0, 3) + (10000..99999).random().toString()
+
                     onAddClicked(
-                        //TODO price
                         StoredItem(
                             item = Item(
                                 name = nameInput,
@@ -626,20 +637,24 @@ fun NewItem(
                                 serialNumber = serialInput,
                                 type = packageType,
                                 quantityUnit = QuantityUnit.values().toList()[unitSelectedIndex],
-                                defaultPackageQuantity = packageSize,
+                                defaultPackageQuantity = defaultPackageQuantity,
                                 openable = !openableSwitchState,
                                 defaultPurchasePrice = 1.0,
                                 minimumStoredQuantity = minQuantity,
                             ),
                             itemAcquisitions = mutableListOf(
                                 ItemAcquisition(
+                                    groupingId = groupingId,
                                     acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date()),
                                     acquisitionWorker = "",
                                     expiryDate = dateInput,
-                                    quantity = quantity,
+                                    quantity = quantity * defaultPackageQuantity,
                                     acquisitionPrice = price,
                                     pricePerUnit = pricePerUnit,
-                                    currentStorage = storages[warehouseSelectedIndex].id,
+                                    currentStorage = when(storages.isNotEmpty()) {
+                                        true -> storages[warehouseSelectedIndex].id
+                                        false -> ""
+                                    },
                                     ownedBy = when(ownerSwitchState) {
                                         false -> Ownership.Own
                                         true -> Ownership.Foreign
