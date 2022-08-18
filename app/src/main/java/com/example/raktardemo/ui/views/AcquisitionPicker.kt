@@ -24,10 +24,12 @@ fun AcquisitionPicker(
     onDateChange: (String) -> Unit,
     onClose: () -> Unit
 ) {
+    var storageName = ""
+
     for (acquisition in acquisitions) {
         for (storage in storages) {
             if (acquisition.currentStorage == storage.id) {
-                acquisition.currentStorage = storage.name
+                storageName = storage.name
                 break
             }
         }
@@ -42,7 +44,7 @@ fun AcquisitionPicker(
         itemsIndexed(acquisitions) { _, acquisition ->
             ListMaker(
                 text1 = acquisition.acquisitionDate,
-                text2 = acquisition.currentStorage,
+                text2 = storageName,
                 text3 = acquisition.quantity.toString(),
                 id = acquisition.id,
                 date = acquisition.acquisitionDate,

@@ -83,7 +83,7 @@ fun Moving(
         if(acqItem.currentStorage == presentStorages[presentStorageSelectedIndex].id) {
             if(!packageSwitchState) {
                 for(count in acqItem.packageCounts) {
-                    if(count == product.item.defaultPackageQuantity) {
+                    if(product.item.type == PackageType.Package && count == product.item.defaultPackageQuantity) {
                         packageCnt += 1
                         itemCnt += count
                     }
@@ -94,7 +94,7 @@ fun Moving(
             }
             else {
                 for(count in acqItem.packageCounts) {
-                    if(count != product.item.defaultPackageQuantity) {
+                    if(product.item.type == PackageType.Package && count != product.item.defaultPackageQuantity) {
                         openedPackages.add(Pair(acqItem.id, count))
                         packageCnt += 1
                         itemCnt += count

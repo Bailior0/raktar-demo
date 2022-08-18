@@ -1,5 +1,6 @@
 package com.example.raktardemo.ui.views
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,12 +23,13 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.R
-import com.example.raktardemo.data.model.ItemAcquisition
+import com.example.raktardemo.data.enums.PackageType
 import com.example.raktardemo.data.model.Reservation
 import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
@@ -36,7 +38,6 @@ import com.example.raktardemo.ui.views.helpers.DatePicker
 import com.example.raktardemo.ui.views.helpers.SegmentedControlTwoWaySwitch
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 @Composable
 fun Reservation(
@@ -45,7 +46,7 @@ fun Reservation(
     storages: List<Storage>?,
     acqId: String?,
     onIconClick: () -> Unit = {},
-    onReservationClick: (Reservation, StoredItem?, String?, List<StoredItem>) -> Unit,
+    onReservationClick: (Reservation, StoredItem?, String?, String?, String?, List<StoredItem>) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -72,6 +73,81 @@ fun Reservation(
     var selectedAcquisitionDate by remember { mutableStateOf("Választ") }
 
     var showPicker by remember { mutableStateOf(false) }
+
+    if(product != null && !product.item.openable && product.item.type == PackageType.Package) {
+        quantityInput = product.item.defaultPackageQuantity.toString()
+    }
+
+    var freeQuantity by remember { mutableStateOf(0) }
+    var packages by remember { mutableStateOf(0) }
+
+    val quantity =
+        when (quantityInput != "" && quantityInput.toDouble() > 0.0) {
+            true -> quantityInput.toDouble()
+            false -> 0.0
+        }
+
+    val multiplier =
+        when (multiplierInput != "" && multiplierInput.toInt() > 0) {
+            true -> multiplierInput.toInt()
+            false -> 1
+        }
+
+    var itemCnt = 0.0
+    var packageCnt = 0
+
+    val acqQuantityList = mutableListOf<Double>()
+
+    if(product != null) {
+        if(!sourceSwitchState ) {
+            for(acqItem in product.itemAcquisitions) {
+                var acqQuantity = 0.0
+                if(acqItem.currentStorage == storages?.get(storageSelectedIndex)?.id) {
+                    for(count in acqItem.packageCounts) {
+                        if(product.item.type == PackageType.Package && !product.item.openable) {
+                            packageCnt += 1
+                            itemCnt += count
+                        }
+                        else if(product.item.type == PackageType.Package && product.item.openable) {
+                            packageCnt += 1
+                            itemCnt += count
+                            acqQuantity += count
+                        }
+                        else if(product.item.type == PackageType.Piece) {
+                            itemCnt += count
+                        }
+                    }
+                    if(product.item.type == PackageType.Package && product.item.openable) {
+                        acqQuantityList.add(acqQuantity)
+                    }
+                }
+            }
+        }
+        if(sourceSwitchState) {
+            for(acqItem in product.itemAcquisitions) {
+                if(acqItem.id == selectedAcquisitionId)
+                    for (count in acqItem.packageCounts) {
+                        if (product.item.type == PackageType.Package) {
+                            packageCnt += 1
+                            itemCnt += count
+                        } else if (product.item.type == PackageType.Piece) {
+                            itemCnt += count
+                        }
+                    }
+            }
+        }
+    }
+
+    freeQuantity = itemCnt.toInt()
+    packages = packageCnt
+
+    if(product != null && !sourceSwitchState && product.item.type == PackageType.Package && product.item.openable && quantity > 0.0) {
+        var acqQuantitySum = 0
+        for(acqQuantity in acqQuantityList) {
+            acqQuantitySum += (acqQuantity/quantity).toInt()
+        }
+        freeQuantity = acqQuantitySum * quantity.toInt()
+    }
 
     Column(
         modifier = Modifier
@@ -176,22 +252,39 @@ fun Reservation(
                     Text(
                         buildAnnotatedString {
                             withStyle(style = SpanStyle(color = Color.Gray)) {
-                                append("Foglalható Mennyiség: ")
+                                append("Foglalható: ")
                             }
 
                             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append(product.freeQuantity.toString())
+                                append(freeQuantity.toString())
                             }
 
                             withStyle(style = SpanStyle(color = Color.Gray)) {
                                 append(" " + product.item.quantityUnit.translation)
                             }
+
+                            if(product.item.type == PackageType.Package) {
+                                withStyle(style = SpanStyle(color = Color.Gray)) {
+                                    append(", ")
+                                }
+
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                    append(packages.toString())
+                                }
+
+                                withStyle(style = SpanStyle(color = Color.Gray)) {
+                                    append(" csomag")
+                                }
+                            }
                         },
+                        maxLines = 2,
+                        textAlign = TextAlign.End,
+                        overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
-                            .padding(5.dp, 25.dp, 0.dp, 0.dp)
+                            .padding(5.dp, 25.dp, 5.dp, 0.dp)
                             .constrainAs(availableQuantity) {
                                 top.linkTo(item.bottom)
-                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
                             }
                     )
 
@@ -205,42 +298,54 @@ fun Reservation(
                                 end.linkTo(parent.end)
                             }
                     ) {
-                        OutlinedTextField(
-                            value = quantityInput,
-                            onValueChange = { quantityInput = it },
-                            singleLine = true,
-                            placeholder = {
-                                Text(
-                                    text = "Foglalandó mennyiség",
-                                    color = Color.Gray
-                                )
-                            },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            modifier = Modifier
-                                .weight(2f)
-                        )
+                        if(!product.item.openable && product.item.type == PackageType.Package)
+                            Text(
+                                buildAnnotatedString {
+                                    append(product.item.defaultPackageQuantity.toString())
+                                },
+                                modifier = Modifier
+                                    .weight(2f)
+                                    .padding(start = 5.dp)
+                            )
+                        else
+                            OutlinedTextField(
+                                value = quantityInput,
+                                onValueChange = { quantityInput = it },
+                                singleLine = true,
+                                placeholder = {
+                                    Text(
+                                        text = "Foglalandó mennyiség",
+                                        color = Color.Gray
+                                    )
+                                },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                modifier = Modifier
+                                    .weight(2f)
+                            )
 
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_baseline_clear_24),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .padding(2.dp, 0.dp)
-                        )
+                        if(product.item.type == PackageType.Package) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_baseline_clear_24),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .padding(2.dp, 0.dp)
+                            )
 
-                        OutlinedTextField(
-                            value = multiplierInput,
-                            onValueChange = { multiplierInput = it },
-                            singleLine = true,
-                            placeholder = {
-                                Text(
-                                    text = "Ismételve",
-                                    color = Color.Gray
-                                )
-                            },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            modifier = Modifier
-                                .weight(1f)
-                        )
+                            OutlinedTextField(
+                                value = multiplierInput,
+                                onValueChange = { multiplierInput = it },
+                                singleLine = true,
+                                placeholder = {
+                                    Text(
+                                        text = "Ismételve",
+                                        color = Color.Gray
+                                    )
+                                },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                modifier = Modifier
+                                    .weight(1f)
+                            )
+                        }
                     }
                 }
 
@@ -415,43 +520,52 @@ fun Reservation(
                         )
                     },
                     onClick = {
-                        val quantity =
-                            when (quantityInput != "" && quantityInput.toDouble() > 0.0) {
-                                true -> quantityInput.toDouble()
-                                false -> 0.0
+                        val storageId =
+                            when (!sourceSwitchState) {
+                                true -> storages?.get(storageSelectedIndex)?.id
+                                false -> null
                             }
 
-                        val multiplier =
-                            when (multiplierInput != "" && multiplierInput.toInt() > 0) {
-                                true -> multiplierInput.toInt()
-                                false -> 1
+                        val chosenAcqId =
+                            when (sourceSwitchState) {
+                                true -> selectedAcquisitionId
+                                false -> null
                             }
 
-                        if (product != null) {
-                            if (quantity * multiplier > product.freeQuantity)
-                                Toast.makeText(
-                                    context,
-                                    "Nem megfelelő a mennyiség értéke!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            else
-                                onReservationClick(
-                                    Reservation(
-                                        reservationGoal = reservationGoalInput,
-                                        reservationDate = SimpleDateFormat(
-                                            "yyyy-MM-dd",
-                                            Locale.ENGLISH
-                                        ).format(Date()),
-                                        reservationGoalDate = dateInput,
-                                        reservationQuantity = quantity,
-                                        cancelled = false,
-                                        repeatAmount = multiplier
-                                    ),
-                                    product,
-                                    acqId,
-                                    group
-                                )
+                        if (product != null && sourceSwitchState && selectedAcquisitionId == "") {
+                            Toast.makeText(
+                                context,
+                                "Nincs kiválasztva beszerzés!",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
+                        else if(product != null && quantity * multiplier > freeQuantity) {
+                            Toast.makeText(
+                                context,
+                                "Nem megfelelő a mennyiség értéke!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        else
+                            onReservationClick(
+                                Reservation(
+                                    reservationGoal = reservationGoalInput,
+                                    reservationDate = SimpleDateFormat(
+                                        "yyyy-MM-dd",
+                                        Locale.ENGLISH
+                                    ).format(Date()),
+                                    reservationGoalDate = dateInput,
+                                    reservationQuantity = quantity,
+                                    cancelled = false,
+                                    repeatAmount = multiplier
+                                ),
+                                product,
+                                storageId,
+                                chosenAcqId,
+                                acqId,
+                                group
+                            )
+
                     },
                     modifier = Modifier
                         .scale(2f)

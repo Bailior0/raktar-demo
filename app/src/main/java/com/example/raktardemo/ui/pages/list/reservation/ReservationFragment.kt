@@ -1,6 +1,7 @@
 package com.example.raktardemo.ui.pages.list.reservation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,8 +57,7 @@ class ReservationFragment : RainbowCakeFragment<ReservationViewState, Reservatio
         val item = arguments?.getParcelable<StoredItem>(EXTRA_ITEM)
         val group = arguments?.getParcelableArrayList<StoredItem>(EXTRA_GROUP)
         val acqId = arguments?.getString(EXTRA_ACQID)
-        val storages: ArrayList<Storage> =
-            arguments?.getParcelableArrayList(EXTRA_STORAGES) ?: ArrayList()
+        val storages: ArrayList<Storage> = arguments?.getParcelableArrayList(EXTRA_STORAGES) ?: ArrayList()
 
         if(item != null)
             viewModel.setReservation(item, storages)
@@ -103,8 +103,8 @@ class ReservationFragment : RainbowCakeFragment<ReservationViewState, Reservatio
         }
     }
 
-    private fun onReservation(reservation: Reservation, item: StoredItem?, acqId: String?, group: List<StoredItem>) {
-        viewModel.onReservation(reservation, item, acqId, group)
+    private fun onReservation(reservation: Reservation, item: StoredItem?, storageId: String?, chosenAcqId: String?, acqId: String?, group: List<StoredItem>) {
+        viewModel.onReservation(reservation, item, storageId, chosenAcqId, acqId, group)
         navigator?.pop()
     }
 }

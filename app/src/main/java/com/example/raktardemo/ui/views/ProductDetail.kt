@@ -348,6 +348,8 @@ fun ProductDetail(
                     itemOperations.add(Triple("kivezetve", release.quantity.toString() + " " + product.item.quantityUnit.translation, release.releaseDate))
                 for(acquisition in product.itemAcquisitions)
                     itemOperations.add(Triple("beszerezve", acquisition.quantity.toString() + " " + product.item.quantityUnit.translation, acquisition.acquisitionDate))
+                for(movings in product.movings)
+                    itemOperations.add(Triple("mozgatva", movings.quantity.toString() + " " + product.item.quantityUnit.translation, movings.movingDate))
 
                 itemOperations.sortBy { it.third }
 

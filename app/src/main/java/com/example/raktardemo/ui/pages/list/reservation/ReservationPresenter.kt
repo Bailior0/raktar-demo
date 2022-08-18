@@ -10,7 +10,7 @@ class ReservationPresenter @Inject constructor(
     private val databaseInteractor: DatabaseInteractor
 ) {
 
-    suspend fun onReservation(reservation: Reservation, item: StoredItem?, acqId: String?, group: List<StoredItem>): Unit = withIOContext {
-        databaseInteractor.onReservation(reservation, item, acqId, group)
+    suspend fun onReservation(reservation: Reservation, item: StoredItem?, storageId: String?, chosenAcqId: String?, acqId: String?, group: List<StoredItem>): Unit = withIOContext {
+        databaseInteractor.onReservation(reservation, item, storageId, chosenAcqId, acqId, group)
     }
 }

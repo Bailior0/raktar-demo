@@ -71,8 +71,6 @@ fun NewItem(
         categories.add(product.item.category)
     }
 
-    categories.toSet().toList()
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -678,6 +676,24 @@ fun NewItem(
                             )
                         )
                     )
+
+                    nameInput =""
+                    groupInput = ""
+                    manufacturerInput = ""
+                    serialInput = ""
+                    defaultPriceInput = ""
+                    quantityInput = ""
+                    packageSizeInput = ""
+                    quantitySwitchState = false
+                    openableSwitchState = false
+                    unitSelectedIndex = 0
+                    unitExpanded = false
+                    dateInput = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())
+                    minQuantityInput = ""
+                    ownerSwitchState = false
+                    datePickerState = false
+                    warehouseExpanded = false
+                    warehouseSelectedIndex = 0
                 },
                 modifier = Modifier
                     .scale(2f)

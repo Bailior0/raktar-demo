@@ -33,6 +33,23 @@ class FirebaseDataSource @Inject constructor() {
                         items.add(document.toObject())
                     }
                 }
+                for(item in items) {
+                    var cnt2 = 0.0
+                    for(acqItem in item.itemAcquisitions) {
+                        for(count in acqItem.packageCounts) {
+                            cnt2 += count
+                        }
+                    }
+                    item.freeQuantity = cnt2
+
+                    var cnt = item.freeQuantity
+                    for(resItem in item.itemAcquisitions) {
+                        for(reserved in resItem.reserved) {
+                            cnt += reserved
+                        }
+                    }
+                    item.currentQuantity = cnt
+                }
                 this.trySend(items).isSuccess
             }
         awaitClose {

@@ -73,7 +73,7 @@ class ItemDetailFragment : RainbowCakeFragment<ItemDetailViewState, ItemDetailVi
                         is ItemDetailLoaded -> ProductDetail(
                             product = viewState.item!!,
                             onIconClick = { navigator?.popUntil(NavFragment::class) },
-                            onReservationClick = { onReservationSelected(viewState.item!!, viewState.storages) },
+                            onReservationClick = { onReservationSelected(viewState.item!!, viewState.presentStorages) },
                             onAcquisitionClick = { onAcquisitionSelected(viewState.item!!, viewState.items, viewState.storages) },
                             onReleaseClick = { onReleaseSelected(viewState.item!!) },
                             onMovingClick = { onMovingSelected(viewState.item!!, viewState.storages, viewState.presentStorages) }

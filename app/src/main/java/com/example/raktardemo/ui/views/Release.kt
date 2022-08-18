@@ -164,7 +164,6 @@ fun Release(
                                     top.linkTo(parent.top)
                                     end.linkTo(parent.end)
                                 }
-                                .padding(top = 40.dp)
                         )
                     } else {
                         Text(
