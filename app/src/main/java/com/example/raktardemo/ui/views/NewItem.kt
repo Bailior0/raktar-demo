@@ -1,6 +1,5 @@
 package com.example.raktardemo.ui.views
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -29,6 +28,7 @@ import java.util.*
 @Composable
 fun NewItem(
     storages: List<Storage>,
+    products: List<StoredItem>,
     onAddClicked: (StoredItem) -> Unit
 ) {
     val context = LocalContext.current
@@ -64,6 +64,14 @@ fun NewItem(
 
     var warehouseExpanded by remember { mutableStateOf(false) }
     var warehouseSelectedIndex by remember { mutableStateOf(0) }
+
+    val categories = mutableListOf<Category>()
+
+    for(product in products) {
+        categories.add(product.item.category)
+    }
+
+    categories.toSet().toList()
 
     Column(
         modifier = Modifier
@@ -622,15 +630,21 @@ fun NewItem(
 
                     var groupingId = ""
                     if(groupInput.length < 3)
-                        groupingId = groupInput + (10000..99999).random().toString()
+                        groupingId = groupInput + (10000..99999).shuffled().last().toString()
                     else
-                        groupingId = groupInput.substring(0, 3) + (10000..99999).random().toString()
+                        groupingId = groupInput.substring(0, 3) + (10000..99999).shuffled().last().toString()
+
+                    val category = categories.toSet().toList().find { it.name == groupInput }
 
                     onAddClicked(
                         StoredItem(
                             item = Item(
                                 name = nameInput,
                                 category = Category(
+                                    id = when(category != null) {
+                                        true -> category.id
+                                        false -> UUID.randomUUID().toString()
+                                    },
                                     name = groupInput
                                 ),
                                 manufacturer = manufacturerInput,

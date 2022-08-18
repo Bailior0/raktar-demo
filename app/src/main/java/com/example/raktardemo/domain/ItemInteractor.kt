@@ -18,6 +18,10 @@ class DatabaseInteractor @Inject constructor(
         return firebaseDataSource.getItems()
     }
 
+    suspend fun getItemsOnce(): List<StoredItem> {
+        return firebaseDataSource.getItemsOnce()
+    }
+
     suspend fun onItemAdded(item: StoredItem) {
         firebaseDataSource.addItem(item)
     }
@@ -248,8 +252,6 @@ class DatabaseInteractor @Inject constructor(
             val newRelease = release.copy()
             val itemReleases = item.releases as MutableList<Release>
 
-            Log.i("dolog", acqId)
-
             for(acq in item.itemAcquisitions) {
                 if(acq.groupingId == acqId) {
                     for(leave in acq.packageCounts)
@@ -381,13 +383,13 @@ class DatabaseInteractor @Inject constructor(
     }
 
     suspend fun onReservation(reservation: Reservation, item: StoredItem?, acqId: String?, group: List<StoredItem>) {
-        if(item == null) {
+        if(acqId != null) {
             reserveAcquisition(reservation, acqId!!, group)
         }
-        else if(item.item.type == PackageType.Package && !item.item.openable) {
+        else if(item != null && item.item.type == PackageType.Package && !item.item.openable) {
             reserveUnOpenablePackage(reservation, item)
         }
-        else {
+        else if(item != null) {
             reserveOpenablePackage(reservation, item)
         }
     }
@@ -414,7 +416,8 @@ class DatabaseInteractor @Inject constructor(
             newReservation.acqId = acqId
             itemReservations.add(newReservation)
 
-            onItemUpdated(item)
+            Log.i("dolog", item.toString())
+            //onItemUpdated(item)
         }
     }
 

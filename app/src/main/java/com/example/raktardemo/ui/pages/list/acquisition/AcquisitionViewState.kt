@@ -9,6 +9,7 @@ object Loading : AcquisitionViewState()
 
 data class AcquisitionContent (
     var item: StoredItem? = null,
+    var items: List<StoredItem> = emptyList(),
     var storages: List<Storage> = emptyList(),
     var isLoading: Boolean = true
 ) : AcquisitionViewState()

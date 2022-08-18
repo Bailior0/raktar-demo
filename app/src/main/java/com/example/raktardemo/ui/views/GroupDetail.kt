@@ -26,7 +26,8 @@ import kotlin.math.min
 fun GroupDetail(
     groups: List<StoredItem>,
     storages: List<Storage>,
-    onClicked: (StoredItem, List<Storage>, List<Storage>) -> Unit,
+    products: List<StoredItem>,
+    onClicked: (StoredItem, List<StoredItem>, List<Storage>, List<Storage>) -> Unit,
     onReleaseClicked: (ArrayList<StoredItem>, String) -> Unit,
     onReserveClicked: (ArrayList<StoredItem>, String) -> Unit
 ) {
@@ -105,6 +106,7 @@ fun GroupDetail(
                         itemAcquisitionId = group.unzip().first[0],
                         group = group.unzip().second,
                         storages = storages,
+                        items = products,
                         onClicked = onClicked,
                         onReleaseClicked = onReleaseClicked,
                         onReserveClicked = onReserveClicked
@@ -120,7 +122,8 @@ fun Groups(
     itemAcquisitionId: String,
     group: List<StoredItem>,
     storages: List<Storage>,
-    onClicked: (StoredItem, List<Storage>, List<Storage>) -> Unit,
+    items: List<StoredItem>,
+    onClicked: (StoredItem, List<StoredItem>, List<Storage>, List<Storage>) -> Unit,
     onReleaseClicked: (ArrayList<StoredItem>, String) -> Unit,
     onReserveClicked: (ArrayList<StoredItem>, String) -> Unit,
 ) {
@@ -214,6 +217,7 @@ fun Groups(
             itemsIndexed(group) { _, item ->
                 Items(
                     item = item,
+                    items = items,
                     storages = storages,
                     onClicked = onClicked
                 )
@@ -226,7 +230,8 @@ fun Groups(
 fun Items(
     item: StoredItem,
     storages: List<Storage>,
-    onClicked: (StoredItem, List<Storage>, List<Storage>) -> Unit
+    items: List<StoredItem>,
+    onClicked: (StoredItem, List<StoredItem>, List<Storage>, List<Storage>) -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -240,7 +245,7 @@ fun Items(
 
                 val acqStorages = storages.filter{ acqs.contains(it.id) }
 
-                onClicked(item, storages, acqStorages)
+                onClicked(item, items, storages, acqStorages)
             })
             .height(IntrinsicSize.Min)
             .padding(all = 1.dp)

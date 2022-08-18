@@ -1,6 +1,7 @@
 package com.example.raktardemo.ui.pages.importitem
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,6 +38,7 @@ class ImportFragment : RainbowCakeFragment<ImportViewState, ImportViewModel>() {
                 is Loading -> FullScreenLoading()
                 is ImportContent -> NewItem(
                     storages = viewState.storages,
+                    products = viewState.products,
                     onAddClicked = ::onItemAdded
                 )
             }.exhaustive

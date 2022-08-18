@@ -33,11 +33,13 @@ class ItemDetailFragment : RainbowCakeFragment<ItemDetailViewState, ItemDetailVi
     companion object {
         private const val EXTRA_ITEM = "ITEM"
         private const val EXTRA_STORAGES = "STORAGES"
+        private const val EXTRA_ITEMS = "ITEMS"
         private const val EXTRA_PRESENT_STORAGES = "PRESENT_STORAGES"
 
-        fun newInstance(item: StoredItem, storages: ArrayList<Storage>, presentStorages: ArrayList<Storage>): ItemDetailFragment {
+        fun newInstance(item: StoredItem, items: ArrayList<StoredItem>, storages: ArrayList<Storage>, presentStorages: ArrayList<Storage>): ItemDetailFragment {
             return ItemDetailFragment().applyArgs {
                 putParcelable(EXTRA_ITEM, item)
+                putParcelableArrayList(EXTRA_ITEMS, items)
                 putParcelableArrayList(EXTRA_STORAGES, storages)
                 putParcelableArrayList(EXTRA_PRESENT_STORAGES, presentStorages)
             }
@@ -47,6 +49,7 @@ class ItemDetailFragment : RainbowCakeFragment<ItemDetailViewState, ItemDetailVi
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         viewModel.setDetail(
             arguments?.getParcelable(EXTRA_ITEM)!!,
+            arguments?.getParcelableArrayList(EXTRA_ITEMS)!!,
             arguments?.getParcelableArrayList(EXTRA_STORAGES)!!,
             arguments?.getParcelableArrayList(EXTRA_PRESENT_STORAGES)!!
         )
@@ -71,7 +74,7 @@ class ItemDetailFragment : RainbowCakeFragment<ItemDetailViewState, ItemDetailVi
                             product = viewState.item!!,
                             onIconClick = { navigator?.popUntil(NavFragment::class) },
                             onReservationClick = { onReservationSelected(viewState.item!!, viewState.storages) },
-                            onAcquisitionClick = { onAcquisitionSelected(viewState.item!!, viewState.storages) },
+                            onAcquisitionClick = { onAcquisitionSelected(viewState.item!!, viewState.items, viewState.storages) },
                             onReleaseClick = { onReleaseSelected(viewState.item!!) },
                             onMovingClick = { onMovingSelected(viewState.item!!, viewState.storages, viewState.presentStorages) }
                         )
@@ -85,8 +88,8 @@ class ItemDetailFragment : RainbowCakeFragment<ItemDetailViewState, ItemDetailVi
         navigator?.add(ReservationFragment.newInstance(item, storages))
     }
 
-    private fun onAcquisitionSelected(item: StoredItem, storages: ArrayList<Storage>) {
-        navigator?.add(AcquisitionFragment.newInstance(item, storages))
+    private fun onAcquisitionSelected(item: StoredItem, items: ArrayList<StoredItem>, storages: ArrayList<Storage>) {
+        navigator?.add(AcquisitionFragment.newInstance(item, items, storages))
     }
 
     private fun onReleaseSelected(item: StoredItem) {

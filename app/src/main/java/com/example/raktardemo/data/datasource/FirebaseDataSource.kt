@@ -41,6 +41,21 @@ class FirebaseDataSource @Inject constructor() {
         }
     }
 
+    suspend fun getItemsOnce(): List<StoredItem> {
+        val items = mutableListOf<StoredItem>()
+        database.collection("storedItems").get()
+            .addOnSuccessListener { documents ->
+                for(document in documents)
+                    items.add(document.toObject())
+            }
+            .addOnFailureListener { exception ->
+                Log.d("failure", "Error getting documents: ", exception)
+            }
+            .await()
+
+        return items
+    }
+
     suspend fun addItem(item: StoredItem) {
         database.collection("storedItems").add(item)
             .addOnSuccessListener { documentReference ->

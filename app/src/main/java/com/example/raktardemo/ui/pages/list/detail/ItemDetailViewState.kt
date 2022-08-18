@@ -9,6 +9,7 @@ object Loading : ItemDetailViewState()
 
 data class ItemDetailLoaded(
     var item: StoredItem? = null,
+    var items: ArrayList<StoredItem> = emptyList<StoredItem>() as ArrayList<StoredItem>,
     var storages: ArrayList<Storage> = emptyList<Storage>() as ArrayList<Storage>,
     var presentStorages: ArrayList<Storage> = emptyList<Storage>() as ArrayList<Storage>,
     var isLoading: Boolean = true

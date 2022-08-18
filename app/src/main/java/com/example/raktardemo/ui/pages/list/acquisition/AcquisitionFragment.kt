@@ -27,18 +27,24 @@ class AcquisitionFragment : RainbowCakeFragment<AcquisitionViewState, Acquisitio
 
     companion object {
         private const val EXTRA_ITEM = "ITEM"
+        private const val EXTRA_ITEMS = "ITEMS"
         private const val EXTRA_STORAGES = "STORAGES"
 
-        fun newInstance(item: StoredItem, storages: ArrayList<Storage>): AcquisitionFragment {
+        fun newInstance(item: StoredItem, items: ArrayList<StoredItem>, storages: ArrayList<Storage>): AcquisitionFragment {
             return AcquisitionFragment().applyArgs {
                 putParcelable(EXTRA_ITEM, item)
+                putParcelableArrayList(EXTRA_ITEMS, items)
                 putParcelableArrayList(EXTRA_STORAGES, storages)
             }
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        viewModel.setAcquisition(arguments?.getParcelable(EXTRA_ITEM)!!, arguments?.getParcelableArrayList(EXTRA_STORAGES)!!)
+        viewModel.setAcquisition(
+            arguments?.getParcelable(EXTRA_ITEM)!!,
+            arguments?.getParcelableArrayList(EXTRA_ITEMS)!!,
+            arguments?.getParcelableArrayList(EXTRA_STORAGES)!!
+        )
 
         return ComposeView(requireContext()).apply {
             setContent {
@@ -58,6 +64,7 @@ class AcquisitionFragment : RainbowCakeFragment<AcquisitionViewState, Acquisitio
                         is Loading -> FullScreenLoading()
                         is AcquisitionContent -> Acquisition(
                             product = viewState.item!!,
+                            products = viewState.items,
                             storages = viewState.storages,
                             onIconClick = { navigator?.pop() },
                             onAcquisitionClick = ::onAcquisition

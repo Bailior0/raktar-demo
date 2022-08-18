@@ -1,6 +1,5 @@
 package com.example.raktardemo.ui.views
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -25,7 +24,7 @@ import com.example.raktardemo.ui.views.theme.Shapes
 fun List(
     items: List<StoredItem>,
     storages: List<Storage>,
-    onClicked: (StoredItem, List<Storage>, List<Storage>) -> Unit,
+    onClicked: (StoredItem, List<StoredItem>, List<Storage>, List<Storage>) -> Unit,
     onReleaseClicked: (ArrayList<StoredItem>, String) -> Unit,
     onReserveClicked: (ArrayList<StoredItem>, String) -> Unit
 ) {
@@ -177,6 +176,7 @@ fun List(
                         itemsIndexed(sortedItems) { _, item ->
                             ListItem(
                                 item = item,
+                                items = items,
                                 storages = storages,
                                 onClicked = onClicked
                             )
@@ -190,7 +190,7 @@ fun List(
 
                     val itemGroups = ArrayList(sortedItems.groupBy{
                         when {
-                            it.itemAcquisitions.isNotEmpty() && (it.item.name.contains(text, true) || it.item.serialNumber.contains(text, true) || it.item.category.name.contains(text, true)) -> it.item.category.name
+                            it.itemAcquisitions.isNotEmpty() && (it.item.name.contains(text, true) || it.item.serialNumber.contains(text, true) || it.item.category.name.contains(text, true)) -> it.item.category.id
                             else -> null
                         }
                     }.filterKeys { it != null }.values)
@@ -212,6 +212,7 @@ fun List(
                             GroupDetail(
                                 groups = item,
                                 storages = storages,
+                                products = items,
                                 onClicked = onClicked,
                                 onReleaseClicked = onReleaseClicked,
                                 onReserveClicked = onReserveClicked
@@ -227,8 +228,9 @@ fun List(
 @Composable
 fun ListItem(
     item: StoredItem,
+    items: List<StoredItem>,
     storages: List<Storage>,
-    onClicked: (StoredItem, List<Storage>, List<Storage>) -> Unit
+    onClicked: (StoredItem, List<StoredItem>, List<Storage>, List<Storage>) -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -242,7 +244,7 @@ fun ListItem(
 
                 val acqStorages = storages.filter{ acqs.contains(it.id) }
 
-                onClicked(item, storages, acqStorages)
+                onClicked(item, items, storages, acqStorages)
             })
             .height(IntrinsicSize.Min)
             .padding(all = 1.dp)
