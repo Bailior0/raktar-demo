@@ -19,6 +19,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.raktardemo.R
+import com.example.raktardemo.data.enums.PackageType
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.helpers.ListMaker
 
@@ -73,6 +74,10 @@ fun ProductDetail(
 
                 val buttonColor = MaterialTheme.colors.primary
 
+                var packages = 0
+                for(acq in product.itemAcquisitions)
+                    packages += acq.packageCounts.size
+
                 Text(
                     buildAnnotatedString {
                         withStyle(style = SpanStyle(color = Color.Gray)) {
@@ -85,6 +90,20 @@ fun ProductDetail(
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                             append(" " + product.item.quantityUnit.translation)
+                        }
+
+                        if(product.item.type == PackageType.Package) {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(", ")
+                            }
+
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(packages.toString())
+                            }
+
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(" csomag")
+                            }
                         }
                     },
                     modifier = Modifier
@@ -195,7 +214,7 @@ fun ProductDetail(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("TODO")
+                            append(product.item.barCode)
                         }
                     },
                     textAlign = TextAlign.End,
@@ -258,7 +277,7 @@ fun ProductDetail(
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append(" / ")
+                            append(" forint / ")
                         }
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
@@ -274,30 +293,31 @@ fun ProductDetail(
                         }
                 )
 
-                Text(
-                    buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = Color.Gray)) {
-                            append("Bontható\n")
-                        }
+                if(product.item.type == PackageType.Package)
+                    Text(
+                        buildAnnotatedString {
+                            withStyle(style = SpanStyle(color = Color.Gray)) {
+                                append("Bontható\n")
+                            }
 
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append(
-                                when(product.item.openable) {
-                                    true -> "igen"
-                                    false -> "nem"
-                                }
-                            )
-                        }
-                    },
-                    textAlign = TextAlign.End,
-                    modifier = Modifier
-                        .padding(0.dp, 10.dp, 0.dp, 0.dp)
-                        .width(((LocalConfiguration.current.screenWidthDp / 2) - 20).dp)
-                        .constrainAs(openable) {
-                            top.linkTo(measurementUnit.bottom)
-                            end.linkTo(parent.end)
-                        }
-                )
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(
+                                    when(product.item.openable) {
+                                        true -> "igen"
+                                        false -> "nem"
+                                    }
+                                )
+                            }
+                        },
+                        textAlign = TextAlign.End,
+                        modifier = Modifier
+                            .padding(0.dp, 10.dp, 0.dp, 0.dp)
+                            .width(((LocalConfiguration.current.screenWidthDp / 2) - 20).dp)
+                            .constrainAs(openable) {
+                                top.linkTo(measurementUnit.bottom)
+                                end.linkTo(parent.end)
+                            }
+                    )
 
                 Text(
                     buildAnnotatedString {
@@ -307,6 +327,10 @@ fun ProductDetail(
 
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                             append(product.item.defaultPackageQuantity.toString())
+                        }
+
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append(" " + product.item.quantityUnit.translation)
                         }
                     },
                     modifier = Modifier
@@ -325,12 +349,13 @@ fun ProductDetail(
                     .padding(5.dp, 40.dp, 5.dp, 5.dp)
             ) {
                 val itemOperations: MutableList<Triple<String, String, String>> = mutableListOf()
+                for(acquisition in product.itemAcquisitions)
+                    if(acquisition.quantity != 0.0)
+                        itemOperations.add(Triple("beszerezve", (acquisition.quantity * product.item.defaultPackageQuantity).toString() + " " + product.item.quantityUnit.translation, acquisition.acquisitionDate))
                 for(reservation in product.reservations)
                     itemOperations.add(Triple("foglalva", (reservation.reservationQuantity + reservation.repeatAmount).toString() + " " + product.item.quantityUnit.translation, reservation.reservationDate))
                 for(release in product.releases)
                     itemOperations.add(Triple("kivezetve", release.quantity.toString() + " " + product.item.quantityUnit.translation, release.releaseDate))
-                for(acquisition in product.itemAcquisitions)
-                    itemOperations.add(Triple("beszerezve", acquisition.quantity.toString() + " " + product.item.quantityUnit.translation, acquisition.acquisitionDate))
                 for(movings in product.movings)
                     itemOperations.add(Triple("mozgatva", movings.quantity.toString() + " " + product.item.quantityUnit.translation, movings.movingDate))
 

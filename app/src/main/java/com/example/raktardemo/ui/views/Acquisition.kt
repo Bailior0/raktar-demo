@@ -387,7 +387,7 @@ fun Acquisition(
                             }
 
                             val pricePerUnit = when(itemPrice != 0.0 && product.item.defaultPackageQuantity != 0.0){
-                                true -> itemPrice/currentQuantity/product.item.defaultPackageQuantity
+                                true -> itemPrice/currentQuantity
                                 false -> 0.0
                             }
 
@@ -415,7 +415,7 @@ fun Acquisition(
                                     acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date()),
                                     acquisitionWorker = "",
                                     expiryDate = dateInput,
-                                    quantity = acqQuantity * product.item.defaultPackageQuantity,
+                                    quantity = acqQuantity,
                                     acquisitionPrice = acquisitionPrice,
                                     pricePerUnit = pricePerUnit,
                                     currentStorage = storages[warehouseSelectedIndex].id,

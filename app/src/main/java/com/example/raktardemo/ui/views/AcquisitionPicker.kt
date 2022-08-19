@@ -21,15 +21,23 @@ fun AcquisitionPicker(
     onDateChange: (String) -> Unit,
     onClose: () -> Unit
 ) {
-    var storageName = ""
+    val storageNameList = mutableListOf<String>()
+    val quantityList = mutableListOf<Double>()
 
     for (acquisition in acquisitions) {
+        var storageName = ""
+        var quantity = 0.0
         for (storage in storages) {
             if (acquisition.currentStorage == storage.id) {
                 storageName = storage.name
                 break
             }
         }
+        for (count in acquisition.packageCounts) {
+            quantity += count
+        }
+        storageNameList.add(storageName)
+        quantityList.add(quantity)
     }
 
     LazyColumn(
@@ -38,18 +46,19 @@ fun AcquisitionPicker(
             .height(LocalConfiguration.current.screenHeightDp.dp)
             .background(MaterialTheme.colors.background)
     ) {
-        itemsIndexed(acquisitions) { _, acquisition ->
-            ListMaker(
-                text1 = acquisition.acquisitionDate,
-                text2 = storageName,
-                text3 = acquisition.quantity.toString(),
-                id = acquisition.id,
-                date = acquisition.acquisitionDate,
-                padding = 15.dp,
-                onIdChange,
-                onDateChange,
-                onClose
-            )
+        itemsIndexed(acquisitions) { index, acquisition ->
+            if(quantityList[index] != 0.0)
+                ListMaker(
+                    text1 = acquisition.acquisitionDate,
+                    text2 = storageNameList[index],
+                    text3 = quantityList[index].toString(),
+                    id = acquisition.id,
+                    date = acquisition.acquisitionDate,
+                    padding = 15.dp,
+                    onIdChange,
+                    onDateChange,
+                    onClose
+                )
         }
     }
 }

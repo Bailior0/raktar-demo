@@ -383,7 +383,7 @@ fun Traffic(
                                 ) {
                                     ListMaker(
                                         text1 = item.item.name,
-                                        text2 = acq.quantity.toString(),
+                                        text2 = (acq.quantity * item.item.defaultPackageQuantity).toString(),
                                         text3 = acq.acquisitionDate
                                     )
                                 }

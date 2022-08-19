@@ -87,22 +87,24 @@ class DatabaseInteractor @Inject constructor(
                     }
                 }
 
+                oldAcquisition.packageCounts = oldAcqPackages
+
+                acqs.add(oldAcquisition)
+
                 if(newAcqPackages.isNotEmpty()) {
                     newAcquisition.id = UUID.randomUUID().toString()
                     newAcquisition.packageCounts = newAcqPackages
                     newAcquisition.currentStorage = moving.destinationStorage
                     newAcquisition.acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())
-                    newAcquisition.acquisitionPrice = newAcquisition.packageCounts.size.toDouble() * newAcquisition.pricePerUnit
+                    newAcquisition.acquisitionPrice = 0.0
+                    newAcquisition.quantity = 0.0
                     newAcquisition.released = emptyList()
                     newAcquisition.reserved = emptyList()
 
                     acqs.add(newAcquisition)
                 }
-
-
-                oldAcquisition.packageCounts = oldAcqPackages
-                oldAcquisition.acquisitionPrice = oldAcquisition.packageCounts.size.toDouble() * oldAcquisition.pricePerUnit
-
+            }
+            else {
                 acqs.add(oldAcquisition)
             }
         }
@@ -143,22 +145,25 @@ class DatabaseInteractor @Inject constructor(
                             break
                     }
 
+                    oldAcquisition.packageCounts = oldAcqPackages
+
+                    acqs.add(oldAcquisition)
+
                     if(newAcqPackages.isNotEmpty()) {
                         newAcquisition.id = UUID.randomUUID().toString()
                         newAcquisition.packageCounts = newAcqPackages
                         newAcquisition.currentStorage = moving.destinationStorage
                         newAcquisition.acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())
-                        newAcquisition.acquisitionPrice = newAcquisition.packageCounts.size.toDouble() * newAcquisition.pricePerUnit
+                        newAcquisition.acquisitionPrice = 0.0
+                        newAcquisition.quantity = 0.0
                         newAcquisition.released = emptyList()
                         newAcquisition.reserved = emptyList()
 
                         acqs.add(newAcquisition)
                     }
                 }
-
-                oldAcquisition.packageCounts = oldAcqPackages
-                oldAcquisition.acquisitionPrice = oldAcquisition.packageCounts.size.toDouble() * oldAcquisition.pricePerUnit
-
+            }
+            else {
                 acqs.add(oldAcquisition)
             }
         }
@@ -210,7 +215,8 @@ class DatabaseInteractor @Inject constructor(
                         newAcquisition.packageCounts = mutableListOf(newQuantity)
                         newAcquisition.currentStorage = moving.destinationStorage
                         newAcquisition.acquisitionDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date())
-                        newAcquisition.acquisitionPrice = newQuantity * newAcquisition.pricePerUnit
+                        newAcquisition.acquisitionPrice = 0.0
+                        newAcquisition.quantity = 0.0
                         newAcquisition.released = emptyList()
                         newAcquisition.reserved = emptyList()
 
@@ -218,12 +224,14 @@ class DatabaseInteractor @Inject constructor(
                     }
                 }
 
-                oldAcquisition.quantity = oldQuantity
                 if(oldQuantity == 0.0)
                     oldAcquisition.packageCounts = emptyList()
                 else
                     oldAcquisition.packageCounts = mutableListOf(oldQuantity)
 
+                acqs.add(oldAcquisition)
+            }
+            else {
                 acqs.add(oldAcquisition)
             }
         }
@@ -248,6 +256,7 @@ class DatabaseInteractor @Inject constructor(
         }
     }
 
+    //TODO
     private suspend fun releaseAcquisition(release: Release, acqId: String, group: List<StoredItem>) {
         val localGroup = group.toSet().toList()
         for(item in localGroup) {
@@ -293,7 +302,6 @@ class DatabaseInteractor @Inject constructor(
             }
 
             acq.packageCounts = newPackages
-            acq.acquisitionPrice = acq.packageCounts.size.toDouble() * acq.pricePerUnit
 
             acq.released = newRelease
         }
@@ -327,7 +335,6 @@ class DatabaseInteractor @Inject constructor(
             }
 
             acq.packageCounts = newPackages
-            acq.acquisitionPrice = acq.packageCounts.size.toDouble() * acq.pricePerUnit
 
             acq.released = newRelease
         }
@@ -372,8 +379,6 @@ class DatabaseInteractor @Inject constructor(
             }
 
             acq.packageCounts = newPackages
-            acq.quantity = acq.packageCounts.size.toDouble()
-            acq.acquisitionPrice = acq.quantity * acq.pricePerUnit
 
             acq.released = newRelease
 
@@ -402,6 +407,7 @@ class DatabaseInteractor @Inject constructor(
         }
     }
 
+    //TODO
     private suspend fun reserveAcquisition(reservation: Reservation, acqId: String, group: List<StoredItem>) {
         val localGroup = group.toSet().toList()
         for(item in localGroup) {
@@ -454,7 +460,6 @@ class DatabaseInteractor @Inject constructor(
                 }
 
                 acq.packageCounts = newPackages
-                acq.acquisitionPrice = acq.packageCounts.size.toDouble() * acq.pricePerUnit
 
                 acq.reserved = newReserved
             }
@@ -521,7 +526,6 @@ class DatabaseInteractor @Inject constructor(
                 }
 
                 acq.packageCounts = newPackages
-                acq.acquisitionPrice = acq.packageCounts.size.toDouble() * acq.pricePerUnit
 
                 acq.reserved = newReserved
             }
@@ -589,7 +593,6 @@ class DatabaseInteractor @Inject constructor(
                 }
 
                 acq.packageCounts = newPackages
-                acq.acquisitionPrice = acq.packageCounts.size.toDouble() * acq.pricePerUnit
 
                 acq.reserved = newReserved
             }
@@ -639,7 +642,6 @@ class DatabaseInteractor @Inject constructor(
                 }
 
                 acq.packageCounts = newPackages
-                acq.acquisitionPrice = acq.packageCounts.size.toDouble() * acq.pricePerUnit
 
                 acq.reserved = newReserved
             }

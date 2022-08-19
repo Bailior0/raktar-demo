@@ -10,14 +10,14 @@ import java.util.*
 data class Item(
     var id: String = UUID.randomUUID().toString(),
     var name: String = "",
-    var category: Category = Category("0", ""),
+    var category: Category = Category(),
     var manufacturer: String = "",
     var serialNumber: String = "",
-    // TODO: vonalkód
+    var barCode: String = "",
     var type: PackageType = PackageType.Piece,
     var quantityUnit: QuantityUnit = QuantityUnit.Piece,
     var defaultPackageQuantity: Double = 0.0,
-    var openable: Boolean = false, // on piece false by default
+    var openable: Boolean = false,
     var defaultPurchasePrice: Double? = 0.0,
     var minimumStoredQuantity: Double? = 0.0
 ): Parcelable
