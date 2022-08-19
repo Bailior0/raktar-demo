@@ -299,9 +299,8 @@ fun Reservation(
                     ) {
                         if(!product.item.openable && product.item.type == PackageType.Package)
                             Text(
-                                buildAnnotatedString {
-                                    append(product.item.defaultPackageQuantity.toString())
-                                },
+                                text = product.item.defaultPackageQuantity.toString(),
+                                fontWeight = FontWeight.Bold,
                                 modifier = Modifier
                                     .weight(2f)
                                     .padding(start = 5.dp)
@@ -457,7 +456,6 @@ fun Reservation(
                                 Text(
                                     text = selectedAcquisitionDate,
                                     fontWeight = FontWeight.Bold,
-                                    modifier = Modifier
                                 )
                             }
                         }

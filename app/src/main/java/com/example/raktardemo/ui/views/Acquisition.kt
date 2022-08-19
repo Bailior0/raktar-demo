@@ -211,6 +211,7 @@ fun Acquisition(
                                 .constrainAs(deleteButton) {
                                     top.linkTo(parent.top)
                                     bottom.linkTo(parent.bottom)
+                                    start.linkTo(text.end)
                                     end.linkTo(acqsButton.start)
                                 }
                         ) {

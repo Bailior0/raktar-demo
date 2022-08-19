@@ -11,11 +11,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -187,17 +189,6 @@ fun NewItem(
                     ) {
                         val (text, catButton) = createRefs()
 
-                        /*Text(
-                            text = "Kategória választása: ",
-                            color = Color.Gray,
-                            modifier = Modifier
-                                .constrainAs(text) {
-                                    top.linkTo(parent.top)
-                                    bottom.linkTo(parent.bottom)
-                                    start.linkTo(parent.start)
-                                }
-                        )*/
-
                         OutlinedTextField(
                             value = groupInput,
                             onValueChange = {
@@ -213,14 +204,12 @@ fun NewItem(
                                 )
                             },
                             modifier = Modifier
-                                .padding(0.dp, 2.dp)
+                                .width((LocalConfiguration.current.screenWidthDp /2).dp)
                                 .constrainAs(text) {
                                     top.linkTo(parent.top)
                                     bottom.linkTo(parent.bottom)
                                     start.linkTo(parent.start)
-                                    end.linkTo(catButton.start)
                                 }
-                                .wrapContentSize()
                         )
 
                         Button(
@@ -230,7 +219,8 @@ fun NewItem(
                                         true -> "Kategóriák"
                                         false -> categoryName
                                     },
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                                 Image(
                                     painter = painterResource(
@@ -241,14 +231,12 @@ fun NewItem(
                             },
                             onClick = { categoryClicked = true },
                             modifier = Modifier
-                                .height(44.dp)
-                                .width(150.dp)
+                                .width(((LocalConfiguration.current.screenWidthDp / 2) - 40).dp)
                                 .constrainAs(catButton) {
                                     top.linkTo(parent.top)
                                     bottom.linkTo(parent.bottom)
                                     end.linkTo(parent.end)
                                 },
-                            contentPadding = PaddingValues(0.dp)
                         )
                     }
 
