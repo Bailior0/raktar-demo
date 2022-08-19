@@ -87,7 +87,6 @@ fun ProductDetail(
                             append(" " + product.item.quantityUnit.translation)
                         }
                     },
-                    textAlign = TextAlign.End,
                     modifier = Modifier
                         .constrainAs(storedAmount) {
                             top.linkTo(parent.top)
