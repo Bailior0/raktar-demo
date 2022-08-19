@@ -34,6 +34,7 @@ import com.example.raktardemo.data.enums.PackageState
 import com.example.raktardemo.data.enums.PackageType
 import com.example.raktardemo.data.enums.Quality
 import com.example.raktardemo.data.model.Release
+import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.helpers.SegmentedControlQualitySwitch
 import com.example.raktardemo.ui.views.helpers.SegmentedControlTwoWaySwitch
@@ -44,10 +45,11 @@ import java.util.*
 @Composable
 fun Release(
     product: StoredItem?,
+    storages: List<Storage>,
     group: List<StoredItem>,
     acqId: String?,
     onIconClick: () -> Unit = {},
-    onReleaseClick: (Release,  StoredItem?, List<Pair<String, Double>>, String?, List<StoredItem>) -> Unit
+    onReleaseClick: (Release,  StoredItem?, String, List<Pair<String, Double>>, String?, List<StoredItem>) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -57,6 +59,10 @@ fun Release(
     var packageSwitchState2 by remember { mutableStateOf(false) }
 
     var packagesClicked by remember { mutableStateOf(false) }
+    var acqChooserClicked by remember { mutableStateOf(false) }
+
+    var selectedAcquisitionId by remember { mutableStateOf("") }
+    var selectedAcquisitionDate by remember { mutableStateOf("Beszerzések") }
 
     var freeQuantity by remember { mutableStateOf(0) }
     var packages by remember { mutableStateOf(0) }
@@ -69,30 +75,32 @@ fun Release(
 
     if(product != null)
         for(acqItem in product.itemAcquisitions) {
-            if(!packageSwitchState) {
-                for(count in acqItem.packageCounts) {
-                    if(count == product.item.defaultPackageQuantity) {
-                        packageCnt += 1
-                        itemCnt += count
-                    }
-                    else if(product.item.type == PackageType.Piece) {
-                        itemCnt += count
-                    }
-                }
-            }
-            else {
-                if(!packageSwitchState2) {
+            if(acqItem.id == selectedAcquisitionId) {
+                if(!packageSwitchState) {
                     for(count in acqItem.packageCounts) {
-                        if(count != product.item.defaultPackageQuantity) {
-                            openedPackages.add(Pair(acqItem.id, count))
+                        if(count == product.item.defaultPackageQuantity) {
                             packageCnt += 1
+                            itemCnt += count
+                        }
+                        else if(product.item.type == PackageType.Piece) {
                             itemCnt += count
                         }
                     }
                 }
                 else {
-                    for(count in acqItem.packageCounts) {
-                        itemCnt += count
+                    if(!packageSwitchState2) {
+                        for(count in acqItem.packageCounts) {
+                            if(count != product.item.defaultPackageQuantity) {
+                                openedPackages.add(Pair(acqItem.id, count))
+                                packageCnt += 1
+                                itemCnt += count
+                            }
+                        }
+                    }
+                    else {
+                        for(count in acqItem.packageCounts) {
+                            itemCnt += count
+                        }
                     }
                 }
             }
@@ -101,7 +109,7 @@ fun Release(
     freeQuantity = itemCnt.toInt()
     packages = packageCnt
 
-    if(!packagesClicked) {
+    if(!packagesClicked && !acqChooserClicked) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -130,6 +138,8 @@ fun Release(
                     val (
                         itemLabel,
                         item,
+                        acq,
+                        acqChooser,
                         movableQuantity,
                         quantity,
                         switchText,
@@ -189,6 +199,43 @@ fun Release(
                                     end.linkTo(parent.end)
                                 }
                         )
+
+                        Text(
+                            text = "Beszerzés: ",
+                            color = Color.Gray,
+                            fontSize = 20.sp,
+                            fontStyle = FontStyle.Italic,
+                            modifier = Modifier
+                                .constrainAs(acq) {
+                                    top.linkTo(item.bottom)
+                                    start.linkTo(parent.start)
+                                    bottom.linkTo(movableQuantity.top)
+                                }
+                        )
+
+                        Button(
+                            content = {
+                                Text(
+                                    text = selectedAcquisitionDate,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Image(
+                                    painter = painterResource(
+                                        id = R.drawable.ic_baseline_chevron_right_24
+                                    ),
+                                    contentDescription = null
+                                )
+                            },
+                            onClick = { acqChooserClicked = true },
+                            modifier = Modifier
+                                .padding(0.dp, 6.dp)
+                                .width(((LocalConfiguration.current.screenWidthDp / 2) - 40).dp)
+                                .constrainAs(acqChooser) {
+                                    top.linkTo(item.bottom)
+                                    end.linkTo(parent.end)
+                                    bottom.linkTo(movableQuantity.top)
+                                },
+                        )
                     }
 
                     if(product != null) {
@@ -241,7 +288,7 @@ fun Release(
                             modifier = Modifier
                                 .padding(5.dp, 25.dp, 5.dp, 0.dp)
                                 .constrainAs(movableQuantity) {
-                                    top.linkTo(item.bottom)
+                                    top.linkTo(acqChooser.bottom)
                                     end.linkTo(parent.end)
                                 }
                         )
@@ -262,14 +309,13 @@ fun Release(
                                 },
                                 onClick = { packagesClicked = true },
                                 modifier = Modifier
-                                    .height(44.dp)
-                                    .width(150.dp)
-                                    .padding(0.dp, 10.dp, 5.dp, 0.dp)
+                                    .padding(0.dp, 6.dp)
+                                    .width(((LocalConfiguration.current.screenWidthDp / 2) - 40).dp)
                                     .constrainAs(quantity) {
                                         top.linkTo(movableQuantity.bottom)
                                         end.linkTo(parent.end)
+                                        bottom.linkTo(switchText.top)
                                     },
-                                contentPadding = PaddingValues(0.dp)
                             )
                         }
                         else
@@ -439,10 +485,11 @@ fun Release(
                                                 true -> PackageState.Opened
                                                 false -> PackageState.Full
                                             }
-                                            false -> null
+                                            false -> PackageState.Full
                                         }
                                     ),
                                     product,
+                                    selectedAcquisitionId,
                                     chosenPackagesList,
                                     acqId,
                                     group
@@ -515,6 +562,38 @@ fun Release(
                     }
                 }
             }
+        }
+    }
+    else if(product != null && acqChooserClicked) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colors.background)
+        ) {
+            TopAppBar(
+                title = { Text(text = "Beszerzések") },
+                navigationIcon = {
+                    IconButton(
+                        content = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.baseline_arrow_back_24),
+                                contentDescription = null
+                            )
+                        },
+                        onClick = { acqChooserClicked = false }
+                    )
+                }
+            )
+            AcquisitionPicker(
+                acquisitions = product.itemAcquisitions,
+                storages = storages,
+                onIdChange = {
+                    selectedAcquisitionId = it
+                    acqChooserClicked = false
+                },
+                onDateChange = { selectedAcquisitionDate = it },
+                onClose = {}
+            )
         }
     }
 }

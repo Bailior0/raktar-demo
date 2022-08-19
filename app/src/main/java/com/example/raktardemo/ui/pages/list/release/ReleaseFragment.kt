@@ -15,6 +15,7 @@ import co.zsmb.rainbowcake.hilt.getViewModelFromFactory
 import co.zsmb.rainbowcake.navigation.extensions.applyArgs
 import co.zsmb.rainbowcake.navigation.navigator
 import com.example.raktardemo.data.model.Release
+import com.example.raktardemo.data.model.Storage
 import com.example.raktardemo.data.model.StoredItem
 import com.example.raktardemo.ui.views.Release
 import com.example.raktardemo.ui.views.helpers.FullScreenLoading
@@ -27,12 +28,14 @@ class ReleaseFragment : RainbowCakeFragment<ReleaseViewState, ReleaseViewModel>(
 
     companion object {
         private const val EXTRA_ITEM = "ITEM"
+        private const val EXTRA_STORAGES = "STORAGES"
         private const val EXTRA_GROUP = "GROUP"
         private const val EXTRA_ACQID = "ACQID"
 
-        fun newInstance(item: StoredItem): ReleaseFragment {
+        fun newInstance(item: StoredItem, storages: ArrayList<Storage>): ReleaseFragment {
             return ReleaseFragment().applyArgs {
                 putParcelable(EXTRA_ITEM, item)
+                putParcelableArrayList(EXTRA_STORAGES, storages)
             }
         }
 
@@ -48,9 +51,10 @@ class ReleaseFragment : RainbowCakeFragment<ReleaseViewState, ReleaseViewModel>(
         val item = arguments?.getParcelable<StoredItem>(EXTRA_ITEM)
         val group = arguments?.getParcelableArrayList<StoredItem>(EXTRA_GROUP)
         val acqId = arguments?.getString(EXTRA_ACQID)
+        val storages: ArrayList<Storage> = arguments?.getParcelableArrayList(EXTRA_STORAGES) ?: ArrayList()
 
         if(item != null)
-            viewModel.setRelease(item)
+            viewModel.setRelease(item, storages)
         else if(group != null)
             viewModel.setReleaseGroup(group, acqId)
 
@@ -72,6 +76,7 @@ class ReleaseFragment : RainbowCakeFragment<ReleaseViewState, ReleaseViewModel>(
                         is Loading -> FullScreenLoading()
                         is ReleaseContent -> Release(
                             product = viewState.item!!,
+                            storages = viewState.storages,
                             group = emptyList(),
                             acqId = null,
                             onIconClick = { navigator?.pop() },
@@ -79,6 +84,7 @@ class ReleaseFragment : RainbowCakeFragment<ReleaseViewState, ReleaseViewModel>(
                         )
                         is ReleaseGroupContent -> Release(
                             product = null,
+                            storages = emptyList(),
                             group = viewState.group,
                             acqId = viewState.acqId,
                             onIconClick = { navigator?.pop() },
@@ -90,8 +96,8 @@ class ReleaseFragment : RainbowCakeFragment<ReleaseViewState, ReleaseViewModel>(
         }
     }
 
-    private fun onRelease(release: Release, item: StoredItem?, chosenOpenedPackages: List<Pair<String, Double>>, acqId: String?, group: List<StoredItem>) {
-        viewModel.onRelease(release, item, chosenOpenedPackages, acqId, group)
+    private fun onRelease(release: Release, item: StoredItem?, selectedAcqId: String, chosenOpenedPackages: List<Pair<String, Double>>, acqId: String?, group: List<StoredItem>) {
+        viewModel.onRelease(release, item, selectedAcqId, chosenOpenedPackages, acqId, group)
         navigator?.pop()
     }
 }

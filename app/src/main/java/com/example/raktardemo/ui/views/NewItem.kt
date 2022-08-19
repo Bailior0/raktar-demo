@@ -157,26 +157,6 @@ fun NewItem(
                             }
                     )
 
-                    /*OutlinedTextField(
-                        value = groupInput,
-                        onValueChange = { groupInput = it },
-                        singleLine = true,
-                        placeholder = {
-                            Text(
-                                text = "Termékcsoport",
-                                color = Color.Gray
-                            )
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(0.dp, 2.dp)
-                            .constrainAs(group) {
-                                top.linkTo(name.bottom)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                            }
-                    )*/
-
                     ConstraintLayout(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -696,10 +676,12 @@ fun NewItem(
                             false -> 1.0
                         }
 
-                        val cat = when(groupInput != "") {
-                            true -> Category(UUID.randomUUID().toString(), groupInput)
-                            false -> Category(categoryId, categoryName)
+                        val cat = when(categoryName != "") {
+                            true -> Category(categoryId, categoryName)
+                            false -> Category(UUID.randomUUID().toString(), groupInput)
                         }
+                        if(cat.name == "")
+                            cat.id = "0"
 
                         var groupingId = ""
                         if(categoryName.length < 3)

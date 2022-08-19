@@ -294,7 +294,7 @@ fun Traffic(
                         }
                 ) {
                     ComboBox(
-                        list = groupList,
+                        list = groupList.toSet().toList(),
                         selectedIndex = groupSelectedIndex,
                         onIndexChanged = { groupSelectedIndex = it },
                         isExpanded = groupExpanded,

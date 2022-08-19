@@ -438,7 +438,7 @@ fun Moving(
                                             true -> PackageState.Opened
                                             false -> PackageState.Full
                                         }
-                                        false -> null
+                                        false -> PackageState.Full
                                     }
                                 )
                         },

@@ -171,7 +171,6 @@ fun Groups(
                 .width(80.dp)
                 .padding(2.dp, 0.dp)
                 .constrainAs(releaseButton) {
-                    //top.linkTo(parent.top)
                     bottom.linkTo(acquisition.bottom)
                     end.linkTo(reserveButton.start)
                 },

@@ -10,7 +10,7 @@ class ReleasePresenter @Inject constructor(
     private val databaseInteractor: DatabaseInteractor
 ) {
 
-    suspend fun onRelease(release: Release, item: StoredItem?, chosenOpenedPackages: List<Pair<String, Double>>, acqId: String?, group: List<StoredItem>): Unit = withIOContext {
-        databaseInteractor.onRelease(release, item, chosenOpenedPackages, acqId, group)
+    suspend fun onRelease(release: Release, item: StoredItem?, selectedAcqId: String, chosenOpenedPackages: List<Pair<String, Double>>, acqId: String?, group: List<StoredItem>): Unit = withIOContext {
+        databaseInteractor.onRelease(release, item, selectedAcqId, chosenOpenedPackages, acqId, group)
     }
 }

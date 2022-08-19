@@ -241,22 +241,21 @@ class DatabaseInteractor @Inject constructor(
         onItemUpdated(localItem)
     }
 
-    suspend fun onRelease(release: Release, item: StoredItem?, chosenOpenedPackages: List<Pair<String, Double>>, acqId: String?, group: List<StoredItem>) {
+    suspend fun onRelease(release: Release, item: StoredItem?, selectedAcqId: String, chosenOpenedPackages: List<Pair<String, Double>>, acqId: String?, group: List<StoredItem>) {
         if(acqId != null) {
             releaseAcquisition(release, acqId, group)
         }
         else if(item != null && release.packageState == PackageState.Opened && item.item.type == PackageType.Package && chosenOpenedPackages.isNotEmpty()) {
-            releaseOpenedPackage(release, item, chosenOpenedPackages)
+            releaseOpenedPackage(release, item, selectedAcqId, chosenOpenedPackages)
         }
         else if(item != null && ((release.packageState == PackageState.Opened && item.item.type == PackageType.Package && chosenOpenedPackages.isEmpty()) || item.item.type == PackageType.Piece)) {
-            releaseOpenableItems(release, item)
+            releaseOpenableItems(release, item, selectedAcqId)
         }
         else if(item != null && release.packageState == PackageState.Full && item.item.type == PackageType.Package){
-            releaseFullPackage(release, item)
+            releaseFullPackage(release, item, selectedAcqId)
         }
     }
 
-    //TODO
     private suspend fun releaseAcquisition(release: Release, acqId: String, group: List<StoredItem>) {
         val localGroup = group.toSet().toList()
         for(item in localGroup) {
@@ -264,6 +263,8 @@ class DatabaseInteractor @Inject constructor(
             val itemReleases = item.releases as MutableList<Release>
 
             for(acq in item.itemAcquisitions) {
+                newRelease.quantity = 0.0
+
                 if(acq.groupingId == acqId) {
                     for(leave in acq.packageCounts)
                         newRelease.quantity += leave
@@ -272,115 +273,120 @@ class DatabaseInteractor @Inject constructor(
                     released.addAll(acq.packageCounts)
                     acq.packageCounts = emptyList()
                     acq.released = released
+
+                    newRelease.id = UUID.randomUUID().toString()
+                    newRelease.acqId = acq.id
+                    itemReleases.add(newRelease)
                 }
             }
-
-            newRelease.acqId = acqId
-            itemReleases.add(newRelease)
 
             onItemUpdated(item)
         }
     }
 
-    private suspend fun releaseOpenedPackage(release: Release, item: StoredItem, chosenOpenedPackages: List<Pair<String, Double>>) {
+    private suspend fun releaseOpenedPackage(release: Release, item: StoredItem, selectedAcqId: String, chosenOpenedPackages: List<Pair<String, Double>>) {
         val localItem: StoredItem = item.copy()
         val itemReleases = item.releases as MutableList<Release>
         itemReleases.add(release)
 
         for(acq in localItem.itemAcquisitions) {
+            if(acq.id == selectedAcqId) {
+                val newRelease = acq.released as MutableList<Double>
+                val newPackages = acq.packageCounts as MutableList<Double>
 
-            val newRelease = acq.released as MutableList<Double>
-            val newPackages = acq.packageCounts as MutableList<Double>
-
-            for(packages in acq.packageCounts.sorted()) {
-                for(chosenPackage in chosenOpenedPackages) {
-                    if (acq.id == chosenPackage.first && packages == chosenPackage.second) {
-                        newPackages.remove(packages)
-                        newRelease.add(packages)
+                for(packages in acq.packageCounts.sorted()) {
+                    for(chosenPackage in chosenOpenedPackages) {
+                        if (acq.id == chosenPackage.first && packages == chosenPackage.second) {
+                            newPackages.remove(packages)
+                            newRelease.add(packages)
+                        }
                     }
                 }
+
+                acq.packageCounts = newPackages
+
+                acq.released = newRelease
             }
-
-            acq.packageCounts = newPackages
-
-            acq.released = newRelease
         }
 
         onItemUpdated(localItem)
     }
 
-    private suspend fun releaseFullPackage(release: Release, item: StoredItem) {
+    private suspend fun releaseFullPackage(release: Release, item: StoredItem, selectedAcqId: String) {
         var localQuantity = release.quantity/item.item.defaultPackageQuantity
         val localItem: StoredItem = item.copy()
         val itemReleases = item.releases as MutableList<Release>
         itemReleases.add(release)
 
         for(acq in localItem.itemAcquisitions) {
+            if(acq.id == selectedAcqId) {
+                val newRelease = acq.released as MutableList<Double>
+                val newPackages = acq.packageCounts as MutableList<Double>
 
-            val newRelease = acq.released as MutableList<Double>
-            val newPackages = acq.packageCounts as MutableList<Double>
+                if(localQuantity != 0.0) {
+                    for(packages in acq.packageCounts.sorted()) {
 
-            if(localQuantity != 0.0) {
-                for(packages in acq.packageCounts.sorted()) {
+                        if(packages == item.item.defaultPackageQuantity) {
+                            newPackages.remove(packages)
+                            newRelease.add(packages)
+                            localQuantity--
+                        }
 
-                    if(packages == item.item.defaultPackageQuantity) {
-                        newPackages.remove(packages)
-                        newRelease.add(packages)
-                        localQuantity--
+                        if(localQuantity == 0.0)
+                            break
                     }
-
-                    if(localQuantity == 0.0)
-                        break
                 }
+
+                acq.packageCounts = newPackages
+
+                acq.released = newRelease
             }
-
-            acq.packageCounts = newPackages
-
-            acq.released = newRelease
         }
 
         onItemUpdated(item)
     }
 
-    private suspend fun releaseOpenableItems(release: Release, item: StoredItem) {
+    private suspend fun releaseOpenableItems(release: Release, item: StoredItem, selectedAcqId: String) {
         var localQuantity = release.quantity
         val localItem: StoredItem = item.copy()
         val itemReleases = item.releases as MutableList<Release>
         itemReleases.add(release)
 
         for(acq in localItem.itemAcquisitions) {
-            val newRelease = acq.released as MutableList<Double>
-            val newPackages = acq.packageCounts as MutableList<Double>
+            if(acq.id == selectedAcqId) {
+                val newRelease = acq.released as MutableList<Double>
+                val newPackages = acq.packageCounts as MutableList<Double>
 
-            for(packages in acq.packageCounts.sorted()) {
+                for(packages in acq.packageCounts.sorted()) {
 
-                if(packages == localQuantity) {
-                    newPackages.remove(packages)
-                    newRelease.add(packages)
-                    localQuantity = 0.0
-                    break
+                    if(packages == localQuantity) {
+                        newPackages.remove(packages)
+                        newRelease.add(packages)
+                        localQuantity = 0.0
+                        break
+                    }
+
+                    else if(packages < localQuantity) {
+                        newPackages.remove(packages)
+                        newRelease.add(packages)
+                        localQuantity -= packages
+                        continue
+                    }
+
+                    else if(packages > localQuantity) {
+                        val newPackage = packages - localQuantity
+                        newPackages.remove(packages)
+                        newPackages.add(newPackage)
+                        newRelease.add(localQuantity)
+                        localQuantity = 0.0
+                        break
+                    }
                 }
 
-                else if(packages < localQuantity) {
-                    newPackages.remove(packages)
-                    newRelease.add(packages)
-                    localQuantity -= packages
-                    continue
-                }
+                acq.packageCounts = newPackages
 
-                else if(packages > localQuantity) {
-                    val newPackage = packages - localQuantity
-                    newPackages.remove(packages)
-                    newPackages.add(newPackage)
-                    newRelease.add(localQuantity)
-                    localQuantity = 0.0
-                    break
-                }
+                acq.released = newRelease
             }
-
-            acq.packageCounts = newPackages
-
-            acq.released = newRelease
 
             if(localQuantity == 0.0)
                 break
@@ -407,7 +413,6 @@ class DatabaseInteractor @Inject constructor(
         }
     }
 
-    //TODO
     private suspend fun reserveAcquisition(reservation: Reservation, acqId: String, group: List<StoredItem>) {
         val localGroup = group.toSet().toList()
         for(item in localGroup) {
@@ -415,6 +420,8 @@ class DatabaseInteractor @Inject constructor(
             val itemReservations = item.reservations as MutableList<Reservation>
 
             for(acq in item.itemAcquisitions) {
+                newReservation.reservationQuantity = 0.0
+
                 if(acq.groupingId == acqId) {
                     for(reserve in acq.packageCounts)
                         newReservation.reservationQuantity += reserve
@@ -423,12 +430,13 @@ class DatabaseInteractor @Inject constructor(
                     reserved.addAll(acq.packageCounts)
                     acq.packageCounts = emptyList()
                     acq.reserved = reserved
+
+                    newReservation.id = UUID.randomUUID().toString()
+                    newReservation.repeatAmount = 1
+                    newReservation.acqId = acq.id
+                    itemReservations.add(newReservation)
                 }
             }
-
-            newReservation.repeatAmount = 1
-            newReservation.acqId = acqId
-            itemReservations.add(newReservation)
 
             onItemUpdated(item)
         }

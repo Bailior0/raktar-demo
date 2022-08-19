@@ -75,7 +75,7 @@ class ItemDetailFragment : RainbowCakeFragment<ItemDetailViewState, ItemDetailVi
                             onIconClick = { navigator?.popUntil(NavFragment::class) },
                             onReservationClick = { onReservationSelected(viewState.item!!, viewState.presentStorages) },
                             onAcquisitionClick = { onAcquisitionSelected(viewState.item!!, viewState.items, viewState.storages) },
-                            onReleaseClick = { onReleaseSelected(viewState.item!!) },
+                            onReleaseClick = { onReleaseSelected(viewState.item!!, viewState.presentStorages) },
                             onMovingClick = { onMovingSelected(viewState.item!!, viewState.storages, viewState.presentStorages) }
                         )
                     }.exhaustive
@@ -92,8 +92,8 @@ class ItemDetailFragment : RainbowCakeFragment<ItemDetailViewState, ItemDetailVi
         navigator?.add(AcquisitionFragment.newInstance(item, items, storages))
     }
 
-    private fun onReleaseSelected(item: StoredItem) {
-        navigator?.add(ReleaseFragment.newInstance(item))
+    private fun onReleaseSelected(item: StoredItem, storages: ArrayList<Storage>) {
+        navigator?.add(ReleaseFragment.newInstance(item, storages))
     }
 
     private fun onMovingSelected(
