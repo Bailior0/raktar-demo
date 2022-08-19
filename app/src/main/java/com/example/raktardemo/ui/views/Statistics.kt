@@ -8,9 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -28,7 +26,6 @@ import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.Calendar.DAY_OF_MONTH
 import java.util.Calendar.getInstance
 
 @ExperimentalPagerApi
@@ -117,11 +114,13 @@ fun Traffic(
                 list
             ) = createRefs()
 
-            val actionList = listOf("Bevezetés", "Foglalás", "Kivezetés")
+            var itemList = items
+
+            val actionList = listOf("Összes", "Bevezetés", "Foglalás", "Kivezetés", "Mozgatás")
             var actionExpanded by remember { mutableStateOf(false) }
             var actionSelectedIndex by remember { mutableStateOf(0) }
 
-            val storageNameList = mutableListOf<String>()
+            /*val storageNameList = mutableListOf<String>()
             val storageIdList = mutableListOf<String>()
 
             for (storage in storages) {
@@ -130,9 +129,9 @@ fun Traffic(
             }
 
             var storageExpanded by remember { mutableStateOf(false) }
-            var storageSelectedIndex by remember { mutableStateOf(0) }
+            var storageSelectedIndex by remember { mutableStateOf(0) }*/
 
-            val groupList = mutableListOf<String>()
+            val groupList = mutableListOf("Összes")
 
             for (item in items) {
                 if (!(item.item.category.name.equals("")))
@@ -248,10 +247,11 @@ fun Traffic(
 
                 Box(
                     modifier = Modifier
-                        .scale(0.8f)
+                        //.scale(0.8f)
                         .constrainAs(action) {
                             top.linkTo(parent.top)
                             start.linkTo(parent.start)
+                            //end.linkTo(group.start)
                         }
                 ) {
                     ComboBox(
@@ -260,11 +260,12 @@ fun Traffic(
                         onIndexChanged = { actionSelectedIndex = it },
                         isExpanded = actionExpanded,
                         onExpandedChanged = { actionExpanded = it },
-                        textWidth = ((LocalConfiguration.current.screenWidthDp / 3) - 50).dp
+                        textWidth = 90.dp
+                        //textWidth = ((LocalConfiguration.current.screenWidthDp / 3) - 50).dp
                     )
                 }
 
-                Box(
+                /*Box(
                     modifier = Modifier
                         .scale(0.8f)
                         .constrainAs(storage) {
@@ -281,13 +282,14 @@ fun Traffic(
                         onExpandedChanged = { storageExpanded = it },
                         textWidth = ((LocalConfiguration.current.screenWidthDp / 3) - 50).dp
                     )
-                }
+                }*/
 
                 Box(
                     modifier = Modifier
-                        .scale(0.8f)
+                        //.scale(0.8f)
                         .constrainAs(group) {
                             top.linkTo(parent.top)
+                            //start.linkTo(action.end)
                             end.linkTo(parent.end)
                         }
                 ) {
@@ -297,19 +299,21 @@ fun Traffic(
                         onIndexChanged = { groupSelectedIndex = it },
                         isExpanded = groupExpanded,
                         onExpandedChanged = { groupExpanded = it },
-                        textWidth = ((LocalConfiguration.current.screenWidthDp / 3) - 50).dp
+                        textWidth = 90.dp
+                        //textWidth = ((LocalConfiguration.current.screenWidthDp / 3) - 50).dp
                     )
                 }
             }
 
-            var itemList = items.filter {
-                it.item.category.name.equals(groupList[groupSelectedIndex])
-            }
+            if (groupSelectedIndex != 0)
+                itemList = itemList.filter {
+                    it.item.category.name.equals(groupList[groupSelectedIndex])
+                }
 
-            var contains = false
-            var itemList2 = mutableListOf<StoredItem>()
+            //var contains = false
+            //var itemList2 = mutableListOf<StoredItem>()
 
-            if (actionSelectedIndex == 0) {
+            /*if (actionSelectedIndex == 0) {
                 for (item in itemList) {
                     for (acq in item.itemAcquisitions) {
                         for (item2 in itemList2) {
@@ -328,12 +332,12 @@ fun Traffic(
                 }
             } else {
                 itemList2 = itemList.toMutableList()
-            }
+            }*/
 
             if (!(dateInput1.equals(""))) {
                 dateInputDate1 = dateFormat.parse(dateInput1) as Date
                 calendar.time = dateInputDate1
-                calendar.add(DAY_OF_MONTH, -1)
+                calendar.add(Calendar.DAY_OF_MONTH, -1)
                 shiftedDate1 = calendar.time
             } else {
                 shiftedDate1 = dateFormat.parse(
@@ -348,7 +352,7 @@ fun Traffic(
             if (!(dateInput2.equals(""))) {
                 dateInputDate2 = dateFormat.parse(dateInput2) as Date
                 calendar.time = dateInputDate2
-                calendar.add(DAY_OF_MONTH, 1)
+                calendar.add(Calendar.DAY_OF_MONTH, 1)
                 shiftedDate2 = calendar.time
             } else {
                 shiftedDate2 = dateFormat.parse(
@@ -367,68 +371,25 @@ fun Traffic(
                         top.linkTo(comboBoxRow.bottom)
                     }
             ) {
-                itemsIndexed(itemList2) { _, item ->
+                itemsIndexed(itemList) { _, item ->
                     when (actionSelectedIndex) {
                         0 -> {
-                            for (acq in item.itemAcquisitions) {
-                                if (!(acq.acquisitionDate.equals("")))
-                                    acquisitionDate = dateFormat.parse(acq.acquisitionDate) as Date
-                                else
-                                    acquisitionDate = dateFormat.parse("1969-06-09") as Date
-
-                                if (
-                                    acquisitionDate.after(shiftedDate1) &&
-                                    acquisitionDate.before(shiftedDate2) &&
-                                    acq.currentStorage.equals(storageIdList[storageSelectedIndex])
-                                ) {
-                                    ListMaker(
-                                        text1 = item.item.name,
-                                        text2 = acq.quantity.toString(),
-                                        text3 = acq.acquisitionDate
-                                    )
-                                }
-                            }
+                            acquisitionStatList(item, dateFormat, shiftedDate1, shiftedDate2, true)
+                            reserveStatList(item, dateFormat, shiftedDate1, shiftedDate2, true)
+                            releaseStatList(item, dateFormat, shiftedDate1, shiftedDate2, true)
+                            movingStatList(item, dateFormat, shiftedDate1, shiftedDate2, true)
                         }
                         1 -> {
-                            //TODO storageComboBox?
-                            for (res in item.reservations) {
-                                if (!(res.reservationDate.equals("")))
-                                    reservationDate =
-                                        dateFormat.parse(res.reservationDate) as Date
-                                else
-                                    reservationDate = dateFormat.parse("1969-06-09") as Date
-
-                                if (
-                                    reservationDate.after(shiftedDate1) &&
-                                    reservationDate.before(shiftedDate2)
-                                ) {
-                                    ListMaker(
-                                        text1 = item.item.name,
-                                        text2 = res.reservationQuantity.toString(),
-                                        text3 = res.reservationDate
-                                    )
-                                }
-                            }
+                            acquisitionStatList(item, dateFormat, shiftedDate1, shiftedDate2)
                         }
                         2 -> {
-                            for (rel in item.releases) {
-                                if (!(rel.releaseDate.equals("")))
-                                    releaseDate =
-                                        dateFormat.parse(rel.releaseDate) as Date
-                                else
-                                    releaseDate = dateFormat.parse("1969-06-09") as Date
-
-                                if (
-                                    releaseDate.after(shiftedDate1) &&
-                                    releaseDate.before(shiftedDate2)
-                                ) {
-                                    ListMaker(
-                                        text1 = item.item.name,
-                                        text2 = rel.quantity.toString(),
-                                        text3 = rel.quality.translation
-                                    )
-                                }
-                            }
+                            reserveStatList(item, dateFormat, shiftedDate1, shiftedDate2)
+                        }
+                        3 -> {
+                            releaseStatList(item, dateFormat, shiftedDate1, shiftedDate2)
+                        }
+                        4 -> {
+                            movingStatList(item, dateFormat, shiftedDate1, shiftedDate2)
                         }
                         else -> {
                             ListMaker(
@@ -637,6 +598,151 @@ fun Notifications(
                 ListMaker("bevételezve", "Raktár1", "<300 méter")
                 ListMaker("bevételezve", "Raktár2", "<400 méter")
             }*/
+        }
+    }
+}
+
+@Composable
+fun acquisitionStatList(
+    item: StoredItem,
+    dateFormat: SimpleDateFormat,
+    shiftedDate1: Date,
+    shiftedDate2: Date,
+    all: Boolean = false
+) {
+    var acquisitionDate: Date
+
+    val name =
+    if (all)
+        "Bev.: " + item.item.name
+    else
+        item.item.name
+
+    for (acq in item.itemAcquisitions) {
+        if (!(acq.acquisitionDate.equals("")))
+            acquisitionDate = dateFormat.parse(acq.acquisitionDate) as Date
+        else
+            acquisitionDate = dateFormat.parse("1969-06-09") as Date
+
+        if (
+            acquisitionDate.after(shiftedDate1) &&
+            acquisitionDate.before(shiftedDate2) &&
+            acq.quantity > 0
+        //acq.currentStorage.equals(storageIdList[storageSelectedIndex])
+        ) {
+            ListMaker(
+                text1 = name,
+                text2 = (acq.quantity * item.item.defaultPackageQuantity).toString(),
+                text3 = acq.acquisitionDate
+            )
+        }
+    }
+}
+
+@Composable
+fun reserveStatList(
+    item: StoredItem,
+    dateFormat: SimpleDateFormat,
+    shiftedDate1: Date,
+    shiftedDate2: Date,
+    all: Boolean = false
+) {
+    var reservationDate: Date
+
+    val name =
+        if (all)
+            "Fogl.: " + item.item.name
+        else
+            item.item.name
+
+    for (res in item.reservations) {
+        if (!(res.reservationDate.equals("")))
+            reservationDate =
+                dateFormat.parse(res.reservationDate) as Date
+        else
+            reservationDate = dateFormat.parse("1969-06-09") as Date
+
+        if (
+            reservationDate.after(shiftedDate1) &&
+            reservationDate.before(shiftedDate2)
+        ) {
+            ListMaker(
+                text1 = name,
+                text2 = res.reservationQuantity.toString(),
+                text3 = res.reservationDate
+            )
+        }
+    }
+}
+
+@Composable
+fun releaseStatList(
+    item: StoredItem,
+    dateFormat: SimpleDateFormat,
+    shiftedDate1: Date,
+    shiftedDate2: Date,
+    all: Boolean = false
+) {
+    var releaseDate: Date
+
+    val name =
+        if (all)
+            "Kiv.: " + item.item.name
+        else
+            item.item.name
+
+    for (rel in item.releases) {
+        if (!(rel.releaseDate.equals("")))
+            releaseDate =
+                dateFormat.parse(rel.releaseDate) as Date
+        else
+            releaseDate = dateFormat.parse("1969-06-09") as Date
+
+        if (
+            releaseDate.after(shiftedDate1) &&
+            releaseDate.before(shiftedDate2)
+        ) {
+            ListMaker(
+                text1 = name,
+                text2 = rel.quantity.toString(),
+                text3 = rel.quality.translation
+            )
+        }
+    }
+}
+
+@Composable
+fun movingStatList(
+    item: StoredItem,
+    dateFormat: SimpleDateFormat,
+    shiftedDate1: Date,
+    shiftedDate2: Date,
+    all: Boolean = false
+) {
+    var movingDate: Date
+
+    val name =
+        if (all)
+            "Mozg.: " + item.item.name
+        else
+            item.item.name
+
+    for (mov in item.movings) {
+        if (!(mov.movingDate.equals("")))
+            movingDate =
+                dateFormat.parse(mov.movingDate) as Date
+        else
+            movingDate = dateFormat.parse("1969-06-09") as Date
+
+        if (
+            movingDate.after(shiftedDate1) &&
+            movingDate.before(shiftedDate2)
+        ) {
+            ListMaker(
+                text1 = name,
+                text2 = mov.quantity.toString(),
+                text3 = mov.movingDate
+            )
         }
     }
 }
